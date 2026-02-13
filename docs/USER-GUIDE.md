@@ -1,182 +1,182 @@
 # CWE User Guide
 
-> Vollständige Dokumentation für das Code Workspace Engine Plugin v0.4.3
+> Complete documentation for the Code Workspace Engine plugin v0.4.3
 
 ---
 
-## Inhalt
+## Contents
 
-1. [Was ist CWE?](#1-was-ist-cwe)
+1. [What is CWE?](#1-what-is-cwe)
 2. [Installation & Setup](#2-installation--setup)
-3. [Die 6 Core Principles](#3-die-6-core-principles)
-4. [Auto-Delegation verstehen](#4-auto-delegation-verstehen)
-5. [Die 10 Agents im Detail](#5-die-10-agents-im-detail)
-6. [Der Workflow: Von der Idee zum Feature](#6-der-workflow-von-der-idee-zum-feature)
-7. [Das Memory System](#7-das-memory-system)
-8. [Das Standards System](#8-das-standards-system)
-9. [Hooks — Automatisierung im Hintergrund](#9-hooks--automatisierung-im-hintergrund)
-10. [Das Idea System](#10-das-idea-system)
+3. [The 6 Core Principles](#3-the-6-core-principles)
+4. [Understanding Auto-Delegation](#4-understanding-auto-delegation)
+5. [The 10 Agents in Detail](#5-the-10-agents-in-detail)
+6. [Workflow: From Idea to Feature](#6-workflow-from-idea-to-feature)
+7. [The Memory System](#7-the-memory-system)
+8. [The Standards System](#8-the-standards-system)
+9. [Hooks — Behind-the-Scenes Automation](#9-hooks--behind-the-scenes-automation)
+10. [The Idea System](#10-the-idea-system)
 11. [Skills — Progressive Disclosure](#11-skills--progressive-disclosure)
 12. [Quality Gates](#12-quality-gates)
-13. [Projekt-Struktur Reference](#13-projekt-struktur-reference)
+13. [Project Structure Reference](#13-project-structure-reference)
 14. [FAQ / Troubleshooting](#14-faq--troubleshooting)
-15. [Kreislauf-Diagramm: Wie alles zusammenhängt](#15-kreislauf-diagramm-wie-alles-zusammenhängt)
+15. [Lifecycle Diagram: How Everything Connects](#15-lifecycle-diagram-how-everything-connects)
 
 ---
 
-## 1. Was ist CWE?
+## 1. What is CWE?
 
-### Vision und Zweck
+### Vision and Purpose
 
-CWE (Code Workspace Engine) ist ein **Claude Code Plugin**, das eine einzelne KI-Assistenz in ein Team von 10 spezialisierten Agents verwandelt. Statt einem generischen Prompt, der alles erledigt, routet CWE deine Anfragen automatisch zum richtigen Experten mit dem passenden Kontext.
+CWE (Code Workspace Engine) is a **Claude Code plugin** that transforms a single AI assistant into a team of 10 specialized agents. Instead of a generic prompt that handles everything, CWE automatically routes your requests to the right expert with the appropriate context.
 
-### Warum Spec-Driven Development?
+### Why Spec-Driven Development?
 
-Software-Projekte scheitern selten an der Implementierung — sie scheitern an unklaren Anforderungen. CWE erzwingt einen strukturierten Workflow:
+Software projects rarely fail because of implementation — they fail because of unclear requirements. CWE enforces a structured workflow:
 
 ```
-Idee → Plan → Spec → Tasks → Build → Review
+Idea → Plan → Spec → Tasks → Build → Review
 ```
 
-Jede Phase hat klare Inputs und Outputs. Ein Feature wird nicht "einfach gebaut", sondern durchläuft eine Shape-Spec Interview, bekommt einen Task-Breakdown, wird in parallelen Waves implementiert und durch Quality Gates validiert.
+Each phase has clearly defined inputs and outputs. A feature is not "just built" — it goes through a Shape-Spec Interview, receives a task breakdown, is implemented in parallel waves, and is validated through Quality Gates.
 
-### Warum 10 spezialisierte Agents statt eines generischen?
+### Why 10 Specialized Agents Instead of One Generic One?
 
-| Problem mit einem Agent | Lösung durch Spezialisierung |
+| Problem with a single agent | Solution through specialization |
 |------------------------|------------------------------|
-| Riesiger System-Prompt mit allem | Jeder Agent hat nur sein Fachgebiet |
-| Kontextfenster wird schnell voll | Context Isolation: Agents liefern Summaries |
-| Keine Zugriffskontrolle | Builder kann schreiben, Explainer nur lesen |
-| Kein einheitlicher Output | Standardisierte Report-Formate pro Agent |
-| Keine Qualitätssicherung | Quality Agent blockt Releases unter Schwellwerten |
+| Massive system prompt containing everything | Each agent covers only its domain |
+| Context window fills up quickly | Context Isolation: Agents return summaries |
+| No access control | Builder can write, Explainer is read-only |
+| No standardized output | Standardized report formats per agent |
+| No quality assurance | Quality Agent blocks releases below thresholds |
 
-### CWE vs. "einfach Claude Code nutzen"
+### CWE vs. "Just Using Claude Code"
 
 | Feature | Claude Code (vanilla) | Claude Code + CWE |
 |---------|----------------------|-------------------|
-| Agent-Routing | Manuell (du musst Kontext setzen) | Automatisch (sage was du brauchst) |
-| Standards | Keine | 8 Domains, auto-loaded per Dateipfad |
-| Memory | MEMORY.md (200 Zeilen) | Daily Logs + Semantic Search + Hub-Spoke |
+| Agent routing | Manual (you must set context) | Automatic (say what you need) |
+| Standards | None | 8 domains, auto-loaded per file path |
+| Memory | MEMORY.md (200 lines) | Daily Logs + Semantic Search + Hub-Spoke |
 | Workflow | Ad-hoc | Plan → Spec → Tasks → Build → Review |
-| Quality | Du entscheidest | Quality Gates mit Metriken |
-| Sicherheit | Keine Prüfung | Safety Gate scannt jeden Commit |
-| Ideen | Gehen verloren | Automatisch per Keyword erfasst |
-| Git | Freier Stil | Conventional Commits + Branch Naming |
+| Quality | You decide | Quality Gates with metrics |
+| Security | No checks | Safety Gate scans every commit |
+| Ideas | Get lost | Automatically captured by keyword |
+| Git | Free-form | Conventional Commits + Branch Naming |
 
 ---
 
 ## 2. Installation & Setup
 
-### Voraussetzungen
+### Prerequisites
 
-- **Claude Code** (CLI) installiert und konfiguriert
-- **Git** für Versionskontrolle
-- **Node.js** (optional, für MCP Server)
+- **Claude Code** (CLI) installed and configured
+- **Git** for version control
+- **Node.js** (optional, for MCP Server)
 
 ### Installation
 
 ```bash
-# 1. Plugin klonen
+# 1. Clone the plugin
 git clone https://github.com/LL4nc33/claude-workflow-engine.git
 
-# 2. Alias einrichten (in ~/.bashrc oder ~/.zshrc)
+# 2. Set up an alias (in ~/.bashrc or ~/.zshrc)
 alias cwe='claude --plugin-dir /path/to/claude-workflow-engine --dangerously-skip-permissions'
 
-# 3. Terminal neu starten oder source ausführen
+# 3. Restart terminal or source the file
 source ~/.bashrc
 ```
 
-### Plugin-Dependencies
+### Plugin Dependencies
 
-CWE arbeitet mit anderen Claude Code Plugins zusammen. `/cwe:init` prüft und bietet Installation an:
+CWE works together with other Claude Code plugins. `/cwe:init` checks for and offers to install them:
 
-| Plugin | Level | Warum? |
+| Plugin | Level | Why? |
 |--------|-------|--------|
-| **superpowers** | Required | TDD, Debugging, Planning, Code Review — die Kern-Skills für jeden Agent |
-| **serena** | Recommended | Semantische Code-Analyse via Language Server Protocol (LSP) — versteht Symbole, Referenzen, Typen |
-| **feature-dev** | Recommended | 7-Phasen Feature-Workflow mit Code-Architektur, Code-Explorer und Code-Reviewer |
+| **superpowers** | Required | TDD, Debugging, Planning, Code Review — the core skills for every agent |
+| **serena** | Recommended | Semantic code analysis via Language Server Protocol (LSP) — understands symbols, references, types |
+| **feature-dev** | Recommended | 7-phase feature workflow with code architecture, code explorer, and code reviewer |
 
 ### MCP Server Dependencies
 
-| Server | Warum? |
+| Server | Why? |
 |--------|--------|
-| **playwright** | Browser-Testing, Screenshot-Verifikation für Frontend-Arbeit |
-| **context7** | Library-Dokumentation nachschlagen (React, Vue, etc.) |
-| **github** | GitHub API Integration (Issues, PRs, Actions) |
-| **cwe-memory** | Semantische Suche über alle Memory-Dateien (v0.4.3) |
+| **playwright** | Browser testing, screenshot verification for frontend work |
+| **context7** | Library documentation lookup (React, Vue, etc.) |
+| **github** | GitHub API integration (Issues, PRs, Actions) |
+| **cwe-memory** | Semantic search across all memory files (v0.4.3) |
 
 ### /cwe:init Walkthrough
 
-Beim ersten Start in einem Projekt führt `/cwe:init` folgende Schritte aus:
+When first running in a project, `/cwe:init` performs the following steps:
 
-**Step 1: Plugin-Check**
-- Prüft ob superpowers, serena, feature-dev installiert sind
-- Bietet Installation per `claude plugin add` an
-- Optionale Plugins (frontend-design, plugin-dev) werden angeboten
+**Step 1: Plugin Check**
+- Checks whether superpowers, serena, feature-dev are installed
+- Offers installation via `claude plugin add`
+- Optional plugins (frontend-design, plugin-dev) are offered
 
-**Step 2: MCP Server-Check**
-- Prüft ob playwright, context7, github MCP Server konfiguriert sind
-- Bietet `claude mcp add` an für fehlende Server
+**Step 2: MCP Server Check**
+- Checks whether playwright, context7, github MCP servers are configured
+- Offers `claude mcp add` for missing servers
 
-**Step 3: Projekt-Struktur erstellen**
+**Step 3: Create Project Structure**
 ```
 workflow/
-├── config.yml           # CWE Konfiguration
-├── ideas.md             # Kuratierter Ideen-Backlog
+├── config.yml           # CWE configuration
+├── ideas.md             # Curated idea backlog
 ├── product/
-│   └── mission.md       # Produkt-Vision (hier startest du!)
-├── specs/               # Feature-Spezifikationen (je Ordner)
-└── standards/           # Projekt-spezifische Standards
+│   └── mission.md       # Product vision (start here!)
+├── specs/               # Feature specifications (one folder each)
+└── standards/           # Project-specific standards
 
 memory/
-├── MEMORY.md            # Index (max 200 Zeilen)
-├── ideas.md             # Ideen-Übersicht
+├── MEMORY.md            # Index (max 200 lines)
+├── ideas.md             # Idea overview
 ├── decisions.md         # Architecture Decision Records
-├── patterns.md          # Erkannte Muster
-└── project-context.md   # Tech-Stack (auto-seeded!)
+├── patterns.md          # Recognized patterns
+└── project-context.md   # Tech stack (auto-seeded!)
 
 docs/
-├── README.md            # Projekt-README
-├── ARCHITECTURE.md      # Systemarchitektur
-├── API.md               # API-Dokumentation
-├── SETUP.md             # Setup-Anleitung
-└── decisions/           # ADR-Ordner
-    └── _template.md     # ADR-Vorlage
+├── README.md            # Project README
+├── ARCHITECTURE.md      # System architecture
+├── API.md               # API documentation
+├── SETUP.md             # Setup guide
+└── decisions/           # ADR folder
+    └── _template.md     # ADR template
 
-VERSION                  # Single Source of Truth (z.B. "0.1.0")
-CHANGELOG.md             # Keep-a-Changelog Format
+VERSION                  # Single Source of Truth (e.g. "0.1.0")
+CHANGELOG.md             # Keep-a-Changelog format
 ```
 
 **Step 4: Auto-Seeding**
-- Erkennt Tech-Stack aus package.json, Cargo.toml, go.mod, etc.
-- Schreibt Ergebnis in `memory/project-context.md`
-- Initialisiert `memory/MEMORY.md` mit Projekt-Metadaten
+- Detects tech stack from package.json, Cargo.toml, go.mod, etc.
+- Writes the result to `memory/project-context.md`
+- Initializes `memory/MEMORY.md` with project metadata
 
 ---
 
-## 3. Die 6 Core Principles
+## 3. The 6 Core Principles
 
-### Prinzip 1: Agent-First
+### Principle 1: Agent-First
 
-**Was:** Jede Aufgabe wird an einen spezialisierten Agent delegiert. Der Haupt-Kontext bleibt schlank.
+**What:** Every task is delegated to a specialized agent. The main context stays lean.
 
-**Warum:** Claude Code hat ein begrenztes Kontextfenster. Wenn ein Agent 5000 Zeilen Code liest, füllt das den Hauptkontext. Mit Delegation liest der Agent den Code, liefert eine 20-Zeilen-Summary, und der Hauptkontext bleibt frei.
+**Why:** Claude Code has a limited context window. When an agent reads 5000 lines of code, that fills the main context. With delegation, the agent reads the code, returns a 20-line summary, and the main context remains free.
 
-**Beispiel:**
+**Example:**
 ```
-Du: "Fix the login bug"
-CWE: Delegiert an builder-Agent
-Builder: Liest Code, debuggt, fixt, testet
+You: "Fix the login bug"
+CWE: Delegates to builder agent
+Builder: Reads code, debugs, fixes, tests
 Builder → CWE: "Fixed: NullPointerException in AuthService.login() (line 47). Root cause: missing null check on session token."
 ```
 
-### Prinzip 2: Auto-Delegation
+### Principle 2: Auto-Delegation
 
-**Was:** CWE analysiert deine natürliche Sprache und routet automatisch zum passenden Agent.
+**What:** CWE analyzes your natural language and automatically routes to the appropriate agent.
 
-**Warum:** Du musst nicht wissen, welcher Agent was kann. Sage einfach was du brauchst.
+**Why:** You do not need to know which agent handles what. Simply say what you need.
 
-**Beispiel:**
+**Example:**
 ```
 "Fix the login bug"        → builder (Keywords: fix, bug)
 "Explain how auth works"   → explainer (Keywords: explain, how)
@@ -184,45 +184,45 @@ Builder → CWE: "Fixed: NullPointerException in AuthService.login() (line 47). 
 "Run the test suite"       → quality (Keywords: test)
 ```
 
-### Prinzip 3: Spec-Driven
+### Principle 3: Spec-Driven
 
-**Was:** Features durchlaufen immer den Zyklus: Plan → Spec → Tasks → Build → Review.
+**What:** Features always go through the cycle: Plan → Spec → Tasks → Build → Review.
 
-**Warum:** Ein Feature ohne Spec ist wie ein Gebäude ohne Bauplan. Die Shape-Spec Interview zwingt dich, Scope zu definieren, bevor Code geschrieben wird. Das verhindert Scope Creep und macht Features nachvollziehbar.
+**Why:** A feature without a spec is like a building without a blueprint. The Shape-Spec Interview forces you to define scope before any code is written. This prevents scope creep and makes features traceable.
 
-**Beispiel:**
+**Example:**
 ```
 /cwe:architect shape
-→ Interview: "Was ist IN Scope? Was ist OUT of Scope?"
-→ Interview: "Welche Komponenten sind betroffen?"
-→ Interview: "Was ist die Definition of Done?"
-→ Generiert: workflow/specs/2026-02-13-1430-user-auth/
+→ Interview: "What is IN Scope? What is OUT of Scope?"
+→ Interview: "Which components are affected?"
+→ Interview: "What is the Definition of Done?"
+→ Generates: workflow/specs/2026-02-13-1430-user-auth/
    ├── plan.md, shape.md, references.md, standards.md
 ```
 
-### Prinzip 4: Context Isolation
+### Principle 4: Context Isolation
 
-**Was:** Agents arbeiten in isolierten Kontexten. Nur das Ergebnis (Summary) kommt zurück.
+**What:** Agents work in isolated contexts. Only the result (summary) is returned.
 
-**Warum:** Ein Security-Audit liest 50 Dateien und produziert 2000 Zeilen Analyse. Davon brauchst du nur die 30 Zeilen Summary. Context Isolation hält das Kontextfenster effizient.
+**Why:** A security audit reads 50 files and produces 2000 lines of analysis. You only need the 30-line summary. Context Isolation keeps the context window efficient.
 
-### Prinzip 5: Plugin Integration
+### Principle 5: Plugin Integration
 
-**Was:** Agents nutzen Skills aus installierten Plugins (superpowers, serena, feature-dev).
+**What:** Agents use skills from installed plugins (superpowers, serena, feature-dev).
 
-**Warum:** CWE erfand das Rad nicht neu. superpowers hat exzellentes TDD und Debugging. serena hat semantische Code-Analyse. feature-dev hat einen 7-Phasen Feature-Workflow. CWE orchestriert diese Skills.
+**Why:** CWE does not reinvent the wheel. superpowers has excellent TDD and debugging. serena has semantic code analysis. feature-dev has a 7-phase feature workflow. CWE orchestrates these skills.
 
-### Prinzip 6: Always Document
+### Principle 6: Always Document
 
-**Was:** Jede nicht-triviale Änderung aktualisiert: MEMORY.md, Daily Log, CHANGELOG, betroffene Docs.
+**What:** Every non-trivial change updates: MEMORY.md, Daily Log, CHANGELOG, affected docs.
 
-**Warum:** CWE hat kein Langzeitgedächtnis ohne explizite Dokumentation. Wenn die Memory-Dateien nicht aktuell sind, startet die nächste Session ohne Kontext. Documentation ist kein Nice-to-have — es ist die Persistenzschicht.
+**Why:** CWE has no long-term memory without explicit documentation. If the memory files are not current, the next session starts without context. Documentation is not a nice-to-have — it is the persistence layer.
 
 ---
 
-## 4. Auto-Delegation verstehen
+## 4. Understanding Auto-Delegation
 
-### Wie CWE Requests routet
+### How CWE Routes Requests
 
 ```
 User request
@@ -238,22 +238,22 @@ Multi-step task? ──────────→ Orchestrate with subagents
 Unclear? ──────────────────→ Ask (max 2 questions)
 ```
 
-**Wichtig:** Plugin-Skills haben Vorrang vor Agent-Routing. Wenn du "debug this" sagst, matcht `superpowers:systematic-debugging` bevor der builder-Agent aktiviert wird.
+**Important:** Plugin skills take priority over agent routing. If you say "debug this", `superpowers:systematic-debugging` matches before the builder agent is activated.
 
-### Intent → Agent Keyword-Tabelle
+### Intent → Agent Keyword Table
 
 | Intent | Agent | Keywords |
 |--------|-------|----------|
-| Code schreiben/fixen | **builder** | implement, fix, build, create, code, feature, bug, refactor |
-| Fragen/Diskussion | **ask** | question, discuss, think about |
-| Code erklären | **explainer** | explain, how, what, why, understand |
-| Testen/Qualität | **quality** | test, write tests, coverage, quality, validate, metrics, gate |
-| Sicherheit | **security** | security, audit, vulnerability, scan, gdpr, owasp, cve |
-| Infrastruktur | **devops** | deploy, docker, ci, cd, release, kubernetes, terraform |
-| Architektur | **architect** | design, architecture, adr, api, schema |
-| Recherche/Docs | **researcher** | analyze, document, research, compare |
+| Write/fix code | **builder** | implement, fix, build, create, code, feature, bug, refactor |
+| Questions/discussion | **ask** | question, discuss, think about |
+| Explain code | **explainer** | explain, how, what, why, understand |
+| Testing/quality | **quality** | test, write tests, coverage, quality, validate, metrics, gate |
+| Security | **security** | security, audit, vulnerability, scan, gdpr, owasp, cve |
+| Infrastructure | **devops** | deploy, docker, ci, cd, release, kubernetes, terraform |
+| Architecture | **architect** | design, architecture, adr, api, schema |
+| Research/docs | **researcher** | analyze, document, research, compare |
 | Brainstorming | **innovator** | brainstorm, idea, ideas, what if, alternative, explore |
-| Prozess-Verbesserung | **guide** | workflow, process, pattern, improve, optimize |
+| Process improvement | **guide** | workflow, process, pattern, improve, optimize |
 
 ### Intent → Plugin Skill
 
@@ -270,52 +270,52 @@ Unclear? ──────────────────→ Ask (max 2 qu
 
 ### "manual" Override
 
-Sage **"manual"** oder **"no delegation"** um Auto-Delegation zu deaktivieren. Dann verarbeitet CWE deinen Request direkt, ohne an einen Agent zu delegieren.
+Say **"manual"** or **"no delegation"** to disable Auto-Delegation. CWE will then process your request directly without delegating to an agent.
 
-### Beispiele aus der Praxis
+### Real-World Examples
 
 ```
 "Fix the login bug"
   → Keywords: fix, bug → builder
-  → Builder nutzt: systematic-debugging + serena
+  → Builder uses: systematic-debugging + serena
 
 "How does the auth middleware work?"
   → Keywords: how → explainer
-  → Explainer nutzt: serena (find_symbol, get_symbols_overview)
+  → Explainer uses: serena (find_symbol, get_symbols_overview)
 
 "What if we replaced REST with GraphQL?"
   → Keywords: what if → innovator
-  → Innovator nutzt: SCAMPER-Methodik, WebSearch
+  → Innovator uses: SCAMPER methodology, WebSearch
 
 "Run all tests and check coverage"
   → Keywords: test, coverage → quality
-  → Quality nutzt: Bash(npm test), quality-gates skill
+  → Quality uses: Bash(npm test), quality-gates skill
 
 "Create a Docker setup"
   → Keywords: docker → devops
-  → DevOps nutzt: Bash(docker), Dockerfile-Erstellung
+  → DevOps uses: Bash(docker), Dockerfile creation
 
 "Look at this code"
-  → Keine eindeutigen Keywords → ASK: "Möchtest du den Code fixen, erklären oder analysieren?"
+  → No clear keywords → ASK: "Would you like to fix, explain, or analyze the code?"
 ```
 
 ---
 
-## 5. Die 10 Agents im Detail
+## 5. The 10 Agents in Detail
 
-### 5.1 builder — Der "Code Coroner"
+### 5.1 builder — The "Code Coroner"
 
 **Identity:** Systematic, thorough, never guesses — always investigates the evidence first.
 
-**Wann:** Code schreiben, Bugs fixen, Features implementieren, Refactoring.
+**When:** Writing code, fixing bugs, implementing features, refactoring.
 
-**Tools:** Read, Write, Edit, Bash, Grep, Glob, alle serena-Tools, Task (für Subagents)
+**Tools:** Read, Write, Edit, Bash, Grep, Glob, all serena tools, Task (for subagents)
 
-**Skills:** Nutzt superpowers (TDD, debugging), serena (symbol navigation), feature-dev (code-architect)
+**Skills:** Uses superpowers (TDD, debugging), serena (symbol navigation), feature-dev (code-architect)
 
-**Access:** Voller Lese-/Schreibzugriff auf Code
+**Access:** Full read/write access to code
 
-**Typische Befehle:**
+**Typical commands:**
 ```
 "Fix the login bug"
 "Implement user authentication"
@@ -323,74 +323,74 @@ Sage **"manual"** oder **"no delegation"** um Auto-Delegation zu deaktivieren. D
 /cwe:builder "add input validation to the signup form"
 ```
 
-**Besonderheit:** Der Builder folgt dem TDD-Cycle (Red → Green → Refactor) wenn superpowers:test-driven-development verfügbar ist. Er implementiert nie ohne Tests.
+**Key feature:** The Builder follows the TDD cycle (Red → Green → Refactor) when superpowers:test-driven-development is available. It never implements without tests.
 
 ---
 
-### 5.2 architect — Der System-Denker
+### 5.2 architect — The Systems Thinker
 
 **Identity:** Thinks in systems, not files. Sees the forest, not just the trees.
 
-**Wann:** Systemdesign, ADRs schreiben, Feature-Specs formen (Shape-Spec Interview).
+**When:** System design, writing ADRs, shaping feature specs (Shape-Spec Interview).
 
-**Tools:** Read, Grep, Glob, Task, AskUserQuestion, serena (Symbole + Muster)
+**Tools:** Read, Grep, Glob, Task, AskUserQuestion, serena (symbols + patterns)
 
-**Access:** READ-ONLY für Code, Schreibzugriff auf workflow/specs/ und docs/
+**Access:** READ-ONLY for code, write access to workflow/specs/ and docs/
 
-**Typische Befehle:**
+**Typical commands:**
 ```
 "Design the authentication system"
 /cwe:architect shape    → Shape-Spec Interview
 /cwe:architect "write an ADR for the database choice"
 ```
 
-**Besonderheit:** Die Shape-Spec Interview ist das Herzstück. Der Architect fragt:
-1. Was ist IN Scope? Was ist OUT of Scope?
-2. Welche Komponenten sind betroffen?
-3. Welche Standards gelten?
-4. Was ist die Definition of Done?
+**Key feature:** The Shape-Spec Interview is the centerpiece. The Architect asks:
+1. What is IN Scope? What is OUT of Scope?
+2. Which components are affected?
+3. Which standards apply?
+4. What is the Definition of Done?
 
-Das Ergebnis ist ein Spec-Ordner mit plan.md, shape.md, references.md und standards.md.
+The result is a spec folder with plan.md, shape.md, references.md, and standards.md.
 
 ---
 
-### 5.3 ask — Der Diskussions-Partner
+### 5.3 ask — The Discussion Partner
 
 **Identity:** Thoughtful, analytical, explores all angles without jumping to conclusions.
 
-**Wann:** Offene Fragen, Diskussionen, "Lass uns mal darüber nachdenken".
+**When:** Open-ended questions, discussions, "let's think about this."
 
-**Tools:** Read, Grep, Glob, WebSearch, WebFetch, serena (Symbole)
+**Tools:** Read, Grep, Glob, WebSearch, WebFetch, serena (symbols)
 
-**Access:** STRIKT READ-ONLY — macht keine Änderungen
+**Access:** STRICTLY READ-ONLY — makes no changes
 
-**Typische Befehle:**
+**Typical commands:**
 ```
 "Discuss: Should we use microservices or monolith?"
 "Think about the trade-offs of caching here"
 /cwe:ask "what are the implications of upgrading to Node 22?"
 ```
 
-**Besonderheit:** Der Ask-Agent ist der einzige, der explizit keine Aktion ausführt. Er denkt, analysiert und präsentiert Optionen — die Entscheidung liegt bei dir.
+**Key feature:** The Ask agent is the only one that explicitly takes no action. It thinks, analyzes, and presents options — the decision is yours.
 
 ---
 
-### 5.4 explainer — Der Erklärer
+### 5.4 explainer — The Educator
 
 **Identity:** Patient, clear technical educator. Explains complex things simply without being condescending.
 
-**Wann:** Code verstehen, Konzepte erklärt bekommen, Architektur-Entscheidungen nachvollziehen.
+**When:** Understanding code, getting concepts explained, tracing architecture decisions.
 
 **Tools:** Read, Grep, Glob, serena (get_symbols_overview, find_symbol)
 
 **Access:** READ-ONLY
 
-**Output-Formate:**
+**Output formats:**
 - **Code Explanations:** TL;DR → Step-by-step → Design Rationale
 - **Concept Explanations:** Simple Terms → In This Project → Example
 - **How-To:** Quick Answer → Step by Step → Watch Out For
 
-**Typische Befehle:**
+**Typical commands:**
 ```
 "Explain how the auth middleware works"
 "What does this function do?"
@@ -399,17 +399,17 @@ Das Ergebnis ist ein Spec-Ordner mit plan.md, shape.md, references.md und standa
 
 ---
 
-### 5.5 quality — Der Quality Guardian
+### 5.5 quality — The Quality Guardian
 
 **Identity:** Nothing ships without your approval. Thorough. Data-driven. Uncompromising on standards.
 
-**Wann:** Tests laufen lassen, Coverage prüfen, Code Reviews, Health Dashboard.
+**When:** Running tests, checking coverage, code reviews, Health Dashboard.
 
 **Tools:** Read, Grep, Glob, Bash (jest, npm test, nyc, eslint), serena
 
 **Skills:** quality-gates, health-dashboard
 
-**Access:** READ-ONLY + Test-Commands
+**Access:** READ-ONLY + Test Commands
 
 **Quality Gates:**
 
@@ -421,7 +421,7 @@ Das Ergebnis ist ein Spec-Ordner mit plan.md, shape.md, references.md und standa
 | Test Duration | <5min | <2min | >10min warns |
 | Flaky Tests | 0 | 0 | >0 |
 
-**Typische Befehle:**
+**Typical commands:**
 ```
 "Run tests and check coverage"
 /cwe:quality health        → Full Health Dashboard
@@ -430,45 +430,45 @@ Das Ergebnis ist ein Spec-Ordner mit plan.md, shape.md, references.md und standa
 
 ---
 
-### 5.6 security — Der Security-Prüfer
+### 5.6 security — The Security Auditor
 
 **Identity:** Cautious, thorough, assumes breach. "Trust nothing, verify everything."
 
-**Wann:** Security Audits, Vulnerability Scans, OWASP-Checks, GDPR-Compliance.
+**When:** Security audits, vulnerability scans, OWASP checks, GDPR compliance.
 
 **Tools:** Read, Grep, Glob, Bash (trivy, grype, semgrep, nmap, curl), serena
 
 **Skills:** quality-gates
 
-**Access:** RESTRICTED — Read + spezifische Audit-Commands
+**Access:** RESTRICTED — Read + specific audit commands
 
-**Prüf-Framework:** OWASP Top 10 (2021)
+**Audit framework:** OWASP Top 10 (2021)
 - Severity Levels: Critical, High, Medium, Low, Informational
-- Immer mit Remediation-Empfehlung
-- GDPR-Compliance-Check inklusive
+- Always with remediation recommendations
+- GDPR compliance check included
 
-**Typische Befehle:**
+**Typical commands:**
 ```
 "Audit the API for security issues"
 /cwe:security "scan dependencies for CVEs"
 /cwe:security "GDPR compliance check"
 ```
 
-**Besonderheit:** Reports enthalten nie den Wert eines Secrets — nur die Location. Der Security Agent reportet `LOCATION: config.js:42`, niemals den tatsächlichen Key.
+**Key feature:** Reports never contain the value of a secret — only the location. The Security Agent reports `LOCATION: config.js:42`, never the actual key.
 
 ---
 
-### 5.7 devops — Der Infrastruktur-Experte
+### 5.7 devops — The Infrastructure Expert
 
 **Identity:** Automates everything. If you do it twice, script it.
 
-**Wann:** Docker, CI/CD, Releases, Deployments, Terraform.
+**When:** Docker, CI/CD, releases, deployments, Terraform.
 
 **Tools:** Read, Write, Edit, Bash, Grep, Glob, serena
 
-**Access:** Voller Zugriff (braucht Schreibrechte für Dockerfiles, CI configs, etc.)
+**Access:** Full access (requires write permissions for Dockerfiles, CI configs, etc.)
 
-**Typische Befehle:**
+**Typical commands:**
 ```
 "Set up Docker for this project"
 "Create a GitHub Actions CI pipeline"
@@ -476,28 +476,28 @@ Das Ergebnis ist ein Spec-Ordner mit plan.md, shape.md, references.md und standa
 /cwe:devops "add staging environment"
 ```
 
-**Besonderheit:** Bei `release` liest der DevOps-Agent die VERSION-Datei, bumpt sie, generiert Release Notes aus Conventional Commits, aktualisiert CHANGELOG.md und erstellt einen git tag.
+**Key feature:** For `release`, the DevOps agent reads the VERSION file, bumps it, generates release notes from Conventional Commits, updates CHANGELOG.md, and creates a git tag.
 
 ---
 
-### 5.8 researcher — Der Analyst
+### 5.8 researcher — The Analyst
 
 **Identity:** Thorough, structured, citation-oriented. Every claim has evidence.
 
-**Wann:** Codebase-Analyse, Dokumentation generieren, Technologie-Vergleiche, Reports.
+**When:** Codebase analysis, generating documentation, technology comparisons, reports.
 
 **Tools:** Read, Grep, Glob, WebSearch, WebFetch, serena
 
 **Skills:** project-docs
 
-**Access:** READ-ONLY (Ausnahme: docs/ Dateien)
+**Access:** READ-ONLY (exception: docs/ files)
 
-**Dokumentations-Modi:**
-- `docs update` → Scannt Codebase, aktualisiert alle Docs
-- `docs check` → Validiert Docs-Freshness vs. Code
-- `docs adr` → Erstellt neues ADR in docs/decisions/
+**Documentation modes:**
+- `docs update` → Scans the codebase, updates all docs
+- `docs check` → Validates docs freshness vs. code
+- `docs adr` → Creates new ADR in docs/decisions/
 
-**Typische Befehle:**
+**Typical commands:**
 ```
 "Analyze the codebase architecture"
 "Compare React vs Vue for our use case"
@@ -507,58 +507,58 @@ Das Ergebnis ist ein Spec-Ordner mit plan.md, shape.md, references.md und standa
 
 ---
 
-### 5.9 innovator — Die Idea Forge
+### 5.9 innovator — The Idea Forge
 
 **Identity:** Creative, curious, unbound by "how it's always been done."
 
-**Wann:** Brainstorming, Ideen entwickeln, "Was wäre wenn?", Idea Backlog verwalten.
+**When:** Brainstorming, developing ideas, "What if?", managing the idea backlog.
 
 **Tools:** Read, Write, Grep, Glob, WebSearch, WebFetch, serena
 
-**Access:** READ-ONLY für Code, WRITE für workflow/ideas.md
+**Access:** READ-ONLY for code, WRITE for workflow/ideas.md
 
-**4 Modi:**
+**4 Modes:**
 
-| Modus | Command | Was passiert |
+| Mode | Command | What happens |
 |-------|---------|-------------|
-| Default | `/cwe:innovator` | Zeigt aktuelle Projekt-Ideen |
-| All | `/cwe:innovator all` | Cross-Project Ideen-Übersicht |
-| Review | `/cwe:innovator review` | Interaktiver Triage: Keep/Develop/Reject |
-| Develop | `/cwe:innovator develop <idea>` | Deep-Dive auf eine Idee (SCAMPER) |
+| Default | `/cwe:innovator` | Shows current project ideas |
+| All | `/cwe:innovator all` | Cross-project idea overview |
+| Review | `/cwe:innovator review` | Interactive triage: Keep/Develop/Reject |
+| Develop | `/cwe:innovator develop <idea>` | Deep-dive on an idea (SCAMPER) |
 
 **Ideation Methodology:** UNDERSTAND → DIVERGE (SCAMPER) → EXPLORE → CONVERGE → PRESENT
 
 ---
 
-### 5.10 guide — Der Process Whisperer
+### 5.10 guide — The Process Whisperer
 
 **Identity:** Sees patterns others miss. Reflective. Data-informed. Evolution-focused.
 
-**Wann:** Muster analysieren, Standards aus Code extrahieren, Workflow verbessern.
+**When:** Analyzing patterns, extracting standards from code, improving workflows.
 
 **Tools:** Read, Grep, Glob, serena (search_for_pattern, get_symbols_overview)
 
-**Access:** READ-ONLY + Schreibzugriff auf .claude/rules/
+**Access:** READ-ONLY + write access to .claude/rules/
 
-**2 Haupt-Modi:**
-- `discover` → Scannt Codebase für Muster, interviewt User, generiert `.claude/rules/`
-- `index` → Regeneriert `.claude/rules/_index.yml` mit Keyword-Detection
+**2 Main modes:**
+- `discover` → Scans the codebase for patterns, interviews the user, generates `.claude/rules/`
+- `index` → Regenerates `.claude/rules/_index.yml` with keyword detection
 
 **Evolution Methodology:** OBSERVE → ANALYZE → HYPOTHESIZE → PROPOSE → VALIDATE
 
-**Typische Befehle:**
+**Typical commands:**
 ```
-/cwe:guide discover          → Auto-Discovery aller Patterns
-/cwe:guide discover api      → Nur API-Patterns
-/cwe:guide index             → Standards-Index regenerieren
+/cwe:guide discover          → Auto-discovery of all patterns
+/cwe:guide discover api      → API patterns only
+/cwe:guide index             → Regenerate standards index
 /cwe:guide "analyze our workflow efficiency"
 ```
 
 ---
 
-## 6. Der Workflow: Von der Idee zum Feature
+## 6. Workflow: From Idea to Feature
 
-### Die 5 Phasen
+### The 5 Phases
 
 ```
 ┌─────────────────────────────────────────────────────────┐
@@ -575,97 +575,97 @@ Das Ergebnis ist ein Spec-Ordner mit plan.md, shape.md, references.md und standa
 
 ### Phase 1: Plan
 
-**Ziel:** Produktvision definieren.
+**Goal:** Define the product vision.
 
-**Datei:** `workflow/product/mission.md`
+**File:** `workflow/product/mission.md`
 
-Beantworte diese Fragen:
-- Was löst dieses Produkt? Für wen?
-- Was sind die Ziele?
-- Was sind die Non-Goals (was wir bewusst NICHT machen)?
-- Wie messen wir Erfolg?
+Answer these questions:
+- What does this product solve? For whom?
+- What are the goals?
+- What are the non-goals (what we deliberately do NOT do)?
+- How do we measure success?
 
 ### Phase 2: Spec (Shape-Spec Interview)
 
-**Ziel:** Feature-Scope präzise definieren, bevor Code geschrieben wird.
+**Goal:** Precisely define feature scope before any code is written.
 
-**Trigger:** `/cwe:architect shape` oder `/cwe:start` in der Spec-Phase.
+**Trigger:** `/cwe:architect shape` or `/cwe:start` in the spec phase.
 
-Der Architect führt ein strukturiertes Interview:
-1. **Scope:** Was ist IN Scope? Was ist OUT of Scope?
-2. **Komponenten:** Welche Dateien/Module sind betroffen?
-3. **Constraints:** Technische/Business Einschränkungen?
-4. **Standards:** Welche bestehenden Standards gelten?
-5. **Definition of Done:** Wann ist das Feature fertig?
+The Architect conducts a structured interview:
+1. **Scope:** What is IN Scope? What is OUT of Scope?
+2. **Components:** Which files/modules are affected?
+3. **Constraints:** Technical/business constraints?
+4. **Standards:** Which existing standards apply?
+5. **Definition of Done:** When is the feature complete?
 
-**Output:** Spec-Ordner `workflow/specs/YYYY-MM-DD-HHMM-<slug>/`
+**Output:** Spec folder `workflow/specs/YYYY-MM-DD-HHMM-<slug>/`
 ```
-├── plan.md          # Implementierungsplan + Task-Breakdown
-├── shape.md         # Scope, Entscheidungen, Constraints
-├── references.md    # Ähnlicher Code, Patterns, Prior Art
-├── standards.md     # Standards-Snapshot zum Zeitpunkt der Spec
-└── visuals/         # Mockups, Diagramme, Screenshots
+├── plan.md          # Implementation plan + task breakdown
+├── shape.md         # Scope, decisions, constraints
+├── references.md    # Similar code, patterns, prior art
+├── standards.md     # Standards snapshot at the time of the spec
+└── visuals/         # Mockups, diagrams, screenshots
 ```
 
 ### Phase 3: Tasks
 
-**Ziel:** Spec in implementierbare Aufgaben aufbrechen.
+**Goal:** Break the spec down into implementable tasks.
 
-Organisation-Modi:
-- **By Component** — Gruppiert nach Datei/Modul
-- **By Priority** — Kritische zuerst, Nice-to-have zuletzt
-- **By Dependency** — Build-Reihenfolge (A vor B)
+Organization modes:
+- **By Component** — Grouped by file/module
+- **By Priority** — Critical first, nice-to-have last
+- **By Dependency** — Build order (A before B)
 
 ### Phase 4: Build (Wave Execution)
 
-**Ziel:** Tasks parallel mit mehreren Agents implementieren.
+**Goal:** Implement tasks in parallel with multiple agents.
 
-**Wave Execution Algorithmus:**
-1. Alle pending Tasks laden
-2. Unblockierte Tasks filtern (keine offenen Dependencies)
-3. Wave bilden: bis zu 3 parallele Tasks
-4. Für jeden Task: Agent bestimmen, parallel ausführen
-5. Warten bis alle in der Wave fertig sind
-6. Nächste Wave starten bis keine Tasks mehr offen
+**Wave Execution Algorithm:**
+1. Load all pending tasks
+2. Filter unblocked tasks (no open dependencies)
+3. Form a wave: up to 3 parallel tasks
+4. For each task: determine the agent, execute in parallel
+5. Wait until all tasks in the wave are complete
+6. Start the next wave until no tasks remain
 
-**Beispiel:**
+**Example:**
 ```
-Wave 1 (3 Tasks parallel):
+Wave 1 (3 tasks in parallel):
   [builder] Task 1: Implement API endpoints ✓
   [devops]  Task 2: Setup Docker ✓
   [builder] Task 3: Add input validation ✓
 
-Wave 2 (1 Task, war blockiert durch Task 1):
+Wave 2 (1 task, was blocked by Task 1):
   [quality] Task 4: Write integration tests ✓
 
-Alle Tasks abgeschlossen.
+All tasks completed.
 ```
 
 ### Phase 5: Review
 
-**Ziel:** Qualität sicherstellen, bevor das Feature shipped wird.
+**Goal:** Ensure quality before the feature ships.
 
-Optionen nach Abschluss:
+Options after completion:
 - **Code Review** → Quality Agent
-- **Tests laufen lassen** → Quality Agent
-- **PR erstellen** → DevOps Agent
-- **Weitere Tasks hinzufügen** → Zurück zu Phase 4
+- **Run tests** → Quality Agent
+- **Create PR** → DevOps Agent
+- **Add more tasks** → Back to Phase 4
 
 ---
 
-## 7. Das Memory System
+## 7. The Memory System
 
-### Warum Memory?
+### Why Memory?
 
-**Problem:** Claude Code hat kein Langzeitgedächtnis zwischen Sessions. Jede neue Session startet bei Null — vergangene Entscheidungen, Patterns und Kontext sind verloren.
+**Problem:** Claude Code has no long-term memory between sessions. Every new session starts from zero — past decisions, patterns, and context are lost.
 
-**Lösung:** CWE's Memory System persistiert Wissen in strukturierten Dateien, die bei jedem Session-Start automatisch injiziert werden.
+**Solution:** CWE's Memory System persists knowledge in structured files that are automatically injected at every session start.
 
-### Die Memory-Architektur (Hub-and-Spoke)
+### The Memory Architecture (Hub-and-Spoke)
 
 ```
                     ┌──────────────┐
-                    │  MEMORY.md   │  ← Hub (max 200 Zeilen, immer geladen)
+                    │  MEMORY.md   │  ← Hub (max 200 lines, always loaded)
                     │   (Index)    │
                     └──────┬───────┘
                            │
@@ -679,100 +679,100 @@ Optionen nach Abschluss:
      └───────┘ └─────┘ └─────┘ └─────┘ └─────────┘
 ```
 
-### MEMORY.md — Der Hub
+### MEMORY.md — The Hub
 
-- **Max 200 Zeilen** (wird bei Session-Start komplett injiziert)
-- Enthält: Projekt-Name, Version, aktuelle Prioritäten, Key Decisions
-- Wird bei jeder Session aktualisiert
-- Fungiert als Index: "Für Details siehe decisions.md"
+- **Max 200 lines** (fully injected at session start)
+- Contains: project name, version, current priorities, key decisions
+- Updated every session
+- Serves as an index: "For details see decisions.md"
 
-### Daily Logs — Tägliche Protokolle
+### Daily Logs — Daily Protocols
 
-**Datei:** `memory/YYYY-MM-DD.md`
+**File:** `memory/YYYY-MM-DD.md`
 
 ```markdown
 # 2026-02-13
 
 ## 14:30 — Session Start
-- Goal: Memory System Upgrade planen
-- Context: CWE v0.4.1, alle Phasen abgeschlossen
+- Goal: Plan Memory System Upgrade
+- Context: CWE v0.4.1, all phases completed
 
 ## 14:45 — Design Decision
-- Decision: Daily Logs statt sessions.md
-- Rationale: Natürliche Zeitstruktur, keine Datei wächst unbegrenzt
+- Decision: Daily Logs instead of sessions.md
+- Rationale: Natural time structure, no file grows unbounded
 
 ## 16:00 — Session End
-- Done: Design complete, Plan geschrieben
-- Next: Phase 1 implementieren
+- Done: Design complete, plan written
+- Next: Implement Phase 1
 - Files changed: hooks/hooks.json, hooks/scripts/session-start.sh
 ```
 
-- **Append-only** — nur neue Einträge, nie existierende editieren
-- **Today + Yesterday** werden bei Session-Start injiziert
-- **Automatisch aufgeräumt** — Logs älter als 30 Tage werden gelöscht
+- **Append-only** — only new entries, never edit existing ones
+- **Today + Yesterday** are injected at session start
+- **Automatically cleaned up** — logs older than 30 days are deleted
 
-### project-context.md — Tech-Stack und Prioritäten
+### project-context.md — Tech Stack and Priorities
 
-- Beim `/cwe:init` automatisch geseedet (Tech-Stack-Erkennung)
-- Enthält: Sprache, Framework, Database, CI/CD, aktuelle Prioritäten
-- Wird on-demand gelesen, nicht bei jeder Session
+- Automatically seeded during `/cwe:init` (tech stack detection)
+- Contains: language, framework, database, CI/CD, current priorities
+- Read on demand, not at every session
 
 ### decisions.md — Architecture Decision Records
 
-Format pro Eintrag:
+Format per entry:
 ```markdown
-## ADR-001: JWT statt Session Cookies
+## ADR-001: JWT Instead of Session Cookies
 - **Date:** 2026-02-13
 - **Status:** Accepted
-- **Context:** SPA braucht stateless auth
-- **Decision:** JWT mit Refresh Token Rotation
+- **Context:** SPA needs stateless auth
+- **Decision:** JWT with Refresh Token Rotation
 - **Alternatives:** Session Cookies, OAuth2 PKCE
-- **Consequences:** Kein Server-Side Session Store nötig
+- **Consequences:** No server-side session store required
 ```
 
-### patterns.md — Erkannte Muster
+### patterns.md — Recognized Patterns
 
-Vom Guide-Agent entdeckte und dokumentierte Code-Patterns.
+Code patterns discovered and documented by the Guide agent.
 
 ### Memory MCP Server (v0.4.3)
 
-**Semantische Suche** über alle Memory-Dateien mit Hybrid Search:
+**Semantic search** across all memory files with Hybrid Search:
 
-| Tool | Beschreibung |
+| Tool | Description |
 |------|-------------|
-| `memory_search` | Semantische Suche: Query → relevante Snippets aus allen Memory-Dateien |
-| `memory_get` | Datei/Section lesen: Pfad → Content |
-| `memory_write` | Eintrag anhängen: Entry → Today's Daily Log |
-| `memory_status` | Index-Status: Dateien, Chunks, Freshness |
+| `memory_search` | Semantic search: Query → relevant snippets from all memory files |
+| `memory_get` | Read file/section: Path → Content |
+| `memory_write` | Append entry: Entry → Today's Daily Log |
+| `memory_status` | Index status: Files, chunks, freshness |
 
-**Wie die Hybrid Search funktioniert:**
-- **Vector Similarity** (70%): Semantische Ähnlichkeit via Embeddings
-- **BM25** (30%): Keyword-basierte Suche via SQLite FTS5
-- **Chunking:** ~400 Tokens pro Chunk, 80 Token Overlap
-- **Storage:** SQLite mit `sqlite-vec` Extension, lokal pro Projekt
+**How Hybrid Search works:**
+- **Vector Similarity** (70%): Semantic similarity via embeddings
+- **BM25** (30%): Keyword-based search via SQLite FTS5
+- **Chunking:** ~400 tokens per chunk, 80 token overlap
+- **Storage:** SQLite with `sqlite-vec` extension, local per project
 
-### Context Injection bei Session Start
+### Context Injection at Session Start
 
-Bei jedem Session-Start (via `session-start.sh`):
-1. `memory/MEMORY.md` komplett lesen (max 200 Zeilen)
-2. `memory/YYYY-MM-DD.md` (heute) lesen
-3. `memory/YYYY-MM-DD.md` (gestern) lesen
-4. Alles zusammen auf max 8000 Zeichen begrenzen
-5. Als `systemMessage` injizieren
+At every session start (via `session-start.sh`):
+1. Read `memory/MEMORY.md` in full (max 200 lines)
+2. Read `memory/YYYY-MM-DD.md` (today)
+3. Read `memory/YYYY-MM-DD.md` (yesterday)
+4. Cap everything at 8000 characters total
+5. Inject as `systemMessage`
 
 ### Pre-Compact Memory Save
 
-Wenn das Kontextfenster voll wird und Claude Code komprimiert, speichert der PreCompact-Hook vorher:
-- Aktuelle Arbeit in den Daily Log
-- MEMORY.md-Aktualisierung
+When the context window fills up and Claude Code compacts, the PreCompact hook saves beforehand:
+- Current work to the Daily Log
+- MEMORY.md update
 
 ---
 
-## 8. Das Standards System
+## 8. The Standards System
 
-### Wie Standards funktionieren
+### How Standards Work
 
-CWE nutzt Claude Code's native `.claude/rules/` mit `paths`-Frontmatter für auto-loaded Standards:
+CWE uses Claude Code's native `.claude/rules/` with `paths` frontmatter for auto-loaded standards:
 
 ```markdown
 ---
@@ -789,13 +789,13 @@ paths:
 ...
 ```
 
-Wenn du an einer Datei in `src/api/` arbeitest, werden die API-Standards automatisch geladen.
+When you work on a file in `src/api/`, the API standards are automatically loaded.
 
-### 8 eingebaute Standards
+### 8 Built-in Standards
 
 | Standard | Paths | Domain |
 |----------|-------|--------|
-| `global-standards.md` | `**/*` (immer) | Naming, Tech-Stack |
+| `global-standards.md` | `**/*` (always) | Naming, Tech Stack |
 | `api-standards.md` | `src/api/**`, `routes/**` | REST, Validation |
 | `frontend-standards.md` | `src/components/**`, `pages/**` | Components, State |
 | `database-standards.md` | `migrations/**`, `models/**` | Queries, Schema |
@@ -810,11 +810,11 @@ Wenn du an einer Datei in `src/api/` arbeitest, werden die API-Standards automat
 /cwe:guide discover
 ```
 
-Der Guide-Agent:
-1. Scannt die Codebase nach wiederkehrenden Patterns (>3x = Kandidat)
-2. Interviewt dich: "Ich habe bemerkt, du nutzt immer Pattern X. Warum? Soll das ein Standard werden?"
-3. Generiert `.claude/rules/<domain>-<pattern>.md` mit korrektem `paths` Frontmatter
-4. Aktualisiert `.claude/rules/_index.yml`
+The Guide agent:
+1. Scans the codebase for recurring patterns (>3x = candidate)
+2. Interviews you: "I noticed you always use pattern X. Why? Should this become a standard?"
+3. Generates `.claude/rules/<domain>-<pattern>.md` with correct `paths` frontmatter
+4. Updates `.claude/rules/_index.yml`
 
 ### Standards Indexing
 
@@ -822,12 +822,12 @@ Der Guide-Agent:
 /cwe:guide index
 ```
 
-Regeneriert den `_index.yml` aus allen vorhandenen `.claude/rules/*.md` Dateien:
-- Extrahiert `paths` Frontmatter
-- Identifiziert Keywords aus dem Content
-- Validiert dass keine Konflikte zwischen Rules bestehen
+Regenerates the `_index.yml` from all existing `.claude/rules/*.md` files:
+- Extracts `paths` frontmatter
+- Identifies keywords from the content
+- Validates that no conflicts exist between rules
 
-### _index.yml Struktur
+### _index.yml Structure
 
 ```yaml
 - file: global-standards.md
@@ -842,194 +842,194 @@ Regeneriert den `_index.yml` aus allen vorhandenen `.claude/rules/*.md` Dateien:
   priority: 80
 ```
 
-**Wichtig:** Paths müssen als YAML-Liste formatiert sein, NICHT als Comma-Separated String.
+**Important:** Paths must be formatted as a YAML list, NOT as a comma-separated string.
 
-### Eigene Standards erstellen
+### Creating Custom Standards
 
-1. Erstelle `.claude/rules/your-standard.md` mit `paths:` Frontmatter
-2. Laufe `/cwe:guide index` um den Index zu aktualisieren
-3. Oder nutze `/cwe:guide discover` für automatische Erkennung
+1. Create `.claude/rules/your-standard.md` with `paths:` frontmatter
+2. Run `/cwe:guide index` to update the index
+3. Or use `/cwe:guide discover` for automatic detection
 
 ---
 
-## 9. Hooks — Automatisierung im Hintergrund
+## 9. Hooks — Behind-the-Scenes Automation
 
-### Was sind Hooks?
+### What Are Hooks?
 
-Hooks sind Shell-Scripts und Prompts die automatisch auf Events reagieren. Sie laufen im Hintergrund — du merkst sie meist nicht, aber sie halten alles zusammen.
+Hooks are shell scripts and prompts that automatically react to events. They run in the background — you usually do not notice them, but they hold everything together.
 
-**Hook-Events in CWE:**
+**Hook events in CWE:**
 
-| Event | Wann | Hooks |
+| Event | When | Hooks |
 |-------|------|-------|
-| `SessionStart` | Session beginnt | Context Injection |
-| `Stop` | Session endet | Daily Log schreiben |
-| `PreCompact` | Kontext wird komprimiert | Memory sichern |
-| `UserPromptSubmit` | User schreibt etwas | Idea Observer |
-| `SubagentStop` | Agent fertig | Agent Logging |
-| `PreToolUse (Bash)` | Vor Bash-Kommando | Safety Gate, Commit Format, Branch Naming |
+| `SessionStart` | Session begins | Context Injection |
+| `Stop` | Session ends | Write Daily Log |
+| `PreCompact` | Context is being compacted | Save memory |
+| `UserPromptSubmit` | User writes something | Idea Observer |
+| `SubagentStop` | Agent finishes | Agent Logging |
+| `PreToolUse (Bash)` | Before Bash command | Safety Gate, Commit Format, Branch Naming |
 
 ### SessionStart: Context Injection
 
 **Script:** `hooks/scripts/session-start.sh`
 
-Bei jedem Session-Start:
-1. Liest MEMORY.md (max 200 Zeilen)
-2. Liest heute's Daily Log
-3. Liest gestrige's Daily Log
-4. Begrenzt auf 8000 Zeichen
-5. Injiziert als `systemMessage`
+At every session start:
+1. Reads MEMORY.md (max 200 lines)
+2. Reads today's Daily Log
+3. Reads yesterday's Daily Log
+4. Caps at 8000 characters
+5. Injects as `systemMessage`
 
-Du bekommst dadurch immer den aktuellen Projekt-Kontext, ohne manuell Dateien öffnen zu müssen.
+This ensures you always have the current project context without manually opening files.
 
 ### Stop: Memory Flush + Daily Log
 
-Drei Hooks laufen sequentiell beim Session-Ende:
+Three hooks run sequentially at session end:
 
-**1. Prompt-Hook:** Fordert Claude auf, MEMORY.md und den Daily Log zu aktualisieren (Dokumentations-Checkliste).
+**1. Prompt Hook:** Instructs Claude to update MEMORY.md and the Daily Log (documentation checklist).
 
 **2. Script:** `hooks/scripts/session-stop.sh`
-- Erstellt `memory/YYYY-MM-DD.md` falls nicht vorhanden
-- Hängt Session-End Timestamp an
-- Räumt Daily Logs älter als 30 Tage auf
+- Creates `memory/YYYY-MM-DD.md` if it does not exist
+- Appends session-end timestamp
+- Cleans up Daily Logs older than 30 days
 
 **3. Script:** `hooks/scripts/idea-flush.sh`
-- Zählt erfasste Ideen des aktuellen Projekts
-- Zeigt Anzahl unreviewed Ideas als systemMessage
-- Erinnert an `/cwe:innovator` für Review
+- Counts captured ideas for the current project
+- Displays the number of unreviewed ideas as systemMessage
+- Reminds about `/cwe:innovator` for review
 
 ### PreCompact: Memory Save
 
-**Prompt-Hook:** Wenn Claude's Kontextfenster voll wird, werden ältere Nachrichten komprimiert. Vorher sichert dieser Hook den aktuellen Stand in den Daily Log.
+**Prompt Hook:** When Claude's context window fills up, older messages are compacted. Before that happens, this hook saves the current state to the Daily Log.
 
 ### UserPromptSubmit: Idea Observer
 
 **Script:** `hooks/scripts/idea-observer.sh`
 
-Scannt jede User-Nachricht auf Idea-Keywords:
-- Deutsch: idee, was wäre wenn, könnte man, vielleicht, alternativ, verbesserung
+Scans every user message for idea keywords:
+- German: idee, was wäre wenn, könnte man, vielleicht, alternativ, verbesserung
 - English: idea, what if, could we, maybe, alternative, improvement
 
-Match → JSONL-Entry in `~/.claude/cwe/ideas/<project-slug>.jsonl`
+Match → JSONL entry in `~/.claude/cwe/ideas/<project-slug>.jsonl`
 
 ### SubagentStop: Agent Logging
 
 **Script:** `hooks/scripts/subagent-stop.sh`
 
-Loggt Agent-Ausführungen für Observability:
-- Welcher Agent lief?
-- Wann?
-- Ergebnis-Status
+Logs agent executions for observability:
+- Which agent ran?
+- When?
+- Result status
 
 ### PreToolUse: Safety Gate
 
 **Script:** `hooks/scripts/safety-gate.sh`
 
-Triggert auf: `git commit`, `git push`, `git add -A`
+Triggers on: `git commit`, `git push`, `git add -A`
 
-**Scannt für:**
+**Scans for:**
 - API Keys (sk-*, AKIA*, ghp_*, xoxb-*)
 - Private Keys (-----BEGIN.*PRIVATE KEY-----)
 - Hardcoded Passwords (password=, secret=)
-- Database URLs mit Credentials
-- .env Dateien
-- Zertifikate (.pem, .key, .pfx)
+- Database URLs with credentials
+- .env files
+- Certificates (.pem, .key, .pfx)
 
-**Exit Codes:** 0 = safe, 2 = BLOCKED (mit Report)
+**Exit Codes:** 0 = safe, 2 = BLOCKED (with report)
 
 ### PreToolUse: Commit Format
 
 **Script:** `hooks/scripts/commit-format.sh`
 
-Validiert Conventional Commit Format:
+Validates Conventional Commit format:
 ```
 <type>(<scope>): <subject>
 ```
 
-Types: feat, fix, chore, docs, style, refactor, test, perf, ci, build, revert
+Allowed types: feat, fix, chore, docs, style, refactor, test, perf, ci, build, revert
 
 ### PreToolUse: Branch Naming
 
 **Script:** `hooks/scripts/branch-naming.sh`
 
-Validiert Branch-Namensformat:
+Validates branch name format:
 - `feature/<description>`, `fix/<description>`, `hotfix/<description>`
 - `chore/<description>`, `release/<version>`
-- `main`, `develop` (erlaubt)
+- `main`, `develop` (allowed)
 
-### Wie der Kreis sich schließt
+### How the Circle Closes
 
 ```
 Session Start
     │
-    ├── session-start.sh → MEMORY.md + Daily Logs injiziert
+    ├── session-start.sh → MEMORY.md + Daily Logs injected
     │
     ▼
-User arbeitet
+User works
     │
-    ├── idea-observer.sh → Ideen erfasst
-    ├── safety-gate.sh → Commits geprüft
-    ├── commit-format.sh → Format validiert
-    ├── branch-naming.sh → Branch validiert
-    ├── subagent-stop.sh → Agents geloggt
-    │
-    ▼
-Context wird voll
-    │
-    ├── PreCompact Hook → Memory gesichert
+    ├── idea-observer.sh → Ideas captured
+    ├── safety-gate.sh → Commits checked
+    ├── commit-format.sh → Format validated
+    ├── branch-naming.sh → Branch validated
+    ├── subagent-stop.sh → Agents logged
     │
     ▼
-Session endet
+Context fills up
     │
-    ├── Stop Prompt → MEMORY.md + Daily Log aktualisiert
+    ├── PreCompact Hook → Memory saved
+    │
+    ▼
+Session ends
+    │
+    ├── Stop Prompt → MEMORY.md + Daily Log updated
     ├── session-stop.sh → Timestamp + Cleanup
     │
     ▼
-Nächste Session
+Next Session
     │
-    └── session-start.sh → Alles wieder injiziert ← ─ ─ Kreislauf
+    └── session-start.sh → Everything injected again ← ─ ─ Cycle
 ```
 
 ---
 
-## 10. Das Idea System
+## 10. The Idea System
 
-### Automatische Capture
+### Automatic Capture
 
-Jede User-Nachricht wird durch den `idea-observer.sh` Hook gescannt. Enthält sie bestimmte Keywords, wird automatisch ein Eintrag erstellt:
+Every user message is scanned by the `idea-observer.sh` hook. If it contains certain keywords, an entry is automatically created:
 
 **Keywords (DE):** idee, was wäre wenn, könnte man, vielleicht, alternativ, verbesserung
 **Keywords (EN):** idea, what if, could we, maybe, alternative, improvement
 
 ### JSONL Format
 
-Ideen werden per Projekt gespeichert: `~/.claude/cwe/ideas/<project-slug>.jsonl`
+Ideas are stored per project: `~/.claude/cwe/ideas/<project-slug>.jsonl`
 
 ```json
 {"ts":"2026-02-13T14:30:00Z","prompt":"was wäre wenn wir GraphQL statt REST nutzen?","project":"my-app","keywords":["was wäre wenn"],"status":"raw"}
 ```
 
-### 4 Modi des Innovator-Agents
+### 4 Modes of the Innovator Agent
 
-| Modus | Command | Beschreibung |
+| Mode | Command | Description |
 |-------|---------|-------------|
-| **Default** | `/cwe:innovator` | Zeigt neue Observations + Backlog-Status für aktuelles Projekt |
-| **All** | `/cwe:innovator all` | Cross-Project Übersicht, zeigt transferierbare Ideen |
-| **Review** | `/cwe:innovator review` | Interaktiver Triage: Keep / Develop / Reject pro Observation |
-| **Develop** | `/cwe:innovator develop <idea>` | Deep-Dive mit SCAMPER-Methodik |
+| **Default** | `/cwe:innovator` | Shows new observations + backlog status for the current project |
+| **All** | `/cwe:innovator all` | Cross-project overview, shows transferable ideas |
+| **Review** | `/cwe:innovator review` | Interactive triage: Keep / Develop / Reject per observation |
+| **Develop** | `/cwe:innovator develop <idea>` | Deep-dive with SCAMPER methodology |
 
-### Von der Idee zum Feature
+### From Idea to Feature
 
 ```
-Casual remark → Idea Observer erfasst
+Casual remark → Idea Observer captures it
     ↓
 /cwe:innovator review → Triage: Keep/Develop/Reject
     ↓
 /cwe:innovator develop <idea> → SCAMPER Deep-Dive
     ↓
-User entscheidet → Status: "planned"
+User decides → Status: "planned"
     ↓
-/cwe:architect shape → Spec erstellen
+/cwe:architect shape → Create spec
     ↓
 /cwe:start → Build Phase
 ```
@@ -1038,52 +1038,52 @@ User entscheidet → Status: "planned"
 
 ## 11. Skills — Progressive Disclosure
 
-Skills sind spezialisierte Anleitungen, die Agents bei bestimmten Aufgaben unterstützen. Sie werden im Agent-Frontmatter referenziert.
+Skills are specialized instructions that support agents with specific tasks. They are referenced in the agent frontmatter.
 
 ### auto-delegation
 
-**Datei:** `skills/auto-delegation/SKILL.md`
+**File:** `skills/auto-delegation/SKILL.md`
 
-Das Herzstück von CWE. Enthält den kompletten Decision Flow, Keyword-Tabellen und Context-Injection-Regeln für Auto-Delegation von User-Requests zu Agents und Plugin-Skills.
+The heart of CWE. Contains the complete decision flow, keyword tables, and context injection rules for auto-delegation of user requests to agents and plugin skills.
 
 ### agent-detection
 
-**Datei:** `skills/agent-detection/SKILL.md`
+**File:** `skills/agent-detection/SKILL.md`
 
-Wie auto-delegation, aber für die Build-Phase: Erkennt welcher Agent für einen strukturierten Task zuständig ist (nicht für freie User-Requests).
+Similar to auto-delegation, but for the build phase: detects which agent is responsible for a structured task (not for free-form user requests).
 
 ### quality-gates
 
-**Datei:** `skills/quality-gates/SKILL.md`
+**File:** `skills/quality-gates/SKILL.md`
 
-Definiert die 3 Quality Gates:
-1. **Pre-Implementation:** Architect prüft Spec
-2. **Post-Implementation:** Quality prüft Code, Tests, Coverage
-3. **Pre-Release:** Security prüft auf Vulnerabilities
+Defines the 3 Quality Gates:
+1. **Pre-Implementation:** Architect reviews the spec
+2. **Post-Implementation:** Quality checks code, tests, coverage
+3. **Pre-Release:** Security checks for vulnerabilities
 
 ### safety-gate
 
-**Datei:** `skills/safety-gate/SKILL.md`
+**File:** `skills/safety-gate/SKILL.md`
 
-Pre-Commit Scanning für Secrets, Credentials, PII. Beschreibt welche Patterns gescannt werden und wie Remediation funktioniert.
+Pre-commit scanning for secrets, credentials, PII. Describes which patterns are scanned and how remediation works.
 
 ### git-standards
 
-**Datei:** `skills/git-standards/SKILL.md`
+**File:** `skills/git-standards/SKILL.md`
 
-Conventional Commits Format, Branch Naming Patterns, Auto-Generated Release Notes. Referenziert von den PreToolUse Hooks.
+Conventional Commits format, branch naming patterns, auto-generated release notes. Referenced by the PreToolUse hooks.
 
 ### health-dashboard
 
-**Datei:** `skills/health-dashboard/SKILL.md`
+**File:** `skills/health-dashboard/SKILL.md`
 
-Definiert den Project Health Score (0-100) aus 5 Kategorien: Code Quality (25%), Dependencies (20%), Documentation (20%), Git Health (20%), Security (15%).
+Defines the Project Health Score (0-100) across 5 categories: Code Quality (25%), Dependencies (20%), Documentation (20%), Git Health (20%), Security (15%).
 
 ### project-docs
 
-**Datei:** `skills/project-docs/SKILL.md`
+**File:** `skills/project-docs/SKILL.md`
 
-Generierung und Pflege von Projekt-Dokumentation: README, ARCHITECTURE, API, SETUP. Inklusive Tech-Stack Auto-Detection und Docs Freshness Check.
+Generation and maintenance of project documentation: README, ARCHITECTURE, API, SETUP. Includes tech stack auto-detection and docs freshness check.
 
 ---
 
@@ -1091,19 +1091,19 @@ Generierung und Pflege von Projekt-Dokumentation: README, ARCHITECTURE, API, SET
 
 ### Pre-Implementation Gate
 
-**Trigger:** Bevor Code geschrieben wird.
+**Trigger:** Before code is written.
 **Agent:** Architect
-**Prüft:**
-- Ist der Spec vollständig? (plan.md + shape.md)
-- Sind betroffene Komponenten identifiziert?
-- Gibt es eine Definition of Done?
-- Sind Standards referenziert?
+**Checks:**
+- Is the spec complete? (plan.md + shape.md)
+- Are affected components identified?
+- Is there a Definition of Done?
+- Are standards referenced?
 
 ### Post-Implementation Gate
 
-**Trigger:** Nach Code-Completion.
+**Trigger:** After code completion.
 **Agent:** Quality
-**Prüft:**
+**Checks:**
 
 | Metric | Minimum | Blocks |
 |--------|---------|--------|
@@ -1115,25 +1115,25 @@ Generierung und Pflege von Projekt-Dokumentation: README, ARCHITECTURE, API, SET
 
 ### Pre-Release Gate
 
-**Trigger:** Vor `git push` oder Release.
+**Trigger:** Before `git push` or release.
 **Agent:** Security + Safety Gate Hook
-**Prüft:**
-- Keine Secrets im Code
-- Keine bekannten CVEs in Dependencies
-- .gitignore vollständig
-- OWASP Top 10 Compliance
+**Checks:**
+- No secrets in code
+- No known CVEs in dependencies
+- .gitignore is complete
+- OWASP Top 10 compliance
 
 ### Health Score
 
-Der `/cwe:quality health` Command berechnet einen Gesamt-Score:
+The `/cwe:quality health` command calculates an overall score:
 
-| Kategorie | Gewichtung | Scoring |
+| Category | Weight | Scoring |
 |-----------|-----------|---------|
-| Code Quality | 25% | Coverage >80% = voll, -2 pro % darunter |
-| Dependencies | 20% | 0 vulnerable = voll, -10 pro Vulnerability |
-| Documentation | 20% | Alle aktuell = voll, -5 pro stale Doc |
-| Git Health | 20% | CC >95% + clean tree = voll |
-| Security | 15% | Clean Scan + complete .gitignore = voll |
+| Code Quality | 25% | Coverage >80% = full, -2 per % below |
+| Dependencies | 20% | 0 vulnerable = full, -10 per vulnerability |
+| Documentation | 20% | All current = full, -5 per stale doc |
+| Git Health | 20% | CC >95% + clean tree = full |
+| Security | 15% | Clean scan + complete .gitignore = full |
 
 | Score | Rating |
 |-------|--------|
@@ -1144,23 +1144,23 @@ Der `/cwe:quality health` Command berechnet einen Gesamt-Score:
 
 ---
 
-## 13. Projekt-Struktur Reference
+## 13. Project Structure Reference
 
-### CWE Plugin-Struktur
+### CWE Plugin Structure
 
 ```
 claude-workflow-engine/
-├── agents/                     # 10 spezialisierte Agents
-│   ├── ask.md                  # Diskussions-Partner (READ-ONLY)
-│   ├── architect.md            # System-Denker (READ-ONLY + specs/)
-│   ├── builder.md              # Code Coroner (voller Zugriff)
-│   ├── devops.md               # Infrastruktur-Experte (voller Zugriff)
-│   ├── explainer.md            # Erklärer (READ-ONLY)
+├── agents/                     # 10 specialized agents
+│   ├── ask.md                  # Discussion Partner (READ-ONLY)
+│   ├── architect.md            # Systems Thinker (READ-ONLY + specs/)
+│   ├── builder.md              # Code Coroner (full access)
+│   ├── devops.md               # Infrastructure Expert (full access)
+│   ├── explainer.md            # Educator (READ-ONLY)
 │   ├── guide.md                # Process Whisperer (READ-ONLY + rules/)
 │   ├── innovator.md            # Idea Forge (READ-ONLY + ideas.md)
 │   ├── quality.md              # Quality Guardian (READ-ONLY + tests)
 │   ├── researcher.md           # Analyst (READ-ONLY + docs/)
-│   └── security.md             # Security-Prüfer (RESTRICTED)
+│   └── security.md             # Security Auditor (RESTRICTED)
 │
 ├── commands/                   # 13 Slash Commands
 │   ├── help.md                 # /cwe:help
@@ -1186,8 +1186,8 @@ claude-workflow-engine/
 │   ├── health-dashboard/SKILL.md
 │   └── project-docs/SKILL.md
 │
-├── hooks/                      # Automatisierung
-│   ├── hooks.json              # Hook-Konfiguration
+├── hooks/                      # Automation
+│   ├── hooks.json              # Hook configuration
 │   └── scripts/
 │       ├── session-start.sh    # Context Injection
 │       ├── session-stop.sh     # Daily Log + Cleanup
@@ -1199,7 +1199,7 @@ claude-workflow-engine/
 │       └── branch-naming.sh    # Branch Validation
 │
 ├── .claude/rules/              # 8 Standards + Index
-│   ├── _index.yml              # Standard-Index
+│   ├── _index.yml              # Standard Index
 │   ├── global-standards.md
 │   ├── api-standards.md
 │   ├── frontend-standards.md
@@ -1209,131 +1209,131 @@ claude-workflow-engine/
 │   ├── agent-standards.md
 │   └── documentation-standards.md
 │
-├── templates/                  # Vorlagen
-│   ├── memory/                 # 6 Memory-Templates
-│   ├── specs/                  # 4 Spec-Templates (plan, shape, references, standards)
-│   └── docs/                   # 7 Doc-Templates (README, ARCHITECTURE, API, etc.)
+├── templates/                  # Templates
+│   ├── memory/                 # 6 Memory templates
+│   ├── specs/                  # 4 Spec templates (plan, shape, references, standards)
+│   └── docs/                   # 7 Doc templates (README, ARCHITECTURE, API, etc.)
 │
-├── docs/                       # Plugin-Dokumentation
-│   ├── USER-GUIDE.md           # Diese Datei
+├── docs/                       # Plugin documentation
+│   ├── USER-GUIDE.md           # This file
 │   ├── assets/
 │   │   ├── cwe-logo.svg
 │   │   └── cwe-header.svg
-│   └── plans/                  # Design-Dokumente
+│   └── plans/                  # Design documents
 │
-├── CLAUDE.md                   # Plugin-Konfiguration
+├── CLAUDE.md                   # Plugin configuration
 ├── README.md                   # GitHub README
 ├── CHANGELOG.md                # Version History
-└── ROADMAP.md                  # Geplante Features
+└── ROADMAP.md                  # Planned Features
 ```
 
-### Was CWE bei /cwe:init erstellt
+### What CWE Creates at /cwe:init
 
-Im Ziel-Projekt:
+In the target project:
 
 ```
 your-project/
 ├── workflow/
-│   ├── config.yml              # CWE Konfiguration
-│   ├── ideas.md                # Kuratierter Ideen-Backlog
+│   ├── config.yml              # CWE configuration
+│   ├── ideas.md                # Curated idea backlog
 │   ├── product/
-│   │   ├── README.md           # Erklärung
-│   │   └── mission.md          # Produktvision (DU schreibst das!)
+│   │   ├── README.md           # Explanation
+│   │   └── mission.md          # Product vision (YOU write this!)
 │   ├── specs/
-│   │   ├── README.md           # Erklärung Spec-Struktur
-│   │   └── YYYY-MM-DD-HHMM-<slug>/  # Pro Feature
+│   │   ├── README.md           # Explanation of spec structure
+│   │   └── YYYY-MM-DD-HHMM-<slug>/  # Per feature
 │   └── standards/
-│       └── README.md           # Erklärung
+│       └── README.md           # Explanation
 ├── memory/
 │   ├── MEMORY.md               # Index (auto-seeded)
 │   ├── YYYY-MM-DD.md           # Daily Logs (auto-created)
-│   ├── ideas.md                # Ideen-Übersicht
+│   ├── ideas.md                # Idea overview
 │   ├── decisions.md            # ADRs
-│   ├── patterns.md             # Erkannte Muster
-│   └── project-context.md      # Tech-Stack (auto-seeded!)
+│   ├── patterns.md             # Recognized patterns
+│   └── project-context.md      # Tech stack (auto-seeded!)
 ├── docs/
-│   ├── README.md               # Projekt-README (aus Template)
-│   ├── ARCHITECTURE.md         # Architektur
-│   ├── API.md                  # API-Docs
-│   ├── SETUP.md                # Setup-Anleitung
+│   ├── README.md               # Project README (from template)
+│   ├── ARCHITECTURE.md         # Architecture
+│   ├── API.md                  # API docs
+│   ├── SETUP.md                # Setup guide
 │   ├── DEVLOG.md               # Developer Journal
 │   └── decisions/
-│       └── _template.md        # ADR-Vorlage
-└── VERSION                     # z.B. "0.1.0"
+│       └── _template.md        # ADR template
+└── VERSION                     # e.g. "0.1.0"
 ```
 
 ---
 
 ## 14. FAQ / Troubleshooting
 
-### "CWE routet zum falschen Agent"
+### "CWE routes to the wrong agent"
 
-**Ursache:** Die Keywords in deiner Nachricht matchen einen anderen Agent als erwartet.
-
-**Fix:**
-1. Nutze den expliziten Command: `/cwe:builder "deine Aufgabe"` statt Auto-Delegation
-2. Sage "manual" um Auto-Delegation zu deaktivieren
-3. Prüfe die Keyword-Tabelle in [Section 4](#4-auto-delegation-verstehen)
-
-### "Memory wird nicht injiziert"
-
-**Ursache:** Mögliche Gründe:
-- `memory/` Verzeichnis existiert nicht → `/cwe:init` ausführen
-- `MEMORY.md` ist leer → Inhalt hinzufügen
-- Session-Start Hook fehlgeschlagen → `hooks.json` prüfen
+**Cause:** The keywords in your message match a different agent than expected.
 
 **Fix:**
-1. Prüfe ob `memory/MEMORY.md` existiert und Inhalt hat
-2. Prüfe ob `hooks/hooks.json` korrekt konfiguriert ist
-3. Manueller Test: `bash hooks/scripts/session-start.sh < /dev/null`
+1. Use the explicit command: `/cwe:builder "your task"` instead of Auto-Delegation
+2. Say "manual" to disable Auto-Delegation
+3. Check the keyword table in [Section 4](#4-understanding-auto-delegation)
 
-### "MCP Server startet nicht"
+### "Memory is not being injected"
 
-**Ursache:** Konfigurationsproblem in `.mcp.json`.
+**Cause:** Possible reasons:
+- `memory/` directory does not exist → run `/cwe:init`
+- `MEMORY.md` is empty → add content
+- Session-start hook failed → check `hooks.json`
 
 **Fix:**
-1. Prüfe `.mcp.json` Syntax (valides JSON?)
-2. Prüfe ob der Server-Befehl existiert: `which npx`
-3. Für cwe-memory: Stelle sicher dass `memory/` Verzeichnis existiert
-4. Starte Claude Code neu
+1. Check whether `memory/MEMORY.md` exists and has content
+2. Check whether `hooks/hooks.json` is correctly configured
+3. Manual test: `bash hooks/scripts/session-start.sh < /dev/null`
 
-### "Wie setze ich alles zurück?"
+### "MCP Server won't start"
 
-**Achtung:** Dies löscht CWE-Konfiguration im Projekt.
+**Cause:** Configuration problem in `.mcp.json`.
+
+**Fix:**
+1. Check `.mcp.json` syntax (valid JSON?)
+2. Check whether the server command exists: `which npx`
+3. For cwe-memory: ensure the `memory/` directory exists
+4. Restart Claude Code
+
+### "How do I reset everything?"
+
+**Warning:** This deletes CWE configuration in the project.
 
 ```bash
-# Nur CWE-Struktur entfernen (behält deinen Code):
+# Remove only CWE structure (keeps your code):
 rm -rf workflow/ memory/ docs/
 rm -f VERSION CHANGELOG.md
 
-# Dann neu initialisieren:
+# Then reinitialize:
 /cwe:init
 ```
 
-### "Safety Gate blockt meinen Commit"
+### "Safety Gate blocks my commit"
 
-**Ursache:** Der Pre-Commit Scanner hat ein potentielles Secret gefunden.
+**Cause:** The pre-commit scanner found a potential secret.
 
 **Fix:**
-1. Prüfe den Report — welche Datei, welche Zeile?
-2. Entferne das Secret und nutze Environment Variables statt dessen
-3. Falls False Positive: `git commit --no-verify` (wird geloggt!)
-4. Rotiere das Secret falls es bereits committed war
+1. Check the report — which file, which line?
+2. Remove the secret and use environment variables instead
+3. If false positive: `git commit --no-verify` (this is logged!)
+4. Rotate the secret if it was already committed
 
-### "Conventional Commit wird abgelehnt"
+### "Conventional Commit is rejected"
 
 **Format:** `type(scope): subject`
 
-**Erlaubte Types:** feat, fix, chore, docs, style, refactor, test, perf, ci, build, revert
+**Allowed types:** feat, fix, chore, docs, style, refactor, test, perf, ci, build, revert
 
-**Häufige Fehler:**
-- Großbuchstabe am Anfang: ~~`Fix: bug`~~ → `fix: bug`
-- Punkt am Ende: ~~`feat: add login.`~~ → `feat: add login`
-- Fehlender Type: ~~`fixed the bug`~~ → `fix: resolve login crash`
+**Common mistakes:**
+- Capital letter at the start: ~~`Fix: bug`~~ → `fix: bug`
+- Period at the end: ~~`feat: add login.`~~ → `feat: add login`
+- Missing type: ~~`fixed the bug`~~ → `fix: resolve login crash`
 
 ---
 
-## 15. Kreislauf-Diagramm: Wie alles zusammenhängt
+## 15. Lifecycle Diagram: How Everything Connects
 
 ```
 ┌───────────────────────────────────────────────────────────────────┐
@@ -1350,7 +1350,7 @@ rm -f VERSION CHANGELOG.md
 │  │ + Daily  │    │ gation       │    └────────┬─────────┘        │
 │  │ Logs     │    │      │       │             │                  │
 │  └──────────┘    │      ▼       │             │                  │
-│       ▲          │ Agent mit    │             │                  │
+│       ▲          │ Agent with   │             │                  │
 │       │          │ Standards    │             │                  │
 │       │          │      │       │             │                  │
 │       │          │      ▼       │             │                  │
@@ -1385,19 +1385,19 @@ rm -f VERSION CHANGELOG.md
 └───────────────────────────────────────────────────────────────────┘
 ```
 
-**Der Kreislauf:**
+**The Lifecycle:**
 
-1. **Session Start** → Memory injiziert (MEMORY.md + Daily Logs)
-2. **User Request** → Auto-Delegation routet zum passenden Agent
-3. **Agent arbeitet** → Standards auto-loaded, Skills verfügbar
-4. **Code geschrieben** → Safety Gate scannt, Commit Format validiert
-5. **Memory aktualisiert** → Daily Log, MEMORY.md, CHANGELOG
-6. **Session Stop** → Alles persistiert
-7. **Nächste Session** → Alles wieder da (→ Schritt 1)
+1. **Session Start** → Memory injected (MEMORY.md + Daily Logs)
+2. **User Request** → Auto-Delegation routes to the appropriate agent
+3. **Agent works** → Standards auto-loaded, skills available
+4. **Code written** → Safety Gate scans, Commit Format validated
+5. **Memory updated** → Daily Log, MEMORY.md, CHANGELOG
+6. **Session Stop** → Everything persisted
+7. **Next Session** → Everything is back (→ Step 1)
 
-Im Hintergrund laufen permanent:
-- **Idea Observer** erfasst jede Idee automatisch
-- **Safety Gate** prüft jeden Commit
-- **Agent Logger** trackt welche Agents liefen
+Running permanently in the background:
+- **Idea Observer** captures every idea automatically
+- **Safety Gate** checks every commit
+- **Agent Logger** tracks which agents ran
 
-Das ist CWE: Ein sich selbst dokumentierendes, sicherheitsbewusstes, spec-getriebenes Workflow-System, das mit jeder Session klüger wird.
+This is CWE: A self-documenting, security-aware, spec-driven workflow system that gets smarter with every session.
