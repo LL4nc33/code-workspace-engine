@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 # On session stop: Notify if new idea observations exist for CURRENT project
 
+# Consume stdin to prevent hook errors
+cat > /dev/null 2>&1
+
 # Determine project slug from $CLAUDE_PROJECT_DIR or PWD
 if [ -n "$CLAUDE_PROJECT_DIR" ]; then
   PROJECT_SLUG=$(basename "$CLAUDE_PROJECT_DIR" | tr '[:upper:]' '[:lower:]' | tr ' ' '-')

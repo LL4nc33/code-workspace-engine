@@ -3,8 +3,8 @@
 # Creates memory/YYYY-MM-DD.md if needed, appends session-end entry
 # Cleans up daily logs older than 30 days
 
-# Consume stdin to prevent hook errors
-cat > /dev/null 2>&1 &
+# Consume stdin to prevent hook errors (must be synchronous, no &)
+cat > /dev/null 2>&1
 
 # Determine project root
 if [ -n "$CLAUDE_PROJECT_DIR" ]; then

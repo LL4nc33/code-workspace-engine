@@ -3,10 +3,10 @@
 # Reads project memory (MEMORY.md + daily logs) for session continuity
 # Outputs JSON: {"systemMessage": "..."}
 
-# Consume stdin to prevent hook errors
-cat > /dev/null 2>&1 &
+# Consume stdin to prevent hook errors (must be synchronous, no &)
+cat > /dev/null 2>&1
 
-VERSION="Claude Workflow Engine v0.4.2"
+VERSION="Claude Workflow Engine v0.4.3"
 MAX_MEMORY_CHARS=8000
 MAX_MEMORY_LINES=200
 
