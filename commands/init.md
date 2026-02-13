@@ -54,6 +54,73 @@ claude plugin install <plugin-name>
 
 Show progress for each installation.
 
+## Step 1b: Check MCP Server Dependencies
+
+CWE and its agents work best with these MCP servers:
+
+| MCP Server | Purpose | Level |
+|------------|---------|-------|
+| playwright | Browser automation, E2E testing, screenshots | Recommended |
+| context7 | Up-to-date library docs via Context7 | Recommended |
+| github | GitHub API integration (PRs, issues, repos) | Recommended |
+| filesystem | Direct filesystem access for agents | Optional |
+| sequential-thinking | Step-by-step reasoning for complex tasks | Optional |
+
+### Check installed MCP servers
+
+Run this command to list currently configured MCP servers:
+```bash
+claude mcp list 2>/dev/null || echo 'No MCP servers configured'
+```
+
+### Compare with recommended servers
+
+Check which of the recommended servers are already configured.
+
+### If MCP servers are missing
+
+Use AskUserQuestion to ask the user:
+
+**Question:** "Some recommended MCP servers are missing. Install them?"
+
+**Options:**
+1. "Install all recommended" - Install playwright, context7, github
+2. "Install all (recommended + optional)" - Install all 5 servers
+3. "Let me pick" - Choose which to install
+4. "Skip" - Continue without MCP servers
+
+### Detect platform
+
+Before installing, detect the platform:
+```bash
+uname -s  # Linux, Darwin, MINGW/MSYS (Windows)
+```
+
+### Install commands per platform
+
+**Linux / macOS (default):**
+```bash
+claude mcp add playwright -- npx @playwright/mcp@latest --isolated --headless --no-sandbox
+claude mcp add context7 -- npx @upstash/context7-mcp
+claude mcp add github -- npx @modelcontextprotocol/server-github
+claude mcp add filesystem -- npx @modelcontextprotocol/server-filesystem
+claude mcp add sequential-thinking -- npx @modelcontextprotocol/server-sequential-thinking
+```
+
+**Windows (MINGW/MSYS/WSL with Windows host):**
+```bash
+# Playwright: remove --isolated --headless --no-sandbox flags (not supported on Windows)
+claude mcp add playwright -- npx @playwright/mcp@latest
+claude mcp add context7 -- npx @upstash/context7-mcp
+claude mcp add github -- npx @modelcontextprotocol/server-github
+claude mcp add filesystem -- npx @modelcontextprotocol/server-filesystem
+claude mcp add sequential-thinking -- npx @modelcontextprotocol/server-sequential-thinking
+```
+
+Show progress for each installation. If a server fails to install, warn but continue with the rest.
+
+---
+
 ## Step 2: Check existing workflow setup
 
 Check if `workflow/` already exists:
@@ -282,6 +349,13 @@ Documentation structure created:
   ├── API.md, SETUP.md, DEVLOG.md
   └── decisions/_template.md
   VERSION (0.1.0)
+
+MCP servers configured:
+  playwright (installed)
+  context7 (installed)
+  github (installed)
+  filesystem (skipped)
+  sequential-thinking (skipped)
 
 Next steps:
 1. Edit workflow/product/mission.md with your product vision
