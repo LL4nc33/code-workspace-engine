@@ -5,9 +5,9 @@ Natural language orchestration for spec-driven development and project lifecycle
 ## Installation
 
 ```bash
-claude plugin install cwe
-# Or local development:
-claude --plugin-dir /path/to/claude-workflow-engine
+# Clone and use as local plugin:
+git clone https://github.com/LL4nc33/claude-workflow-engine.git
+claude --plugin-dir ./claude-workflow-engine
 ```
 
 ## Quick Start
