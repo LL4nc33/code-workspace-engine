@@ -119,6 +119,24 @@ claude mcp add sequential-thinking -- npx @modelcontextprotocol/server-sequentia
 
 Show progress for each installation. If a server fails to install, warn but continue with the rest.
 
+## Step 1c: Build CWE Memory MCP Server
+
+Check if the CWE Memory MCP server needs building:
+
+```bash
+ls ${CLAUDE_PLUGIN_ROOT}/cwe-memory-mcp/dist/index.js 2>/dev/null
+```
+
+If `dist/index.js` does not exist, build it:
+
+```bash
+cd ${CLAUDE_PLUGIN_ROOT}/cwe-memory-mcp && npm install && npm run build
+```
+
+Report: "CWE Memory MCP server built — semantic search over memory/ active."
+
+If the build fails, warn but continue — the memory search will be unavailable but CWE works without it.
+
 ---
 
 ## Step 2: Check existing workflow setup
