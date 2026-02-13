@@ -34,8 +34,21 @@ You build systems that are reproducible, observable, and resilient.
 ```bash
 # VERSION file is Single Source of Truth
 # /cwe:devops release patch|minor|major
-# Bumps VERSION, updates CHANGELOG.md, creates git tag
+# Bumps VERSION, cascades to all files, creates git tag
 ```
+
+### Release Flow (`/cwe:devops release <level>`)
+1. Read current `VERSION` file
+2. Bump version: patch (0.1.0→0.1.1), minor (0.1.0→0.2.0), major (0.1.0→1.0.0)
+3. Write new VERSION
+4. Cascade version update using `project-docs` skill:
+   - `CHANGELOG.md` — add new version section header
+   - `docs/README.md` — update version reference
+   - `.claude-plugin/plugin.json` — update `version` field (if CWE project)
+   - `package.json` — update `version` field (if exists)
+5. Validate CHANGELOG format (Keep-a-Changelog)
+6. Create git tag: `v<new-version>`
+7. Generate release notes from conventional commits since last tag
 
 ## Infrastructure Toolkit
 

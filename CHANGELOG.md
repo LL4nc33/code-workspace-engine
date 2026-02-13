@@ -42,12 +42,18 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - plugin.json: version 0.4.1, simplified description
 - ROADMAP.md: Phase 1-6 marked as completed, summary table updated
 
-### Planned — Phase 7: Spec System + Project Documentation
-- Spec folder structure: `workflow/specs/YYYY-MM-DD-HHMM-<slug>/`
-- Shape-Spec Interview via `/cwe:architect shape`
-- docs/ scaffolding (README, ARCHITECTURE, API, SETUP, decisions/)
-- VERSION file as Single Source of Truth
-- Auto-README with GitHub HTML + SVG
+### Added — Spec System + Project Documentation (Phase 7)
+- Spec folder templates: `templates/specs/` (plan.md, shape.md, references.md, standards.md)
+- Shape-Spec Interview: `/cwe:architect shape` with structured interview flow
+- docs/ templates: `templates/docs/` (README, ARCHITECTURE, API, SETUP, DEVLOG, decisions/_template)
+- VERSION file template as Single Source of Truth for version strings
+- `skills/project-docs/SKILL.md`: README generation, docs freshness check, VERSION cascade
+- commands/architect.md: shape mode with 5-step interview + spec folder generation
+- commands/researcher.md: `docs update|check|adr` modes
+- commands/devops.md: `release patch|minor|major` mode with VERSION cascade
+- commands/init.md: docs/ scaffolding + VERSION in project structure
+- agents/researcher.md: expanded docs responsibilities with project-docs skill
+- agents/devops.md: release flow with VERSION SSOT + project-docs skill
 
 ### Planned — Phase 8: Pre-Commit Safety Gate
 - safety-gate.sh: secrets, PII, .gitignore validation

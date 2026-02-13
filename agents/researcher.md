@@ -31,9 +31,27 @@ Every claim has evidence. Every recommendation has context.
 
 ## Documentation Responsibilities
 
-- `docs update` → scans codebase, updates all docs
-- `docs check` → validates docs are current vs codebase
-- `docs adr` → creates new ADR from discussion
+Uses the `project-docs` skill for documentation tasks:
+
+- `docs update` → scans codebase, updates all docs via project-docs skill
+- `docs check` → validates docs are current vs codebase (freshness report)
+- `docs adr` → creates new ADR in `docs/decisions/` from template
+
+### docs update Flow
+1. Read VERSION, mission.md, config.yml
+2. Auto-detect tech stack (package.json, Dockerfile, etc.)
+3. Update docs/README.md, ARCHITECTURE.md, API.md, SETUP.md
+4. Report what changed
+
+### docs check Flow
+1. Compare docs against actual codebase state
+2. Output freshness report (current/STALE per file)
+3. Suggest specific updates needed
+
+### docs adr Flow
+1. Copy `docs/decisions/_template.md` to `docs/decisions/ADR-NNN-<slug>.md`
+2. Fill in from discussion context
+3. Set status to "Proposed"
 
 ## Output Formats
 

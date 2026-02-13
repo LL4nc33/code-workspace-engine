@@ -9,6 +9,26 @@ Delegate to the **researcher** agent for analysis and documentation work.
 
 **Usage:** `/cwe:researcher [task]`
 
+## Docs Mode ($ARGUMENTS starts with "docs")
+
+If user runs `/cwe:researcher docs [subcommand]`:
+
+- `docs update` → Delegate to researcher agent with project-docs skill: scan codebase, update all docs
+- `docs check` → Delegate to researcher agent: validate docs freshness, output report
+- `docs adr [topic]` → Delegate to researcher agent: create new ADR in docs/decisions/
+
+If no subcommand after "docs", use AskUserQuestion:
+```
+Question: "What docs task?"
+Header: "Docs"
+Options:
+  1. "Update all docs" - Scan codebase, refresh docs (Recommended)
+  2. "Check freshness" - Validate docs are current
+  3. "Create ADR" - New Architecture Decision Record
+```
+
+---
+
 ## Interactive Mode (no task provided)
 
 If user runs `/cwe:researcher` without a task, use AskUserQuestion:
@@ -17,11 +37,13 @@ If user runs `/cwe:researcher` without a task, use AskUserQuestion:
 Question: "What type of research?"
 Header: "Research"
 Options:
-  1. "Analyze codebase" - Understand patterns and structure
-  2. "Document" - Create documentation
+  1. "Documentation" - Update, check, or create docs (Recommended)
+  2. "Analyze codebase" - Understand patterns and structure
   3. "Compare options" - Evaluate alternatives
   4. "Generate report" - Create formal report
 ```
+
+If "Documentation" selected, follow the Docs Mode flow above.
 
 ### If "Analyze codebase":
 ```

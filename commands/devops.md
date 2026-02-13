@@ -9,6 +9,30 @@ Delegate to the **devops** agent for infrastructure work.
 
 **Usage:** `/cwe:devops [task]`
 
+## Release Mode ($ARGUMENTS starts with "release")
+
+If user runs `/cwe:devops release <level>`:
+
+Delegate to devops agent with release flow:
+1. Read current `VERSION` file
+2. Bump: `patch` (0.1.0→0.1.1), `minor` (0.1.0→0.2.0), `major` (0.1.0→1.0.0)
+3. Write new VERSION, cascade to all files (project-docs skill)
+4. Update CHANGELOG.md with new version section
+5. Create git tag `v<new-version>`
+6. Generate release notes from conventional commits
+
+If no level provided, use AskUserQuestion:
+```
+Question: "What type of release?"
+Header: "Release"
+Options:
+  1. "Patch" - Bug fixes (x.x.1)
+  2. "Minor" - New features (x.1.0)
+  3. "Major" - Breaking changes (1.0.0)
+```
+
+---
+
 ## Interactive Mode (no task provided)
 
 If user runs `/cwe:devops` without a task, use AskUserQuestion:

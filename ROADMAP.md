@@ -284,8 +284,9 @@ PreToolUse hooks for Safety Gate (Phase 8) and Git Standards (Phase 9) prepared 
 
 ---
 
-### Phase 7: Spec System + Project Documentation
+### Phase 7: Spec System + Project Documentation ✅
 
+**Status:** Completed — Spec folder templates, Shape-Spec Interview, docs/ scaffolding, project-docs skill, VERSION SSOT.
 **Goal:** Better specs (Agent-OS inspired) + consistent, auto-maintained documentation.
 
 #### 7a: Spec Folder Structure (inspired by Agent-OS)
@@ -574,7 +575,7 @@ Auto-generate `CODEOWNERS` from git history:
 | 4 | Memory & Idea System overhaul | ✅ Done | High (project-scoped fix) |
 | 5 | Delete redundant skills | ✅ Done | Medium (cleanup) |
 | 6 | Hooks modernization | ✅ Done | Medium (foundation) |
-| 7 | Spec system + Project docs | 🔜 Next | Very High (spec-driven core) |
+| 7 | Spec system + Project docs | ✅ Done | Very High (spec-driven core) |
 | 8 | Safety gate | 🔜 Next | Very High (security) |
 | 9 | Git standards | ⏳ Planned | High (consistency) |
 | 10 | Health dashboard | ⏳ Planned | High (visibility) |

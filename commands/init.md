@@ -73,7 +73,7 @@ workflow/
 │   ├── README.md          # What goes here
 │   └── mission.md         # Product vision template
 ├── specs/
-│   └── README.md          # How to write specs
+│   └── README.md          # How to write specs (folder-per-spec)
 └── standards/
     └── README.md          # Project-specific standards (optional)
 
@@ -84,9 +84,28 @@ memory/
 ├── decisions.md           # Project ADRs
 ├── patterns.md            # Recognized work patterns
 └── project-context.md     # Tech stack, priorities
+
+docs/
+├── README.md              # Project overview (auto-maintained)
+├── ARCHITECTURE.md        # System design, component overview
+├── API.md                 # Endpoint documentation (if applicable)
+├── SETUP.md               # Installation, dev environment
+├── DEVLOG.md              # Chronological developer journal
+└── decisions/
+    └── _template.md       # ADR template
+
+VERSION                    # Single Source of Truth for version (semver)
 ```
 
 Copy templates from `${CLAUDE_PLUGIN_ROOT}/templates/memory/` for all memory files.
+Copy templates from `${CLAUDE_PLUGIN_ROOT}/templates/docs/` for all docs files.
+Copy `${CLAUDE_PLUGIN_ROOT}/templates/docs/VERSION` to project root.
+
+**VERSION file rules:**
+- Plain text, single line, semver (e.g. `0.1.0`)
+- ALL other version references (plugin.json, package.json, CHANGELOG, README) read from here
+- `/cwe:devops release patch|minor|major` bumps VERSION and cascades
+- Never hardcode version strings anywhere else
 
 ## File contents
 
@@ -195,15 +214,20 @@ Feature specifications live here. Each feature gets its own folder.
 
 ```
 specs/
-├── feature-name/
-│   ├── spec.md       # Technical specification
-│   ├── tasks.md      # Implementation tasks
-│   └── progress.md   # Progress tracking
+├── YYYY-MM-DD-HHMM-feature-slug/
+│   ├── plan.md          # Implementation plan + task breakdown
+│   ├── shape.md         # Scope, decisions, constraints
+│   ├── references.md    # Similar code, patterns, prior art
+│   ├── standards.md     # Standards snapshot at spec time
+│   └── visuals/         # Mockups, diagrams, screenshots
 ```
+
+Folder naming is auto-generated: `YYYY-MM-DD-HHMM-<feature-slug>/`
 
 ## Creating a Spec
 
-Run `/cwe:start` and follow the guided workflow.
+- Run `/cwe:start` → Spec Phase → "Shape-Spec Interview" (recommended)
+- Or run `/cwe:architect shape` directly
 ```
 
 ### workflow/standards/README.md
@@ -229,13 +253,13 @@ Or add to `workflow/standards/` for project-specific conventions.
 Show completion summary:
 
 ```
-✓ CWE initialized successfully!
+CWE initialized successfully!
 
 Plugins:
-  ✓ superpowers (installed)
-  ✓ serena (installed)
-  ✓ feature-dev (installed)
-  ○ frontend-design (skipped)
+  superpowers (installed)
+  serena (installed)
+  feature-dev (installed)
+  frontend-design (skipped)
   ...
 
 Workflow structure created:
@@ -252,9 +276,17 @@ Memory structure created:
   ├── decisions.md, patterns.md
   └── project-context.md
 
+Documentation structure created:
+  docs/
+  ├── README.md, ARCHITECTURE.md
+  ├── API.md, SETUP.md, DEVLOG.md
+  └── decisions/_template.md
+  VERSION (0.1.0)
+
 Next steps:
 1. Edit workflow/product/mission.md with your product vision
 2. Run /cwe:start to begin guided development
+3. Use /cwe:architect shape for your first feature spec
 ```
 
 Adjust the plugin status based on what was actually installed/skipped.
