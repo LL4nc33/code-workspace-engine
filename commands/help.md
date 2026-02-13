@@ -10,7 +10,7 @@ Display comprehensive help for CWE and all installed plugins.
 ## Output
 
 ```markdown
-# CWE - Claude Workflow Engine v0.4.3
+# CWE - Code Workspace Engine v0.4.3
 
 Natural language orchestration for spec-driven development.
 

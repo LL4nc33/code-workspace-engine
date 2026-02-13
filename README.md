@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="docs/assets/cwe-header.svg" alt="Claude Workflow Engine" width="800">
+  <img src="docs/assets/cwe-header.svg" alt="Code Workspace Engine" width="800">
 
   <br><br>
 

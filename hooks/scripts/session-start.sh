@@ -6,7 +6,7 @@
 # Consume stdin to prevent hook errors (must be synchronous, no &)
 cat > /dev/null 2>&1
 
-VERSION="Claude Workflow Engine v0.4.3"
+VERSION="Code Workspace Engine v0.4.3"
 MAX_MEMORY_CHARS=8000
 MAX_MEMORY_LINES=200
 

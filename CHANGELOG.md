@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to the Claude Workflow Engine (CWE) will be documented in this file.
+All notable changes to the Code Workspace Engine (CWE) will be documented in this file.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).

@@ -1,6 +1,6 @@
 # CWE User Guide
 
-> Vollständige Dokumentation für das Claude Workflow Engine Plugin v0.4.3
+> Vollständige Dokumentation für das Code Workspace Engine Plugin v0.4.3
 
 ---
 
@@ -28,7 +28,7 @@
 
 ### Vision und Zweck
 
-CWE (Claude Workflow Engine) ist ein **Claude Code Plugin**, das eine einzelne KI-Assistenz in ein Team von 10 spezialisierten Agents verwandelt. Statt einem generischen Prompt, der alles erledigt, routet CWE deine Anfragen automatisch zum richtigen Experten mit dem passenden Kontext.
+CWE (Code Workspace Engine) ist ein **Claude Code Plugin**, das eine einzelne KI-Assistenz in ein Team von 10 spezialisierten Agents verwandelt. Statt einem generischen Prompt, der alles erledigt, routet CWE deine Anfragen automatisch zum richtigen Experten mit dem passenden Kontext.
 
 ### Warum Spec-Driven Development?
 

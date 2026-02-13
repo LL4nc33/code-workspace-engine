@@ -1,7 +1,7 @@
 {
   "name": "cwe",
   "version": "0.4.3",
-  "description": "Claude Workflow Engine - Natural language orchestration for spec-driven development with 10 specialized agents.",
+  "description": "Code Workspace Engine - Natural language orchestration for spec-driven development with 10 specialized agents.",
   "author": {
     "name": "LL4nc33",
     "url": "https://github.com/LL4nc33"

@@ -267,13 +267,13 @@ CWE-generated files (memory/, workflow/, docs/) should NOT be committed to the t
 Read the existing `.gitignore` (or create one if missing). Append the following block **only if the CWE marker comment is not already present**:
 
 ```bash
-grep -q '# CWE (Claude Workflow Engine)' .gitignore 2>/dev/null
+grep -q '# CWE (Code Workspace Engine)' .gitignore 2>/dev/null
 ```
 
 If the marker is NOT found, append:
 
 ```
-# CWE (Claude Workflow Engine)
+# CWE (Code Workspace Engine)
 memory/
 workflow/
 VERSION
