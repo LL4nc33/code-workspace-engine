@@ -21,10 +21,10 @@
 
 ```bash
 # 1. Clone the plugin
-git clone https://github.com/LL4nc33/claude-workflow-engine.git
+git clone https://github.com/LL4nc33/code-workspace-engine.git
 
 # 2. Set up the alias (add to ~/.bashrc or ~/.zshrc)
-alias cwe='claude --plugin-dir /path/to/claude-workflow-engine --dangerously-skip-permissions'
+alias cwe='claude --plugin-dir /path/to/code-workspace-engine --dangerously-skip-permissions'
 
 # 3. Start CWE in any project
 cd your-project && cwe

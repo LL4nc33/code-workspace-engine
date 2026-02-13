@@ -77,10 +77,10 @@ Each phase has clearly defined inputs and outputs. A feature is not "just built"
 
 ```bash
 # 1. Clone the plugin
-git clone https://github.com/LL4nc33/claude-workflow-engine.git
+git clone https://github.com/LL4nc33/code-workspace-engine.git
 
 # 2. Set up an alias (in ~/.bashrc or ~/.zshrc)
-alias cwe='claude --plugin-dir /path/to/claude-workflow-engine --dangerously-skip-permissions'
+alias cwe='claude --plugin-dir /path/to/code-workspace-engine --dangerously-skip-permissions'
 
 # 3. Restart terminal or source the file
 source ~/.bashrc
@@ -1149,7 +1149,7 @@ The `/cwe:quality health` command calculates an overall score:
 ### CWE Plugin Structure
 
 ```
-claude-workflow-engine/
+code-workspace-engine/
 ├── agents/                     # 10 specialized agents
 │   ├── ask.md                  # Discussion Partner (READ-ONLY)
 │   ├── architect.md            # Systems Thinker (READ-ONLY + specs/)
