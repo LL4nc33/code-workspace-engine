@@ -1,0 +1,246 @@
+---
+description: Initialize CWE in current project - creates workflow structure and checks plugin dependencies
+allowed-tools: ["Write", "Bash", "Read", "Glob", "AskUserQuestion"]
+---
+
+# Initialize CWE Project
+
+Create the workflow structure for spec-driven development and ensure all recommended plugins are installed.
+
+## Step 1: Check Plugin Dependencies
+
+CWE works best with these plugins installed:
+
+| Plugin | Purpose | Required |
+|--------|---------|----------|
+| superpowers | TDD, debugging, planning, code review | **Yes** |
+| serena | Semantic code analysis via LSP | Recommended |
+| feature-dev | 7-phase feature development | Recommended |
+| frontend-design | Production-grade UI components | Optional |
+| code-simplifier | Code cleanup and refactoring | Optional |
+| claude-md-management | CLAUDE.md maintenance | Optional |
+| plugin-dev | Plugin creation tools | Optional |
+
+### Check installed plugins
+
+Run this command to get installed plugins:
+```bash
+claude plugin list --json 2>/dev/null || echo '[]'
+```
+
+### Compare with required plugins
+
+Required: `superpowers`
+Recommended: `serena`, `feature-dev`
+Optional: `frontend-design`, `code-simplifier`, `claude-md-management`, `plugin-dev`
+
+### If plugins are missing
+
+Use AskUserQuestion to ask the user:
+
+**Question:** "Some recommended plugins are missing. Would you like to install them?"
+
+**Options:**
+1. "Install all missing" - Install all missing plugins
+2. "Install required only" - Install only superpowers (if missing)
+3. "Skip" - Continue without installing
+
+### Install missing plugins
+
+For each plugin to install, run:
+```bash
+claude plugin install <plugin-name>
+```
+
+Show progress for each installation.
+
+## Step 2: Check existing workflow setup
+
+Check if `workflow/` already exists:
+- If exists: Ask user if they want to reinitialize
+- If not: Proceed with creation
+
+## Step 3: Create structure
+
+Create the following structure:
+
+```
+workflow/
+├── README.md              # Overview of workflow system
+├── config.yml             # Project configuration
+├── ideas.md               # Ideas backlog for future development
+├── product/
+│   ├── README.md          # What goes here
+│   └── mission.md         # Product vision template
+├── specs/
+│   └── README.md          # How to write specs
+└── standards/
+    └── README.md          # Project-specific standards (optional)
+```
+
+## File contents
+
+### workflow/README.md
+```markdown
+# Workflow
+
+This directory contains your project's workflow artifacts.
+
+## Structure
+
+- `config.yml` - Project configuration
+- `ideas.md` - Ideas backlog for future development
+- `product/` - Product vision, goals, roadmap
+- `specs/` - Feature specifications
+- `standards/` - Project-specific coding standards (optional)
+
+## Quick Start
+
+Run `/cwe:start` to begin guided development.
+
+## Learn More
+
+Run `/cwe:help` for full documentation.
+```
+
+### workflow/config.yml
+```yaml
+# CWE Project Configuration
+version: "1.0"
+
+project:
+  name: "{{PROJECT_NAME}}"
+
+workflow:
+  phases:
+    - plan      # Define product vision
+    - spec      # Write feature specifications
+    - tasks     # Break into implementable tasks
+    - build     # Implement with agents
+    - review    # Quality gates and verification
+```
+
+### workflow/ideas.md
+```markdown
+# Ideas Backlog
+
+Collected ideas for future development.
+
+## Status Legend
+
+- **new** - Just captured, not yet reviewed
+- **exploring** - Being discussed/developed
+- **planned** - Approved for implementation
+- **rejected** - Decided against
+
+---
+
+## Ideas
+
+<!-- Ideas will be added here by the innovator agent -->
+```
+
+### workflow/product/README.md
+```markdown
+# Product
+
+Define your product's vision, goals, and constraints here.
+
+## Files
+
+- `mission.md` - Core vision and goals (required)
+- `roadmap.md` - Feature roadmap (optional)
+- `constraints.md` - Technical/business constraints (optional)
+```
+
+### workflow/product/mission.md
+```markdown
+# Product Mission
+
+## Vision
+
+[What problem does this product solve? Who is it for?]
+
+## Goals
+
+- [ ] Primary goal
+- [ ] Secondary goal
+
+## Non-Goals
+
+- What this product will NOT do
+
+## Success Metrics
+
+- How will you measure success?
+```
+
+### workflow/specs/README.md
+```markdown
+# Specifications
+
+Feature specifications live here. Each feature gets its own folder.
+
+## Structure
+
+```
+specs/
+├── feature-name/
+│   ├── spec.md       # Technical specification
+│   ├── tasks.md      # Implementation tasks
+│   └── progress.md   # Progress tracking
+```
+
+## Creating a Spec
+
+Run `/cwe:start` and follow the guided workflow.
+```
+
+### workflow/standards/README.md
+```markdown
+# Project Standards
+
+Add project-specific coding standards here.
+
+CWE includes built-in standards for common patterns. Add files here only for project-specific conventions.
+
+## Built-in Standards (via Skills)
+
+- API design patterns
+- Database conventions
+- Testing practices
+- Frontend components
+- Agent conventions
+
+## Adding Custom Standards
+
+Create `your-standard.md` with clear rules and examples.
+```
+
+## Step 4: Success message
+
+Show completion summary:
+
+```
+✓ CWE initialized successfully!
+
+Plugins:
+  ✓ superpowers (installed)
+  ✓ serena (installed)
+  ✓ feature-dev (installed)
+  ○ frontend-design (skipped)
+  ...
+
+Workflow structure created:
+  workflow/
+  ├── config.yml
+  ├── ideas.md
+  ├── product/mission.md
+  └── specs/
+
+Next steps:
+1. Edit workflow/product/mission.md with your product vision
+2. Run /cwe:start to begin guided development
+```
+
+Adjust the plugin status based on what was actually installed/skipped.

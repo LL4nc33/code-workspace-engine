@@ -1,0 +1,26 @@
+# Backups
+_backup/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/settings.json
+.idea/
+
+# Dependencies
+node_modules/
+__pycache__/
+.venv/
+
+# Environment
+.env*
+
+# Certificates/Keys
+*.pem
+*.key
+*.pfx
+
+# Claude Code local settings
+.claude/agent-memory-local/
