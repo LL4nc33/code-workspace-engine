@@ -1,6 +1,6 @@
 # CWE Roadmap
 
-## Current: v0.4.0a → v0.4.1
+## Completed: v0.4.0a → v0.4.1 (all 10 phases)
 
 ### Vision
 
@@ -503,8 +503,9 @@ Triggered by `/cwe:devops release`:
 
 ---
 
-### Phase 10: Project Health & Intelligence
+### Phase 10: Project Health & Intelligence ✅
 
+**Status:** Completed — health-dashboard skill, quality health mode, CODEOWNERS generation spec.
 **Goal:** Know the state of your project at a glance.
 
 #### 10a: Health Dashboard Skill
@@ -580,7 +581,7 @@ Auto-generate `CODEOWNERS` from git history:
 | 7 | Spec system + Project docs | ✅ Done | Very High (spec-driven core) |
 | 8 | Safety gate | ✅ Done | Very High (security) |
 | 9 | Git standards | ✅ Done | High (consistency) |
-| 10 | Health dashboard | ⏳ Planned | High (visibility) |
+| 10 | Health dashboard | ✅ Done | High (visibility) |
 
 ---
 

@@ -9,6 +9,17 @@ Delegate to the **quality** agent for QA work.
 
 **Usage:** `/cwe:quality [task]`
 
+## Health Mode ($ARGUMENTS contains "health")
+
+If user runs `/cwe:quality health`:
+
+Delegate to quality agent with health-dashboard skill:
+- Full project health report (code quality, deps, docs, git, security)
+- Health score (0-100) with rating
+- CODEOWNERS generation (optional)
+
+---
+
 ## Interactive Mode (no task provided)
 
 If user runs `/cwe:quality` without a task, use AskUserQuestion:
@@ -17,11 +28,13 @@ If user runs `/cwe:quality` without a task, use AskUserQuestion:
 Question: "What type of quality check?"
 Header: "QA Task"
 Options:
-  1. "Run tests" - Execute test suite
-  2. "Coverage analysis" - Check test coverage
-  3. "Code review" - Review recent changes
-  4. "Quality metrics" - Complexity, maintainability
+  1. "Project health" - Full health dashboard (Recommended)
+  2. "Run tests" - Execute test suite
+  3. "Coverage analysis" - Check test coverage
+  4. "Code review" - Review recent changes
 ```
+
+If "Project health" selected, follow the Health Mode flow above.
 
 ### If "Run tests":
 ```

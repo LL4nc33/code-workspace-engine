@@ -68,8 +68,13 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - PreToolUse hooks for commit-format.sh and branch-naming.sh
 - Auto-generated release notes spec (via /cwe:devops release)
 
-### Planned — Phase 10: Project Health Dashboard
-- Coverage, complexity, dependencies, docs, git health, security
+### Added — Project Health Dashboard (Phase 10)
+- `skills/health-dashboard/SKILL.md`: project health metrics (code quality, deps, docs, git, security)
+- Health score calculation (0-100) with rating system
+- CODEOWNERS auto-generation from git history
+- `/cwe:quality health` command mode
+- Quality agent: health dashboard integration
+- Guide agent: health insights for process improvement suggestions
 
 ---
 

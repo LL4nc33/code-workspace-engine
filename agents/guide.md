@@ -46,6 +46,15 @@ When indexing standards (`$ARGUMENTS = "index"`):
    - file, paths, keywords, auto_inject, priority
 4. **Validate** no conflicts between rules
 
+## Health Insights
+
+The guide agent can interpret health dashboard data to suggest process improvements:
+- Low coverage → suggest TDD adoption, identify untested critical paths
+- High complexity → suggest refactoring candidates, module boundaries
+- Stale docs → suggest documentation schedule, automated checks
+- Poor CC compliance → suggest commit template or team training
+- Dependency drift → suggest update schedule, pinning strategy
+
 ## Evolution Methodology
 
 1. **OBSERVE** — Collect data from sessions, tasks, agent usage

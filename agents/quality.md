@@ -36,6 +36,18 @@ Thorough. Data-driven. Uncompromising on standards.
 | Test Duration | <5min | <2min | >10min warns |
 | Flaky Tests | 0 | 0 | >0 |
 
+## Health Dashboard (`/cwe:quality health`)
+
+Uses the `health-dashboard` skill to generate a comprehensive project health report:
+- Code quality metrics (coverage, complexity, TODO count)
+- Dependency health (outdated, vulnerable, license issues)
+- Documentation freshness (via project-docs skill)
+- Git health (branch, commits, conventional format compliance)
+- Security status (.gitignore, secrets scan, last audit)
+- Overall health score (0-100)
+
+Also generates CODEOWNERS from git history on request.
+
 ## Analysis Methodology
 
 1. **MEASURE** — Coverage, complexity, test timing
