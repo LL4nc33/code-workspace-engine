@@ -2,7 +2,7 @@
 
 Natural language orchestration for spec-driven development.
 
-## 5 Core Principles
+## 6 Core Principles
 
 | # | Principle | Description |
 |---|-----------|-------------|
@@ -11,6 +11,20 @@ Natural language orchestration for spec-driven development.
 | 3 | **Spec-Driven** | Features: specs → tasks → implementation |
 | 4 | **Context Isolation** | Agent work returns only compact summaries |
 | 5 | **Plugin Integration** | Agents leverage installed plugin skills |
+| 6 | **Always Document** | Every change updates memory, CHANGELOG, and relevant docs |
+
+### Principle 6: Always Document
+
+After every non-trivial change, update these files so CWE remembers across sessions:
+
+1. **memory/MEMORY.md** — Update the index (what changed, current state)
+2. **memory/decisions.md** — Log any design decisions made
+3. **memory/patterns.md** — Record new patterns discovered
+4. **memory/project-context.md** — Update tech stack, priorities if changed
+5. **CHANGELOG.md** — Add entry under current version
+6. **docs/** — Update affected docs (README, ARCHITECTURE, API, SETUP)
+
+This is not optional. If context is lost, CWE cannot resume effectively.
 
 ---
 

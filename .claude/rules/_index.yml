@@ -45,3 +45,9 @@ standards:
     keywords: ["agent", "skill", "command", "hook", "delegation", "orchestration", "permission"]
     auto_inject: true
     priority: 2
+
+  - file: documentation-standards.md
+    paths: ["**/*"]
+    keywords: ["document", "memory", "changelog", "readme", "docs", "update docs", "remember"]
+    auto_inject: true
+    priority: 0  # Always loaded (same as global)

@@ -47,13 +47,14 @@ CWE is a **project lifecycle manager** built as a Claude Code plugin. It provide
 - **Memory System** — Hub-and-Spoke: MEMORY.md index + on-demand detail files
 - **Idea Capture** — project-scoped idea observation via JSONL
 
-## 5 Core Principles
+## 6 Core Principles
 
 1. **Agent-First** — All work delegated to specialized agents
 2. **Auto-Delegation** — Intent recognition maps requests to agents/skills
 3. **Spec-Driven** — Features: specs → tasks → implementation
 4. **Context Isolation** — Agent work returns only compact summaries
 5. **Plugin Integration** — Agents leverage installed plugin skills
+6. **Always Document** — Every change updates memory, CHANGELOG, and relevant docs
 
 ## Commands
 
