@@ -1,4 +1,4 @@
-# Claude Workflow Engine (CWE) v0.4.1
+# Claude Workflow Engine (CWE) v0.4.2
 
 Natural language orchestration for spec-driven development.
 

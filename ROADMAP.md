@@ -1,6 +1,14 @@
 # CWE Roadmap
 
-## Completed: v0.4.0a → v0.4.1 (all 10 phases)
+## Completed: v0.4.0a → v0.4.2
+
+### v0.4.2 — Memory System v2 (Phase 1)
+- Daily Logs (`memory/YYYY-MM-DD.md`) replace sessions.md
+- Context Injection: session-start.sh reads MEMORY.md + today + yesterday
+- Auto-Seeding: `/cwe:init` detects tech stack
+- Phase 2 (v0.4.3): CWE Memory MCP Server with vector search
+
+### v0.4.1 — Native Alignment (all 10 phases)
 
 ### Vision
 

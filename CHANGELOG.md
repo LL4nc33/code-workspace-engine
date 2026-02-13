@@ -7,6 +7,28 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.4.2] — 2026-02-13 (Memory System v2 — Phase 1)
+
+### Added — Daily Logs
+- Daily log files (`memory/YYYY-MM-DD.md`): append-only session context per day
+- `session-start.sh`: injects MEMORY.md + today + yesterday daily logs as systemMessage (max 8000 chars)
+- Auto-seeding: `/cwe:init` detects tech stack and populates memory/project-context.md + MEMORY.md
+- Daily log template: `templates/memory/daily-log.md` (format reference)
+- First daily log created automatically at `/cwe:init`
+- Old daily logs auto-cleaned after 30 days
+
+### Changed — Memory System
+- `session-stop.sh`: writes to daily logs instead of sessions.md
+- Stop hook prompt: references daily logs instead of sessions.md
+- PreCompact hook prompt: references daily logs instead of sessions.md
+- `documentation-standards.md`: daily log added to required memory updates checklist
+- `MEMORY.md` template: references daily logs, added Daily Logs section
+
+### Deprecated
+- `sessions.md`: replaced by daily logs (kept for backward compatibility)
+
+---
+
 ## [0.4.1] — 2026-02-13 (Native Alignment Release)
 
 ### Changed — Native Alignment (Phase 1-3)

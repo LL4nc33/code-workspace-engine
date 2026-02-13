@@ -1,4 +1,4 @@
-# CWE - Claude Workflow Engine v0.4.1
+# CWE - Claude Workflow Engine v0.4.2
 
 Natural language orchestration for spec-driven development and project lifecycle management.
 
@@ -44,7 +44,7 @@ CWE is a **project lifecycle manager** built as a Claude Code plugin. It provide
 - **Auto-Delegation** — describe what you need, CWE picks the right agent
 - **Spec-Driven Workflow** — Plan → Spec → Tasks → Build → Review
 - **Standards System** — `.claude/rules/` with path-scoped auto-loading + discovery
-- **Memory System** — Hub-and-Spoke: MEMORY.md index + on-demand detail files
+- **Memory System** — Daily Logs + MEMORY.md index, auto-injected at session start
 - **Idea Capture** — project-scoped idea observation via JSONL
 
 ## 6 Core Principles
@@ -101,12 +101,12 @@ your-project/
 │   ├── specs/              # Feature specifications (folder per spec)
 │   └── standards/          # Project-specific standards
 ├── memory/
-│   ├── MEMORY.md           # Index (200-line max, Hub-and-Spoke)
+│   ├── MEMORY.md           # Index (200-line max, auto-injected at start)
+│   ├── YYYY-MM-DD.md       # Daily logs (append-only, auto-injected)
 │   ├── ideas.md            # Idea backlog summary
-│   ├── sessions.md         # Session continuity log
 │   ├── decisions.md        # Project ADRs
 │   ├── patterns.md         # Recognized work patterns
-│   └── project-context.md  # Tech stack, priorities
+│   └── project-context.md  # Tech stack, priorities (auto-seeded)
 └── .claude/
     └── rules/              # Native Claude Code rules (paths-scoped)
 ```
@@ -124,7 +124,8 @@ your-project/
 See [CHANGELOG.md](CHANGELOG.md) for full history.
 See [ROADMAP.md](ROADMAP.md) for planned features and design decisions.
 
-- **0.4.1** (current) — Native alignment, memory system, idea system v2
+- **0.4.2** (current) — Memory System v2: daily logs, context injection, auto-seeding
+- **0.4.1** — Native alignment, memory system, idea system v2
 - **0.4.0a** — Plugin integration, skill cleanup, roadmap
 - **0.3.1** — Simplified commands, superpowers integration
 - **0.3.0** — Plugin structure created
