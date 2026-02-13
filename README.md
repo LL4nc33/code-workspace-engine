@@ -5,17 +5,26 @@ Natural language orchestration for spec-driven development and project lifecycle
 ## Installation
 
 ```bash
-# Clone and use as local plugin:
+# 1. Clone the plugin
 git clone https://github.com/LL4nc33/claude-workflow-engine.git
-claude --plugin-dir ./claude-workflow-engine
+
+# 2. Set up the alias (add to ~/.bashrc or ~/.zshrc)
+alias cwe='claude --plugin-dir /path/to/claude-workflow-engine --dangerously-skip-permissions'
+
+# 3. Start CWE in any project
+cd your-project
+cwe
 ```
+
+After adding the alias, restart your terminal or run `source ~/.bashrc`.
 
 ## Quick Start
 
 ```bash
-/cwe:init     # Initialize project + install recommended plugins
-/cwe:start    # Guided workflow with interactive menus
-/cwe:help     # Documentation
+cwe               # Start CWE in current directory
+/cwe:init         # Initialize project + install plugins + MCP servers
+/cwe:start        # Guided workflow with interactive menus
+/cwe:help         # Documentation
 ```
 
 Or just say what you need:
