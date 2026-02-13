@@ -5,7 +5,8 @@ paths:
   - "**/.github/**"
   - "**/terraform/**"
   - "**/k8s/**"
-  - "**/*.yml"
+  - "**/docker-compose*.yml"
+  - "**/.github/**/*.yml"
 ---
 
 # DevOps Standards
@@ -28,7 +29,3 @@ paths:
 - Encryption at rest and in transit
 - Monitoring: Prometheus + Grafana + OpenTelemetry
 
-## Reference
-- @workflow/standards/devops/ci-cd.md
-- @workflow/standards/devops/containerization.md
-- @workflow/standards/devops/infrastructure.md

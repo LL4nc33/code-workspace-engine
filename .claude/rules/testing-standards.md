@@ -36,5 +36,3 @@ paths:
 - Flaky test = broken test (fix immediately)
 - No real PII in test data
 
-## Reference
-- @workflow/standards/testing/coverage.md

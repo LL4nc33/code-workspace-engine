@@ -33,5 +33,3 @@ paths:
 - Encryption-at-rest for sensitive columns
 - EU-only data residency for new tables
 
-## Reference
-- @workflow/standards/database/migrations.md

@@ -37,6 +37,3 @@ throw new ValidationError('USER_EMAIL_INVALID', 'Email format is not valid', [
 ]);
 ```
 
-## Reference
-- @workflow/standards/api/response-format.md
-- @workflow/standards/api/error-handling.md

@@ -24,5 +24,3 @@ paths:
 - Specs folder as communication channel
 - Standards auto-loaded via rules system
 
-## Reference
-- @workflow/standards/agents/agent-conventions.md

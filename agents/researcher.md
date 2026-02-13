@@ -2,7 +2,7 @@
 name: researcher
 description: Analysis and documentation expert. Use PROACTIVELY when analyzing codebases, generating documentation, discovering patterns, extracting standards from existing code, or creating research reports.
 tools: Read, Grep, Glob, WebSearch, WebFetch, mcp__plugin_serena_serena__search_for_pattern, mcp__plugin_serena_serena__find_symbol, mcp__plugin_serena_serena__get_symbols_overview
-skills: []
+skills: [project-docs]
 memory: project
 ---
 

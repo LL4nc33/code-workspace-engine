@@ -25,13 +25,13 @@ Just say what you need. CWE routes to the right agent or skill.
 | implement, build, create, fix, code, feature, bug, refactor | **builder** |
 | question, discuss, think about | **ask** |
 | explain, how, what, why, understand | **explainer** |
-| test, coverage, quality, validate, assert, metrics, gate | **quality** |
+| test, write tests, coverage, quality, validate, assert, metrics, flaky, gate | **quality** |
 | security, audit, vulnerability, scan, gdpr, owasp, cve | **security** |
 | deploy, docker, ci, cd, release, kubernetes, k8s, terraform | **devops** |
 | design, architecture, adr, api, schema | **architect** |
 | analyze, document, research, compare | **researcher** |
 | brainstorm, idea, ideas, what if, alternative, explore | **innovator** |
-| workflow, process, pattern, improve, optimize | **guide** |
+| workflow, process, pattern, improve, optimize, optimization | **guide** |
 
 ### Decision Flow
 

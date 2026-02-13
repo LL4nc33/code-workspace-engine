@@ -42,6 +42,3 @@ paths:
 - T-Shirt size scale for typography and spacing (xs → 3xl)
 - Dark Mode via `[data-theme="dark"]` overrides
 
-## Reference
-- @workflow/standards/frontend/components.md
-- @workflow/standards/frontend/design-tokens.md

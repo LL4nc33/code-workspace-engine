@@ -19,6 +19,3 @@ paths:
 - Cloud: EU-compliant (eu-central-1 or Hetzner)
 - Compliance: GDPR, no PII in code, zero-retention option
 
-## Reference
-- @workflow/standards/global/naming.md
-- @workflow/standards/global/tech-stack.md

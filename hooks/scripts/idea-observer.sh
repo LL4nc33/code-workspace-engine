@@ -3,7 +3,7 @@
 # Write JSONL to ~/.claude/cwe/ideas/<project-slug>.jsonl (project-scoped)
 # Migrates old .toon file on first run
 
-IDEA_PATTERNS="idee|was wäre wenn|könnte man|vielleicht|alternativ|feature|verbesserung|idea|what if|could we|maybe|alternative|improvement"
+IDEA_PATTERNS="idee|was wäre wenn|könnte man|vielleicht|alternativ|verbesserung|idea|what if|could we|maybe|alternative|improvement"
 
 # Read stdin (user prompt)
 PROMPT=$(cat)
