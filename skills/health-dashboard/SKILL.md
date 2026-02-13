@@ -90,7 +90,7 @@ git log --format='%s' -20       # Recent commit messages for CC check
 |-------|--------|--------|
 | .gitignore complete | Check required entries | all present |
 | Secrets scan | Run safety-gate patterns on codebase | 0 findings |
-| Last audit | Check memory/sessions.md for security agent run | <7 days |
+| Last audit | Check daily logs (memory/YYYY-MM-DD.md) for security agent run | <7 days |
 | Dependencies | npm audit / pip-audit | 0 vulnerabilities |
 
 ## Output Format

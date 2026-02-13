@@ -164,8 +164,8 @@ workflow/
 
 memory/
 ├── MEMORY.md              # Index (200-line max, Hub-and-Spoke)
+├── YYYY-MM-DD.md          # Daily logs (auto-created at session start/stop)
 ├── ideas.md               # Curated idea backlog
-├── sessions.md            # Session continuity log
 ├── decisions.md           # Project ADRs
 ├── patterns.md            # Recognized work patterns
 └── project-context.md     # Tech stack, priorities
@@ -450,8 +450,9 @@ Workflow structure created:
 Memory structure created:
   memory/
   ├── MEMORY.md (index)
-  ├── ideas.md, sessions.md
-  ├── decisions.md, patterns.md
+  ├── YYYY-MM-DD.md (daily log)
+  ├── ideas.md, decisions.md
+  ├── patterns.md
   └── project-context.md
 
 Documentation structure created:

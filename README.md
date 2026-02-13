@@ -142,7 +142,7 @@ Unclear? → Ask (max 2 questions)
 | implement, build, create, fix, code, feature, bug, refactor | **builder** |
 | question, discuss, think about | **ask** |
 | explain, how, what, why, understand | **explainer** |
-| test, coverage, quality, validate, metrics, gate | **quality** |
+| test, write tests, coverage, quality, validate, assert, metrics, flaky, gate | **quality** |
 | security, audit, vulnerability, scan, gdpr, owasp | **security** |
 | deploy, docker, ci, cd, release, kubernetes, terraform | **devops** |
 | design, architecture, adr, api, schema | **architect** |

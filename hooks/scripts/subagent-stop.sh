@@ -17,25 +17,21 @@ fi
 
 mkdir -p "${ROOT}/memory"
 
-SESSIONS_FILE="${ROOT}/memory/sessions.md"
-
 # Extract agent name from input if available (best effort)
 AGENT_NAME=$(echo "$INPUT" | grep -oP '"agent_type"\s*:\s*"[^"]*"' | head -1 | sed 's/.*"agent_type"\s*:\s*"\([^"]*\)".*/\1/' 2>/dev/null)
 
 if [ -n "$AGENT_NAME" ]; then
-  # Log agent execution as a lightweight entry
   DATE=$(date +%Y-%m-%d)
   TIME=$(date +%H:%M)
+  DAILY_LOG="${ROOT}/memory/${DATE}.md"
 
-  # Append to sessions.md as sub-entry (indented)
-  if [ -f "$SESSIONS_FILE" ]; then
-    # Find the most recent session entry and append agent info after it
-    TEMP_FILE=$(mktemp)
-    head -n 7 "$SESSIONS_FILE" > "$TEMP_FILE"
-    printf "  - %s %s: agent=%s completed\n" "$DATE" "$TIME" "$AGENT_NAME" >> "$TEMP_FILE"
-    tail -n +8 "$SESSIONS_FILE" >> "$TEMP_FILE"
-    mv "$TEMP_FILE" "$SESSIONS_FILE"
+  # Create daily log with header if it doesn't exist
+  if [ ! -f "$DAILY_LOG" ]; then
+    printf "# %s\n" "$DATE" > "$DAILY_LOG"
   fi
+
+  # Append agent completion as lightweight entry
+  printf "\n- %s agent=%s completed\n" "$TIME" "$AGENT_NAME" >> "$DAILY_LOG"
 fi
 
 exit 0

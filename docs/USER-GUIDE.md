@@ -884,14 +884,19 @@ Du bekommst dadurch immer den aktuellen Projekt-Kontext, ohne manuell Dateien ö
 
 ### Stop: Memory Flush + Daily Log
 
-**Script:** `hooks/scripts/session-stop.sh`
+Drei Hooks laufen sequentiell beim Session-Ende:
 
-Am Session-Ende:
-1. Erstellt `memory/YYYY-MM-DD.md` falls nicht vorhanden
-2. Hängt Session-End Timestamp an
-3. Räumt Daily Logs älter als 30 Tage auf
+**1. Prompt-Hook:** Fordert Claude auf, MEMORY.md und den Daily Log zu aktualisieren (Dokumentations-Checkliste).
 
-**Prompt-Hook:** Fordert Claude auf, MEMORY.md und den Daily Log zu aktualisieren.
+**2. Script:** `hooks/scripts/session-stop.sh`
+- Erstellt `memory/YYYY-MM-DD.md` falls nicht vorhanden
+- Hängt Session-End Timestamp an
+- Räumt Daily Logs älter als 30 Tage auf
+
+**3. Script:** `hooks/scripts/idea-flush.sh`
+- Zählt erfasste Ideen des aktuellen Projekts
+- Zeigt Anzahl unreviewed Ideas als systemMessage
+- Erinnert an `/cwe:innovator` für Review
 
 ### PreCompact: Memory Save
 
