@@ -1,6 +1,6 @@
 # CWE User Guide
 
-> Complete documentation for the Code Workspace Engine plugin v0.4.3
+> Complete documentation for the Code Workspace Engine plugin v0.5.0
 
 ---
 
@@ -56,7 +56,7 @@ Each phase has clearly defined inputs and outputs. A feature is not "just built"
 |---------|----------------------|-------------------|
 | Agent routing | Manual (you must set context) | Automatic (say what you need) |
 | Standards | None | 8 domains, auto-loaded per file path |
-| Memory | MEMORY.md (200 lines) | Daily Logs + Semantic Search + Hub-Spoke |
+| Memory | MEMORY.md (200 lines) | Daily Logs + Serena Memory + Hub-Spoke |
 | Workflow | Ad-hoc | Plan → Spec → Tasks → Build → Review |
 | Quality | You decide | Quality Gates with metrics |
 | Security | No checks | Safety Gate scans every commit |
@@ -103,7 +103,6 @@ CWE works together with other Claude Code plugins. `/cwe:init` checks for and of
 | **playwright** | Browser testing, screenshot verification for frontend work |
 | **context7** | Library documentation lookup (React, Vue, etc.) |
 | **github** | GitHub API integration (Issues, PRs, Actions) |
-| **cwe-memory** | Semantic search across all memory files (v0.4.3) |
 
 ### /cwe:init Walkthrough
 
@@ -114,9 +113,19 @@ When first running in a project, `/cwe:init` performs the following steps:
 - Offers installation via `claude plugin add`
 - Optional plugins (frontend-design, plugin-dev) are offered
 
+**Step 1b: Currency Preference**
+- Asks which currency to use for session cost tracking (EUR, USD, GBP, CHF)
+- Saves the preference to `.claude/cwe-settings.yml`
+- Used by the Statusline to display session costs in your chosen currency
+
 **Step 2: MCP Server Check**
 - Checks whether playwright, context7, github MCP servers are configured
 - Offers `claude mcp add` for missing servers
+
+**Step 2b: Serena Detection**
+- If the Serena plugin is detected, `/cwe:init` notes that Serena provides its own memory system
+- Users can skip creating the `memory/` directory when Serena is available, as Serena handles symbol-level code memory independently
+- The `workflow/` and `docs/` directories are still created as usual
 
 **Step 3: Create Project Structure**
 ```
@@ -151,6 +160,36 @@ CHANGELOG.md             # Keep-a-Changelog format
 - Detects tech stack from package.json, Cargo.toml, go.mod, etc.
 - Writes the result to `memory/project-context.md`
 - Initializes `memory/MEMORY.md` with project metadata
+
+### Statusline — Real-Time Session Dashboard
+
+CWE provides a Python-based statusline displayed at the bottom of Claude Code, giving you real-time visibility into your session.
+
+**What it shows:**
+
+| Element | Description |
+|---------|-------------|
+| Project name | Current project identifier |
+| Context usage bar | Color-coded bar showing context window usage (green/yellow/red) |
+| Session cost | Running cost in your configured currency |
+| Session time | Elapsed time since session start |
+| Lines changed | Lines added and removed in this session |
+
+**Example:**
+```
+code-workspace-engine  |  context ━━━━──── 55% 110k/200k  |  EUR 2.77  |  time 17m01s  |  lines +148/-132
+```
+
+**Configuration:**
+- Currency is set during `/cwe:init` (EUR, USD, GBP, CHF)
+- Stored in `.claude/cwe-settings.yml`
+- Can be changed by editing the settings file directly
+
+**Benefits:**
+- Track project costs per session
+- See context window usage before it fills up (plan compactions)
+- Monitor session duration for time tracking
+- See code churn at a glance
 
 ---
 
@@ -661,6 +700,10 @@ Options after completion:
 
 **Solution:** CWE's Memory System persists knowledge in structured files that are automatically injected at every session start.
 
+### Serena Plugin and Memory
+
+When the Serena plugin is installed, it provides its own symbol-level memory system for code understanding. In this case, the `memory/` directory is optional -- users can skip creating it during `/cwe:init`. Serena tracks code symbols, references, and types independently. If you still want CWE's hub-and-spoke memory (for decisions, patterns, daily logs), you can create the `memory/` directory alongside Serena.
+
 ### The Memory Architecture (Hub-and-Spoke)
 
 ```
@@ -733,23 +776,6 @@ Format per entry:
 ### patterns.md — Recognized Patterns
 
 Code patterns discovered and documented by the Guide agent.
-
-### Memory MCP Server (v0.4.3)
-
-**Semantic search** across all memory files with Hybrid Search:
-
-| Tool | Description |
-|------|-------------|
-| `memory_search` | Semantic search: Query → relevant snippets from all memory files |
-| `memory_get` | Read file/section: Path → Content |
-| `memory_write` | Append entry: Entry → Today's Daily Log |
-| `memory_status` | Index status: Files, chunks, freshness |
-
-**How Hybrid Search works:**
-- **Vector Similarity** (70%): Semantic similarity via embeddings
-- **BM25** (30%): Keyword-based search via SQLite FTS5
-- **Chunking:** ~400 tokens per chunk, 80 token overlap
-- **Storage:** SQLite with `sqlite-vec` extension, local per project
 
 ### Context Injection at Session Start
 
@@ -1085,6 +1111,12 @@ Defines the Project Health Score (0-100) across 5 categories: Code Quality (25%)
 
 Generation and maintenance of project documentation: README, ARCHITECTURE, API, SETUP. Includes tech stack auto-detection and docs freshness check.
 
+### web-research
+
+**File:** `skills/web-research/SKILL.md`
+
+Web research capability using self-hosted SearXNG (meta-search engine) and Firecrawl (web scraping). Requires a self-hosted SearXNG instance and Firecrawl MCP server to be configured. Used by agents that need to look up external documentation, compare technologies, or research best practices.
+
 ---
 
 ## 12. Quality Gates
@@ -1177,14 +1209,15 @@ code-workspace-engine/
 │   ├── innovator.md            # /cwe:innovator
 │   └── guide.md                # /cwe:guide
 │
-├── skills/                     # 7 Skills
+├── skills/                     # 8 Skills
 │   ├── auto-delegation/SKILL.md
 │   ├── agent-detection/SKILL.md
 │   ├── quality-gates/SKILL.md
 │   ├── safety-gate/SKILL.md
 │   ├── git-standards/SKILL.md
 │   ├── health-dashboard/SKILL.md
-│   └── project-docs/SKILL.md
+│   ├── project-docs/SKILL.md
+│   └── web-research/SKILL.md
 │
 ├── hooks/                      # Automation
 │   ├── hooks.json              # Hook configuration
@@ -1233,6 +1266,8 @@ In the target project:
 
 ```
 your-project/
+├── .claude/
+│   └── cwe-settings.yml          # CWE preferences (currency, etc.)
 ├── workflow/
 │   ├── config.yml              # CWE configuration
 │   ├── ideas.md                # Curated idea backlog
@@ -1294,8 +1329,7 @@ your-project/
 **Fix:**
 1. Check `.mcp.json` syntax (valid JSON?)
 2. Check whether the server command exists: `which npx`
-3. For cwe-memory: ensure the `memory/` directory exists
-4. Restart Claude Code
+3. Restart Claude Code
 
 ### "How do I reset everything?"
 

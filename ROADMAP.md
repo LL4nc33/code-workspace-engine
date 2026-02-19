@@ -1,14 +1,23 @@
 # CWE Roadmap
 
-## Completed: v0.4.0a → v0.4.3
+## Completed: v0.4.0a → v0.5.0
 
-### v0.4.3 — Memory MCP Server (Phase 2)
-- `cwe-memory-mcp/`: local MCP server with semantic + keyword hybrid search
-- Transformers.js `all-MiniLM-L6-v2` (384 dim, local, no API key)
-- SQLite + sqlite-vec (vector KNN) + FTS5 (BM25)
-- 4 MCP tools: memory_search, memory_get, memory_write, memory_status
-- chokidar file watcher with debounced auto-reindex
-- Plugin-bundled via `.mcp.json`
+### v0.5.0 — Statusline + Polish
+- Statusline: Python-based status bar with context usage, cost (EUR/USD/GBP/CHF), time, lines changed
+- Currency configuration via `/cwe:init` stored in `.claude/cwe-settings.yml`
+- Hook fixes: PreCompact changed from prompt to command, Stop prompt hook removed
+- Documentation-standards softened for conditional memory usage
+- Obsolete plan docs deleted
+
+### v0.4.4 — Cleanup + New Skills
+- cwe-memory-mcp removed entirely (Serena memory replaces it)
+- Screenshot command: Multi-OS clipboard capture (WSL2, macOS, Wayland, X11)
+- Web Research skill: SearXNG + Firecrawl/trafilatura local search
+- Stop hook reordering: command hooks before prompt hook
+- Consistency fixes: version refs, agent lists, domain counts
+
+### v0.4.3 — Documentation
+- USER-GUIDE.md, README rewrite, SVG assets
 
 ### v0.4.2 — Memory System v2 (Phase 1)
 - Daily Logs (`memory/YYYY-MM-DD.md`) replace sessions.md
@@ -612,7 +621,7 @@ Auto-generate `CODEOWNERS` from git history:
 - Session-level audit trail (which agents ran, what they produced)
 - Metrics: token usage per agent, delegation accuracy
 
-### v0.4.3 — Profile Templates (inspired by Agent-OS)
+### v0.5.0 — Profile Templates (inspired by Agent-OS)
 
 Lightweight version of Agent-OS' profile inheritance:
 
@@ -632,12 +641,12 @@ Each template pre-selects:
 Templates stored in CWE plugin: `templates/profiles/api/`, `templates/profiles/pwa/`, etc.
 Users can create custom templates that inherit from defaults.
 
-### v0.4.4 — Community Templates
+### v0.4.6 — Community Templates
 - Community template marketplace
 - Template sharing via git repos
 - `templates/profiles/custom/` for user overrides
 
-### v0.4.5 — Multi-Project Support
+### v0.4.7 — Multi-Project Support
 - Monorepo awareness (per-package workflow/)
 - Cross-project dependency tracking
 - Shared standards library

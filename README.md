@@ -4,7 +4,7 @@
   <br><br>
 
   <a href="#quick-start"><img src="https://img.shields.io/badge/Quick_Start-3_Steps-6366f1?style=flat-square" alt="Quick Start"></a>
-  <img src="https://img.shields.io/badge/version-0.4.3-8b5cf6?style=flat-square" alt="Version">
+  <img src="https://img.shields.io/badge/version-0.5.0-8b5cf6?style=flat-square" alt="Version">
   <img src="https://img.shields.io/badge/agents-10-6366f1?style=flat-square" alt="Agents">
   <img src="https://img.shields.io/badge/claude_code-plugin-8b5cf6?style=flat-square" alt="Claude Code Plugin">
   <img src="https://img.shields.io/badge/license-MIT-6366f1?style=flat-square" alt="License">
@@ -53,7 +53,7 @@ CWE is a **Claude Code plugin** that turns a single AI assistant into a team of 
 |-------------|----------|
 | One prompt does everything | 10 specialized agents with focused expertise |
 | You manage context manually | Standards auto-loaded per file type |
-| Memory resets each session | Daily logs + semantic search across sessions |
+| Memory resets each session | Daily logs + Serena memory across sessions |
 | No workflow structure | Plan → Spec → Tasks → Build → Review |
 | Ad-hoc quality | Quality gates block releases if thresholds fail |
 | Secrets might slip through | Pre-commit safety gate scans every commit |
@@ -198,7 +198,6 @@ CWE remembers across sessions through a layered memory system:
 - **Pre-Compact** → Memory saved before context compression
 - **Stop** → Daily log entry written, old logs (>30 days) cleaned up
 
-**Memory MCP Server** (v0.4.3) — Semantic + keyword hybrid search over all memory files. Local SQLite with vector embeddings, no external API required.
 
 </details>
 
@@ -240,6 +239,43 @@ Discover new standards: `/cwe:guide discover`
 
 </details>
 
+<details>
+<summary><strong>Statusline — Live Session Tracking</strong></summary>
+
+CWE configures a custom status bar at the bottom of Claude Code that shows:
+
+```
+code-workspace-engine  |  context ━━━━──── 55% 110k/200k  |  EUR 2.77  |  time 17m01s  |  lines +148/-132
+```
+
+- **Project name** — always know which project you're in
+- **Context bar** — color-coded (green/yellow/red) with token count
+- **Cost** — track how much a project costs per session (configurable currency)
+- **Time** — track how long you've been working on it
+- **Lines** — see code changes at a glance
+
+Currency is configurable during `/cwe:init` (EUR, USD, GBP, CHF) and stored in `.claude/cwe-settings.yml`.
+
+</details>
+
+<details>
+<summary><strong>Skills — Proactive Workflows</strong></summary>
+
+CWE includes 8 skills that activate automatically based on context:
+
+| Skill | When it activates |
+|-------|-------------------|
+| `auto-delegation` | On every user request — routes to the right agent |
+| `agent-detection` | During Build phase — assigns agents to tasks |
+| `git-standards` | On git commit/branch — enforces Conventional Commits |
+| `safety-gate` | Before git commit/push — scans for secrets |
+| `quality-gates` | After implementation — verifies coverage & complexity |
+| `health-dashboard` | On `/cwe:quality health` — project health overview |
+| `project-docs` | When docs need updating — README, architecture |
+| `web-research` | Local web search (requires self-hosted SearXNG + Firecrawl) |
+
+</details>
+
 <br>
 
 ## Plugin Dependencies
@@ -259,7 +295,6 @@ Discover new standards: `/cwe:guide discover`
 | playwright | Browser testing, screenshot verification |
 | context7 | Library documentation lookup |
 | github | GitHub API integration |
-| cwe-memory | Semantic memory search (v0.4.3) |
 
 <br>
 
@@ -277,7 +312,9 @@ your-project/
 │   │   └── mission.md          # Product vision
 │   ├── specs/                  # Feature specifications (created per feature)
 │   └── standards/              # Project-specific standards
-├── memory/
+├── .claude/
+│   └── cwe-settings.yml        # Project settings (currency, etc.)
+├── memory/                     # Optional — skipped if using Serena memory
 │   ├── MEMORY.md               # Index (200-line max, always injected)
 │   ├── YYYY-MM-DD.md           # Daily logs (auto-created)
 │   ├── ideas.md                # Idea backlog summary
@@ -301,7 +338,9 @@ See [CHANGELOG.md](CHANGELOG.md) for full history. See [ROADMAP.md](ROADMAP.md) 
 
 | Version | Highlights |
 |---------|-----------|
-| **0.4.3** (current) | Memory MCP Server: semantic + keyword hybrid search, local embeddings |
+| **0.5.0** (current) | Statusline with live cost/context tracking, currency config, hook fixes |
+| **0.4.4** | Removed cwe-memory MCP, added screenshot + web-research, consistency fixes |
+| **0.4.3** | Documentation: USER-GUIDE, README rewrite, SVG assets |
 | **0.4.2** | Memory System v2: daily logs, context injection, auto-seeding |
 | **0.4.1** | Native alignment: 10 agents, standards system, idea capture, safety gate |
 | **0.4.0a** | Plugin integration, skill cleanup, roadmap |

@@ -10,7 +10,7 @@ Display comprehensive help for CWE and all installed plugins.
 ## Output
 
 ```markdown
-# CWE - Code Workspace Engine v0.4.3
+# CWE - Code Workspace Engine v0.5.0
 
 Natural language orchestration for spec-driven development.
 
@@ -96,7 +96,7 @@ Daily Logs + MEMORY.md index, auto-injected at session start:
 - `memory/decisions.md` — Project ADRs
 - `memory/patterns.md` — Recognized work patterns
 - `memory/project-context.md` — Tech stack, priorities (auto-seeded)
-- Memory MCP Server — Semantic + keyword hybrid search (local, no API key)
+- Memory via Serena (`write_memory`, `read_memory`, `list_memories`) when available
 
 ## Workflow Phases
 

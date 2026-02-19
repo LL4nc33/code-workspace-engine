@@ -7,22 +7,57 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
-## [0.4.3] — 2026-02-13 (Memory MCP Server — Phase 2)
+## [0.5.0] — 2026-02-19
 
-### Added — CWE Memory MCP Server
-- `cwe-memory-mcp/`: local MCP server for semantic + keyword memory search
-- Hybrid search: 70% vector (sqlite-vec, cosine) + 30% BM25 (FTS5)
-- Local embeddings: Transformers.js `all-MiniLM-L6-v2` (384 dim, ~80MB, no API key)
-- 4 MCP tools: `memory_search`, `memory_get`, `memory_write`, `memory_status`
-- Markdown chunker: ~400 tokens, 80 token overlap, paragraph/sentence splitting
-- chokidar file watcher: debounced 2s auto-reindex on file changes
-- SQLite store: better-sqlite3 + sqlite-vec + FTS5, WAL mode
-- Graceful fallback: BM25-only if sqlite-vec or model fails to load
-- Plugin-bundled via `.mcp.json` — auto-starts with CWE plugin
+### Added
+- **Statusline**: Python-based status bar showing context usage, session cost, time, and lines changed — configurable via `python3 ~/.claude/statusline.sh`
+- **Currency configuration**: `/cwe:init` now asks for preferred currency (EUR, USD, GBP, CHF) — stored in `.claude/cwe-settings.yml`
+- **Project settings file**: `.claude/cwe-settings.yml` — per-project configuration (first setting: currency)
+- **Statusline features**: color-coded context bar (green/yellow/red), token count, cost conversion, session duration, lines added/removed, project directory name
 
 ### Changed
-- `/cwe:init` now builds cwe-memory-mcp if dist/ missing (Step 1c)
-- `.mcp.json` added at plugin root for MCP server auto-discovery
+- `commands/init.md`: Added Step 1d (currency selection) to initialization flow
+- `hooks/hooks.json`: PreCompact hook changed from prompt-type to command-type (`session-stop.sh`) — eliminates "JSON validation failed" errors
+- `.claude/rules/documentation-standards.md`: Softened wording — documentation updates now conditional on `memory/` directory existence
+- Version bump: 0.4.4 → 0.5.0 across all files
+
+### Removed
+- Stop hook prompt: Removed the "Session is ending, update documentation" prompt hook that caused errors on every session end
+- `docs/plans/`: Deleted obsolete design documents (memory-mcp server design, phase 2 plan, memory-system-v2 design)
+
+### Fixed
+- Stop hook "JSON validation failed" error: caused by aggressive prompt hook enforcing documentation updates
+- Statusline showing `Context: --` instead of actual usage: replaced bash/jq script with Python for broader compatibility
+
+---
+
+## [0.4.4] — 2026-02-19
+
+### Added
+- `commands/screenshot.md`: Multi-OS screenshot from clipboard (WSL2, macOS, Wayland, X11)
+- `skills/web-research/SKILL.md`: Local web search via SearXNG + scraping via Firecrawl/trafilatura
+
+### Removed
+- `cwe-memory-mcp/`: Entire MCP server removed (replaced by Serena memory system)
+- `.mcp.json`: cwe-memory server entry removed
+- `docs/plans/2026-02-13-memory-mcp-server-design.md`: Obsolete design doc
+- `docs/plans/2026-02-13-memory-mcp-phase2-plan.md`: Obsolete design doc
+
+### Fixed
+- Stop hook order: command hooks now run before prompt hook (prevents "No assistant message" error)
+- Stop hook prompt: shortened and made more resilient for short sessions
+- `session-start.sh`: Agent delegation list now includes ask and guide agents
+- `subagent-stop.sh`: Fixed logic error — no longer tries to write daily log when memory/ doesn't exist
+- `commands/init.md`: Fixed domain count from 7 to 8 (documentation was missing)
+- `commands/help.md`: Replaced Memory MCP Server reference with Serena memory
+
+### Changed
+- Version bump: 0.4.3 → 0.4.4 across all files (plugin.json, CLAUDE.md, help.md, session-start.sh, README, USER-GUIDE)
+- All cwe-memory references removed from README, CHANGELOG, ROADMAP, USER-GUIDE, .gitignore
+
+---
+
+## [0.4.3] — 2026-02-13
 
 ### Added — Documentation
 - `docs/USER-GUIDE.md`: comprehensive user documentation (~1000 lines, 15 sections)
