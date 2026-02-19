@@ -26,10 +26,6 @@
       {
         "hooks": [
           {
-            "type": "prompt",
-            "prompt": "BEFORE ending this session, you MUST complete this documentation checklist:\n\n1. **memory/MEMORY.md** — Update the project index: what changed this session, current state, key decisions. Keep under 200 lines.\n2. **Today's Daily Log (memory/YYYY-MM-DD.md)** — Add session summary entries. Use `## HH:MM — Topic` format. Include: what was done, decisions made, files changed, what's next.\n3. **memory/decisions.md** — If any design decisions were made, log them (context, decision, rationale).\n4. **memory/project-context.md** — If tech stack, priorities, or architecture changed, update it.\n5. **CHANGELOG.md** — If user-visible changes were made, add entries under current version.\n6. **docs/** — If features, APIs, setup, or architecture changed, update the affected docs.\n\nSkip files that genuinely don't need updates. But memory/MEMORY.md and the Daily Log MUST always be updated.\n\nDaily Log entry format:\n## HH:MM — Topic\n- What: [1 sentence]\n- Decision: [if applicable]\n- Files: [key files changed]\n\nAfter updating, commit and push all documentation changes with: git commit -m 'docs: update memory and project documentation'"
-          },
-          {
             "type": "command",
             "command": "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/session-stop.sh",
             "timeout": 5
@@ -57,8 +53,9 @@
       {
         "hooks": [
           {
-            "type": "prompt",
-            "prompt": "Context is about to be compacted. BEFORE compaction, you MUST save critical state:\n\n1. **memory/MEMORY.md** — Write current project state, what you were working on, pending tasks, key decisions made this session.\n2. **Today's Daily Log (memory/YYYY-MM-DD.md)** — Add session progress so far. Use `## HH:MM — Topic` format. Include: goal, what's done, what's unfinished.\n3. **memory/decisions.md** — Log any undocumented decisions.\n\nThis information will be LOST after compaction if not saved now. Be thorough — future you depends on this.\n\nCommit and push after saving: git commit -m 'docs: pre-compact memory save'"
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/session-stop.sh",
+            "timeout": 5
           }
         ]
       }

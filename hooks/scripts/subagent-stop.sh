@@ -13,7 +13,10 @@ else
 fi
 
 # Only log if memory directory exists (project is initialized)
+# Only log if either memory or workflow directory exists (project is initialized)
 [ ! -d "${ROOT}/memory" ] && [ ! -d "${ROOT}/workflow" ] && exit 0
+# If only workflow exists but no memory, skip logging (no daily log target)
+[ ! -d "${ROOT}/memory" ] && exit 0
 
 mkdir -p "${ROOT}/memory"
 

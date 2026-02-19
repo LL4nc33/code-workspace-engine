@@ -7,7 +7,7 @@ paths:
 
 ## After Every Non-Trivial Change
 
-You MUST update documentation so the project remembers across sessions:
+Update documentation so the project remembers across sessions (when applicable and memory/ directory exists):
 
 ### Memory Updates (REQUIRED)
 - **memory/MEMORY.md** — Keep the index current (max 200 lines). Update: what changed, current state, key decisions.

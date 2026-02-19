@@ -13,10 +13,9 @@ else
   ROOT="$PWD"
 fi
 
-# Only log if memory directory exists (project is initialized)
-if [ -d "${ROOT}/memory" ] || [ -d "${ROOT}/workflow" ]; then
-  mkdir -p "${ROOT}/memory"
-
+# Only log if memory directory already exists (project is initialized with CWE memory)
+# Do NOT create memory/ if it doesn't exist — user may be using Serena memory instead
+if [ -d "${ROOT}/memory" ]; then
   DATE=$(date +%Y-%m-%d)
   TIME=$(date +%H:%M)
   DAILY_LOG="${ROOT}/memory/${DATE}.md"
