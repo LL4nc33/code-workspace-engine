@@ -119,23 +119,48 @@ claude mcp add sequential-thinking -- npx @modelcontextprotocol/server-sequentia
 
 Show progress for each installation. If a server fails to install, warn but continue with the rest.
 
-## Step 1c: Build CWE Memory MCP Server
+## Step 1c: Detect Serena Plugin (Memory Strategy)
 
-Check if the CWE Memory MCP server needs building:
+If the **serena** plugin is installed, Serena provides its own memory system (`write_memory`, `read_memory`, `list_memories`). In that case, the CWE `memory/` directory is **redundant**.
 
-```bash
-ls ${CLAUDE_PLUGIN_ROOT}/cwe-memory-mcp/dist/index.js 2>/dev/null
+Check if serena is installed (from Step 1 results). If serena IS installed, use AskUserQuestion:
+
+**Question:** "Serena plugin detected — it has its own memory system. Create CWE memory/ directory anyway?"
+
+**Options:**
+1. "Skip memory/ (use Serena)" — Do NOT create `memory/` directory. Set `SKIP_MEMORY=true`.
+2. "Create memory/ anyway" — Create `memory/` as usual (both systems coexist).
+
+Store the decision. If `SKIP_MEMORY=true`:
+- Do NOT create `memory/` directory or any files within it
+- Do NOT add `memory/` to `.gitignore`
+- Do NOT seed project-context.md or daily logs
+- Session hooks will gracefully skip memory operations (they already check for `memory/` existence)
+
+---
+
+## Step 1d: Configure Statusline Currency
+
+Use AskUserQuestion to ask:
+
+**Question:** "Which currency for the statusline cost display?"
+
+**Options:**
+1. "EUR" — Euro (default)
+2. "USD" — US Dollar
+3. "GBP" — British Pound
+4. "CHF" — Swiss Franc
+
+Save the choice to `.claude/cwe-settings.yml`:
+
+```yaml
+# CWE Project Settings
+# Set during /cwe:init
+
+currency: EUR
 ```
 
-If `dist/index.js` does not exist, build it:
-
-```bash
-cd ${CLAUDE_PLUGIN_ROOT}/cwe-memory-mcp && npm install && npm run build
-```
-
-Report: "CWE Memory MCP server built — semantic search over memory/ active."
-
-If the build fails, warn but continue — the memory search will be unavailable but CWE works without it.
+If the file already exists, update just the `currency:` line. If not, create it.
 
 ---
 
@@ -147,7 +172,7 @@ Check if `workflow/` already exists:
 
 ## Step 3: Create structure
 
-Create the following structure:
+Create the following structure (skip `memory/` section if `SKIP_MEMORY=true`):
 
 ```
 workflow/
@@ -162,7 +187,7 @@ workflow/
 └── standards/
     └── README.md          # Project-specific standards (optional)
 
-memory/
+memory/                    # ONLY if SKIP_MEMORY is not true
 ├── MEMORY.md              # Index (200-line max, Hub-and-Spoke)
 ├── YYYY-MM-DD.md          # Daily logs (auto-created at session start/stop)
 ├── ideas.md               # Curated idea backlog
@@ -182,11 +207,13 @@ docs/
 VERSION                    # Single Source of Truth for version (semver)
 ```
 
-Copy templates from `${CLAUDE_PLUGIN_ROOT}/templates/memory/` for all memory files.
+Copy templates from `${CLAUDE_PLUGIN_ROOT}/templates/memory/` for all memory files (SKIP if `SKIP_MEMORY=true`).
 Copy templates from `${CLAUDE_PLUGIN_ROOT}/templates/docs/` for all docs files.
 Copy `${CLAUDE_PLUGIN_ROOT}/templates/docs/VERSION` to project root.
 
 ## Step 3b: Auto-Seed Project Memory
+
+**SKIP this entire step if `SKIP_MEMORY=true`** (Serena handles memory).
 
 After creating the memory structure, detect the project's tech stack and populate memory files.
 
@@ -270,7 +297,7 @@ Read the existing `.gitignore` (or create one if missing). Append the following 
 grep -q '# CWE (Code Workspace Engine)' .gitignore 2>/dev/null
 ```
 
-If the marker is NOT found, append:
+If the marker is NOT found, append (omit `memory/` line if `SKIP_MEMORY=true`):
 
 ```
 # CWE (Code Workspace Engine)
@@ -415,7 +442,7 @@ Folder naming is auto-generated: `YYYY-MM-DD-HHMM-<feature-slug>/`
 Add project-specific coding standards here.
 
 CWE loads built-in standards automatically via `.claude/rules/` with `paths` frontmatter.
-7 domains: global, api, frontend, database, devops, testing, agent.
+8 domains: global, api, frontend, database, devops, testing, agent, documentation.
 
 Use `/cwe:guide discover` to auto-discover patterns from your codebase.
 Use `/cwe:guide index` to regenerate the standards index.
@@ -447,13 +474,10 @@ Workflow structure created:
   ├── product/mission.md
   └── specs/
 
-Memory structure created:
-  memory/
-  ├── MEMORY.md (index)
-  ├── YYYY-MM-DD.md (daily log)
-  ├── ideas.md, decisions.md
-  ├── patterns.md
-  └── project-context.md
+Memory:
+  memory/ created (CWE memory)
+  — OR —
+  memory/ skipped (using Serena memory)
 
 Documentation structure created:
   docs/
