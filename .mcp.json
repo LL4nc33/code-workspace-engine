@@ -1,12 +1,3 @@
 {
-  "mcpServers": {
-    "cwe-memory": {
-      "command": "node",
-      "args": ["${CLAUDE_PLUGIN_ROOT}/cwe-memory-mcp/dist/index.js"],
-      "env": {
-        "CWE_MEMORY_DIR": "${CLAUDE_PROJECT_DIR}/memory",
-        "CWE_DB_DIR": "${HOME}/.claude/cwe/memory"
-      }
-    }
-  }
+  "mcpServers": {}
 }

@@ -12,9 +12,6 @@ Thumbs.db
 # Dependencies
 node_modules/
 
-# CWE Memory MCP Server build artifacts
-cwe-memory-mcp/node_modules/
-cwe-memory-mcp/dist/
 __pycache__/
 .venv/
 
