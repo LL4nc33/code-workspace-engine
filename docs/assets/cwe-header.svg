@@ -1,53 +1,137 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 200" width="800" height="200">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 220" width="800" height="220">
   <defs>
+    <!-- Main gradient -->
     <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#6366f1" stop-opacity="0.15"/>
-      <stop offset="100%" stop-color="#8b5cf6" stop-opacity="0.08"/>
+      <stop offset="0%" stop-color="#0f0f23"/>
+      <stop offset="50%" stop-color="#1a1a3e"/>
+      <stop offset="100%" stop-color="#0f0f23"/>
     </linearGradient>
-    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="0%">
+    <!-- Accent glow -->
+    <linearGradient id="glow" x1="0%" y1="0%" x2="100%" y2="0%">
       <stop offset="0%" stop-color="#6366f1"/>
+      <stop offset="50%" stop-color="#a78bfa"/>
       <stop offset="100%" stop-color="#8b5cf6"/>
     </linearGradient>
-    <linearGradient id="icon" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#6366f1"/>
-      <stop offset="100%" stop-color="#8b5cf6"/>
+    <!-- Subtle line gradient -->
+    <linearGradient id="line" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#6366f1" stop-opacity="0"/>
+      <stop offset="20%" stop-color="#6366f1" stop-opacity="0.6"/>
+      <stop offset="80%" stop-color="#8b5cf6" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#8b5cf6" stop-opacity="0"/>
     </linearGradient>
+    <!-- Node glow filter -->
+    <filter id="nodeGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+    <!-- Text glow -->
+    <filter id="textGlow" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+    <!-- Orbiting dot pattern -->
+    <radialGradient id="orb" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#a78bfa"/>
+      <stop offset="100%" stop-color="#6366f1" stop-opacity="0"/>
+    </radialGradient>
   </defs>
+
   <!-- Background -->
-  <rect width="800" height="200" rx="12" fill="url(#bg)"/>
-  <rect x="1" y="1" width="798" height="198" rx="11" fill="none" stroke="url(#accent)" stroke-opacity="0.3"/>
-  <!-- Decorative dots -->
-  <g fill="#6366f1" opacity="0.1">
-    <circle cx="50" cy="30" r="3"/><circle cx="70" cy="30" r="3"/><circle cx="90" cy="30" r="3"/>
-    <circle cx="50" cy="50" r="3"/><circle cx="70" cy="50" r="3"/><circle cx="90" cy="50" r="3"/>
-    <circle cx="710" cy="150" r="3"/><circle cx="730" cy="150" r="3"/><circle cx="750" cy="150" r="3"/>
-    <circle cx="710" cy="170" r="3"/><circle cx="730" cy="170" r="3"/><circle cx="750" cy="170" r="3"/>
+  <rect width="800" height="220" rx="16" fill="url(#bg)"/>
+
+  <!-- Subtle grid pattern -->
+  <g stroke="#6366f1" stroke-opacity="0.04" stroke-width="0.5">
+    <line x1="0" y1="44" x2="800" y2="44"/><line x1="0" y1="88" x2="800" y2="88"/>
+    <line x1="0" y1="132" x2="800" y2="132"/><line x1="0" y1="176" x2="800" y2="176"/>
+    <line x1="100" y1="0" x2="100" y2="220"/><line x1="200" y1="0" x2="200" y2="220"/>
+    <line x1="300" y1="0" x2="300" y2="220"/><line x1="400" y1="0" x2="400" y2="220"/>
+    <line x1="500" y1="0" x2="500" y2="220"/><line x1="600" y1="0" x2="600" y2="220"/>
+    <line x1="700" y1="0" x2="700" y2="220"/>
   </g>
-  <!-- Logo icon -->
-  <g transform="translate(180, 55)">
-    <circle cx="22" cy="22" r="22" fill="url(#icon)"/>
-    <g fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round">
-      <circle cx="22" cy="22" r="9" stroke-dasharray="3 2.5"/>
-      <circle cx="22" cy="22" r="3" fill="#fff" stroke="none"/>
-      <path d="M22 10v-3M22 37v-3M10 22h-3M37 22h-3"/>
-      <path d="M30.5 13.5l2-2M11.5 32.5l2-2M30.5 30.5l2 2M11.5 11.5l2 2"/>
+
+  <!-- Agent constellation (left side) -->
+  <g filter="url(#nodeGlow)">
+    <!-- Central hub -->
+    <circle cx="120" cy="110" r="18" fill="none" stroke="url(#glow)" stroke-width="1.5" stroke-opacity="0.6"/>
+    <circle cx="120" cy="110" r="8" fill="#6366f1" opacity="0.8"/>
+    <circle cx="120" cy="110" r="3" fill="#e0e7ff"/>
+
+    <!-- Agent nodes orbiting -->
+    <circle cx="68" cy="68" r="4" fill="#818cf8" opacity="0.7"/>
+    <circle cx="58" cy="120" r="3.5" fill="#a78bfa" opacity="0.6"/>
+    <circle cx="78" cy="158" r="3" fill="#6366f1" opacity="0.7"/>
+    <circle cx="152" cy="52" r="3.5" fill="#8b5cf6" opacity="0.6"/>
+    <circle cx="172" cy="100" r="4" fill="#818cf8" opacity="0.5"/>
+    <circle cx="160" cy="155" r="3" fill="#a78bfa" opacity="0.7"/>
+    <circle cx="100" cy="48" r="3" fill="#6366f1" opacity="0.5"/>
+    <circle cx="85" cy="165" r="2.5" fill="#8b5cf6" opacity="0.6"/>
+    <circle cx="148" cy="135" r="2.5" fill="#818cf8" opacity="0.5"/>
+    <circle cx="130" cy="170" r="3" fill="#6366f1" opacity="0.6"/>
+
+    <!-- Connection lines from hub to nodes -->
+    <g stroke="#6366f1" stroke-opacity="0.15" stroke-width="0.8">
+      <line x1="120" y1="110" x2="68" y2="68"/>
+      <line x1="120" y1="110" x2="58" y2="120"/>
+      <line x1="120" y1="110" x2="78" y2="158"/>
+      <line x1="120" y1="110" x2="152" y2="52"/>
+      <line x1="120" y1="110" x2="172" y2="100"/>
+      <line x1="120" y1="110" x2="160" y2="155"/>
+      <line x1="120" y1="110" x2="100" y2="48"/>
+      <line x1="120" y1="110" x2="85" y2="165"/>
+      <line x1="120" y1="110" x2="148" y2="135"/>
+      <line x1="120" y1="110" x2="130" y2="170"/>
     </g>
-    <path d="M17 20l3 3 6-6" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+
+    <!-- Orbital rings -->
+    <circle cx="120" cy="110" r="55" fill="none" stroke="#6366f1" stroke-opacity="0.08" stroke-width="0.5" stroke-dasharray="4 6"/>
+    <circle cx="120" cy="110" r="38" fill="none" stroke="#8b5cf6" stroke-opacity="0.06" stroke-width="0.5" stroke-dasharray="3 5"/>
   </g>
-  <!-- Title -->
-  <text x="240" y="88" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="36" font-weight="700" fill="url(#accent)">Code Workspace Engine</text>
-  <!-- Subtitle -->
-  <text x="240" y="120" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="16" fill="#6366f1" opacity="0.7">Natural language orchestration for spec-driven development</text>
-  <!-- Decorative line -->
-  <line x1="240" y1="135" x2="580" y2="135" stroke="url(#accent)" stroke-opacity="0.2" stroke-width="1"/>
-  <!-- Feature tags -->
-  <g font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="11" fill="#6366f1" opacity="0.6">
-    <text x="240" y="158">10 Agents</text>
-    <text x="314" y="158">Auto-Delegation</text>
-    <text x="420" y="158">Memory System</text>
-    <text x="524" y="158">Quality Gates</text>
+
+  <!-- Decorative beam from constellation to text -->
+  <line x1="190" y1="110" x2="240" y2="80" stroke="url(#glow)" stroke-opacity="0.1" stroke-width="1"/>
+
+  <!-- Title: CWE -->
+  <text x="250" y="78" font-family="'SF Mono', 'Fira Code', 'JetBrains Mono', monospace" font-size="15" font-weight="400" fill="#a78bfa" opacity="0.5" letter-spacing="6">CLAUDE CODE PLUGIN</text>
+
+  <!-- Main title -->
+  <g filter="url(#textGlow)">
+    <text x="248" y="120" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="38" font-weight="800" fill="url(#glow)" letter-spacing="-0.5">Code Workspace Engine</text>
   </g>
-  <g fill="#8b5cf6" opacity="0.3">
-    <circle cx="305" cy="154" r="1.5"/><circle cx="411" cy="154" r="1.5"/><circle cx="515" cy="154" r="1.5"/>
+
+  <!-- Separator line -->
+  <line x1="250" y1="138" x2="620" y2="138" stroke="url(#line)" stroke-width="1"/>
+
+  <!-- Tagline -->
+  <text x="250" y="160" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="14" fill="#c4b5fd" opacity="0.7" letter-spacing="0.5">Say what you need. CWE picks the right agent.</text>
+
+  <!-- Feature pills -->
+  <g font-family="'SF Mono', 'Fira Code', 'JetBrains Mono', monospace" font-size="10">
+    <!-- Pill 1 -->
+    <rect x="250" y="174" width="82" height="22" rx="11" fill="#6366f1" fill-opacity="0.12" stroke="#6366f1" stroke-opacity="0.25" stroke-width="0.5"/>
+    <text x="264" y="189" fill="#a78bfa" opacity="0.9">10 agents</text>
+    <!-- Pill 2 -->
+    <rect x="342" y="174" width="108" height="22" rx="11" fill="#8b5cf6" fill-opacity="0.12" stroke="#8b5cf6" stroke-opacity="0.25" stroke-width="0.5"/>
+    <text x="356" y="189" fill="#a78bfa" opacity="0.9">auto-delegate</text>
+    <!-- Pill 3 -->
+    <rect x="460" y="174" width="98" height="22" rx="11" fill="#6366f1" fill-opacity="0.12" stroke="#6366f1" stroke-opacity="0.25" stroke-width="0.5"/>
+    <text x="474" y="189" fill="#a78bfa" opacity="0.9">spec-driven</text>
+    <!-- Pill 4 -->
+    <rect x="568" y="174" width="70" height="22" rx="11" fill="#8b5cf6" fill-opacity="0.12" stroke="#8b5cf6" stroke-opacity="0.25" stroke-width="0.5"/>
+    <text x="582" y="189" fill="#a78bfa" opacity="0.9">memory</text>
   </g>
+
+  <!-- Version badge (top right) -->
+  <g transform="translate(700, 20)">
+    <rect width="52" height="20" rx="10" fill="#6366f1" fill-opacity="0.15" stroke="#6366f1" stroke-opacity="0.3" stroke-width="0.5"/>
+    <text x="10" y="14" font-family="'SF Mono', 'Fira Code', monospace" font-size="10" fill="#a78bfa" opacity="0.8">v0.5.1</text>
+  </g>
+
+  <!-- Subtle corner accents -->
+  <path d="M16 1h20" stroke="#6366f1" stroke-opacity="0.3" stroke-width="1"/>
+  <path d="M1 16v20" stroke="#6366f1" stroke-opacity="0.3" stroke-width="1"/>
+  <path d="M764 219h20" stroke="#8b5cf6" stroke-opacity="0.3" stroke-width="1"/>
+  <path d="M799 184v20" stroke="#8b5cf6" stroke-opacity="0.3" stroke-width="1"/>
+
+  <!-- Border glow -->
+  <rect x="0.5" y="0.5" width="799" height="219" rx="16" fill="none" stroke="url(#glow)" stroke-opacity="0.12"/>
 </svg>
