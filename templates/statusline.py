@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Claude Code Statusline — Context + Usage (single line)
-Installed by CWE /cwe:init to ~/.claude/statusline.sh
+Installed by CWE /cwe:init to ~/.claude/statusline.py
 """
 import json, sys, os
 

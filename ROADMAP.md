@@ -161,8 +161,8 @@ Detail files are read on-demand by Claude via file tools.
 ├── MEMORY.md              ← INDEX ONLY (200 lines max, auto-managed)
 │                            Summarizes: idea count, last session, current focus
 │                            Points to detail files for on-demand loading
+├── YYYY-MM-DD.md          ← Daily logs (auto-created by hooks)
 ├── ideas.md               ← Curated idea backlog for THIS project
-├── sessions.md            ← Session log for continuity
 ├── decisions.md           ← Project-level ADRs
 ├── patterns.md            ← Recognized work patterns (Homunculus-inspired)
 └── project-context.md     ← Tech stack, priorities, current sprint
@@ -232,8 +232,8 @@ User prompt with idea keywords
 
 #### 4c: Session Continuity
 
-- `session-start.sh` → reads memory/sessions.md + MEMORY.md for resume context
-- `session-stop.sh` → appends 1-3 line summary, keeps last 50 sessions
+- `session-start.sh` → reads MEMORY.md + daily logs for resume context
+- `session-stop.sh` → appends session-end entry to daily log
 - `idea-flush.sh` → counts ONLY current project's ideas
 
 #### 4d: Pattern Recognition (Homunculus-inspired, future)
@@ -252,7 +252,7 @@ new `templates/memory/` directory
 | Old | New | Purpose |
 | `~/.claude/cwe/idea-observations.toon` | `~/.claude/cwe/ideas/<project>.jsonl` | Project-scoped raw captures |
 | (global, all projects mixed) | `workflow/ideas.md` | Curated project backlog |
-| No session tracking | `memory/sessions.md` | Session continuity |
+| No session tracking | `memory/YYYY-MM-DD.md` (daily logs) | Session continuity |
 | No decision tracking | `memory/decisions.md` | ADRs |
 | No pattern tracking | `memory/patterns.md` | Work patterns (future) |
 
@@ -298,8 +298,8 @@ PreToolUse hooks for Safety Gate (Phase 8) and Git Standards (Phase 9) prepared 
 | Hook | Change |
 |------|--------|
 | `UserPromptSubmit` (idea-observer) | Output JSONL to memory/ideas.md |
-| `SessionStart` | Read memory/sessions.md, show resume context |
-| `Stop` (session-stop) | Append session summary to memory/sessions.md |
+| `SessionStart` | Read MEMORY.md + daily logs, show resume context |
+| `Stop` (session-stop) | Append session-end entry to daily log |
 | `Stop` (idea-flush) | Simplified — just notify count from memory/ideas.md |
 | **NEW:** `SubagentStop` | Log agent results for observability |
 | **NEW:** `PreToolUse` on `Bash(git commit*)` | Safety gate (Phase 8) |

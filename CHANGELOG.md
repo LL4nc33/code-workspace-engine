@@ -33,6 +33,10 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - `README.md`: Added explanation for `--dangerously-skip-permissions` flag, mentioned statusline setup in Quick Start
 - `.gitignore`: Hardened — protects private data (cwe-settings.yml, agent-memory, *.local.md/json/yml, credentials, keys, IDE settings)
 - `.claude/cwe-settings.yml`: Removed from tracking (user-local preference, created by `/cwe:init`)
+- `commands/init.md`: Fixed statusline path `.sh` → `.py` (was copying Python file with wrong extension)
+- `templates/statusline.py`: Fixed self-reference comment to `.py`
+- `templates/memory/sessions.md`: Deleted (deprecated since v0.4.2, replaced by daily logs)
+- `ROADMAP.md`: Updated active `sessions.md` references to daily logs
 
 ---
 

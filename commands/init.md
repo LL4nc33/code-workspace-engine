@@ -171,8 +171,8 @@ CWE provides a live statusline for Claude Code showing context usage, cost, and 
 ### Copy statusline script
 
 ```bash
-cp "${CLAUDE_PLUGIN_ROOT}/templates/statusline.py" "$HOME/.claude/statusline.sh"
-chmod +x "$HOME/.claude/statusline.sh"
+cp "${CLAUDE_PLUGIN_ROOT}/templates/statusline.py" "$HOME/.claude/statusline.py"
+chmod +x "$HOME/.claude/statusline.py"
 ```
 
 ### Configure Claude Code settings
@@ -180,7 +180,7 @@ chmod +x "$HOME/.claude/statusline.sh"
 Add the statusline to the user's Claude Code `settings.json`:
 
 ```bash
-claude config set --global status_line 'python3 ~/.claude/statusline.sh'
+claude config set --global status_line 'python3 ~/.claude/statusline.py'
 ```
 
 If it fails or the user declines, skip — the statusline is optional but recommended.
