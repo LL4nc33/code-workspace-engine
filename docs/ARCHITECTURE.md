@@ -121,6 +121,7 @@ Skills are proactive Markdown files in named directories under `skills/`. They a
 - **Routing skills** — `auto-delegation`, `agent-detection` — route work to agents
 - **Guard skills** — `safety-gate`, `git-standards` — enforce standards
 - **Quality skills** — `quality-gates`, `health-dashboard` — verify quality
+- **Coordination skills** — `delegator` — decompose + dispatch multi-agent requests
 - **Utility skills** — `project-docs`, `web-research` — support workflows
 
 ### Skill Activation

@@ -10,6 +10,7 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [0.5.1] — 2026-02-20
 
 ### Added
+- `skills/delegator/SKILL.md`: Multi-agent request coordination — decomposes multi-step requests into sub-tasks with dependency ordering and wave-based parallel dispatch
 - `hooks/scripts/_lib.sh`: Shared helper library for all hook scripts (`json_escape`, `json_msg`, `grep_count`, `line_count`, `resolve_root`, `resolve_slug`)
 - `templates/statusline.py`: Statusline template for automatic installation during `/cwe:init`
 - `docs/ARCHITECTURE.md`: Plugin architecture documentation (plugin structure, agent system, hook flow, skill system, memory)

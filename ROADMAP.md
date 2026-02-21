@@ -2,6 +2,11 @@
 
 ## Completed: v0.4.0a → v0.5.0
 
+### v0.5.1 — Hook Hardening + Delegator Skill
+- Delegator skill: Multi-agent request coordination with wave-based parallel dispatch
+- Hook hardening: shared `_lib.sh` for all hook scripts
+- ARCHITECTURE.md, statusline template, doc fixes
+
 ### v0.5.0 — Statusline + Polish
 - Statusline: Python-based status bar with context usage, cost (EUR/USD/GBP/CHF), time, lines changed
 - Currency configuration via `/cwe:init` stored in `.claude/cwe-settings.yml`

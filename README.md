@@ -135,7 +135,7 @@ Plugin skill matches? → Invoke skill (priority over agents)
     ↓ no
 CWE agent matches? → Delegate to agent
     ↓ no
-Multi-step task? → Orchestrate with subagents
+Multi-step task? → Delegate to subagents (via delegator skill)
     ↓ no
 Unclear? → Ask (max 2 questions)
 ```
@@ -292,7 +292,7 @@ Currency is configurable during `/cwe:init` (EUR, USD, GBP, CHF) and stored in `
 <details>
 <summary><strong>Skills — Proactive Workflows</strong></summary>
 
-CWE includes 8 skills that activate automatically based on context:
+CWE includes 9 skills that activate automatically based on context:
 
 |        Skill       |                   When it activates                         |
 |--------------------|-------------------------------------------------------------|
@@ -304,6 +304,7 @@ CWE includes 8 skills that activate automatically based on context:
 | `health-dashboard` | On `/cwe:quality health` — project health overview          |
 | `project-docs`     | When docs need updating — README, architecture              |
 | `web-research`     | Local web search (SearXNG + Firecrawl, URLs via `cwe-settings.yml`) |
+| `delegator`        | Multi-step requests — decomposes + dispatches to multiple agents    |
 
 </details>
 

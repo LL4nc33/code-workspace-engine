@@ -58,6 +58,7 @@ Just say what you need:
 | "plan the refactoring" | architect + writing-plans |
 | "simplify this function" | code-simplifier |
 | "create a new feature" | /feature-dev |
+| "build auth with tests" | delegator + builder + quality |
 
 **Override:** Say "manual" to disable.
 

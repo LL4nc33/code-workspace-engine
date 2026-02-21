@@ -58,7 +58,7 @@ Plugin skill matches? → Invoke skill
     ↓ no
 CWE agent matches? → Delegate to agent
     ↓ no
-Multi-step task? → Orchestrate with subagents
+Multi-step task? → Delegate to subagents (via delegator skill)
     ↓ no
 Unclear? → Ask (max 2 questions)
 ```
@@ -91,6 +91,8 @@ Stored per-project in `~/.claude/cwe/ideas/<project-slug>.jsonl` → Review with
 "Check for vulnerabilities"   → security
 "Document the API"            → researcher
 "Improve our workflow"        → guide
+"Build auth with tests and docs" → delegator (builder + quality + researcher)
+"Fix bug and add regression test" → delegator (builder + quality)
 ```
 
 Run `/cwe:help` for full documentation, commands, and plugin details.

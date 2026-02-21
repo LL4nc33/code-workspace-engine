@@ -24,7 +24,7 @@ Plugin skill matches? → Invoke skill
     ↓ no
 CWE agent matches? → Delegate to agent
     ↓ no
-Multi-step task? → Orchestrate with subagents
+Multi-step task? → Delegate to subagents (via delegator skill)
     ↓ no
 Unclear? → Ask (max 2 questions)
 ```
@@ -70,6 +70,34 @@ Plugin skills take priority over agent routing when matched.
 | create plugin, hook, command | plugin-dev skills | plugin-dev |
 | develop feature | `/feature-dev` | feature-dev |
 
+## Multi-step Detection
+
+Before routing to a single agent, check if the request requires **multiple agents**:
+
+### Triggers (invoke `delegator` skill)
+
+- Keywords match **2+ different agents** (e.g., "build" + "test" + "document")
+- Conjunctions across domains: "implement X **and** write tests **and** update docs"
+- Completeness keywords: "full", "complete", "end-to-end", "komplett", "mit allem"
+- Compound verbs: "implement, test, and deploy"
+- Feature-level implicit: "Add user authentication" (code + tests + docs)
+
+### NOT Multi-step (stay with single agent)
+
+- One verb, one domain: "Fix login bug" → builder
+- Question across topics: "Explain auth and caching" → explainer
+- Vague: "Look at the API" → ask (clarify first)
+
+### Examples
+
+```
+"Build auth with tests and docs"     → delegator (builder + quality + researcher)
+"Fix bug and add regression test"    → delegator (builder + quality)
+"Implement, test, and deploy"        → delegator (builder + quality + devops)
+```
+
+When multi-step is detected, invoke the `delegator` skill for decomposition and wave-based dispatch.
+
 ## Context Injection (Automatic)
 
 Standards are auto-loaded via `.claude/rules/` with `paths` frontmatter.
@@ -102,4 +130,6 @@ The `_index.yml` maps standards to both file paths AND task keywords.
 "Write tests for auth"    → quality (may delegate to builder)
 "What if we used GraphQL" → innovator
 "Look at this"            → ASK: "Fix, explain, or analyze?"
+"Build auth with tests and docs" → delegator (builder + quality + researcher)
+"Fix bug and add regression test" → delegator (builder + quality)
 ```

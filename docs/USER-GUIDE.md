@@ -272,7 +272,7 @@ Plugin skill matches? ──────→ Invoke skill (PRIORITY)
     ↓ no
 CWE agent matches? ────────→ Delegate to agent
     ↓ no
-Multi-step task? ──────────→ Orchestrate with subagents
+Multi-step task? ──────────→ Delegate to subagents (via delegator skill)
     ↓ no
 Unclear? ──────────────────→ Ask (max 2 questions)
 ```
@@ -1117,6 +1117,12 @@ Generation and maintenance of project documentation: README, ARCHITECTURE, API, 
 
 Web research capability using self-hosted SearXNG (meta-search engine) and Firecrawl (web scraping). Server URLs are configured per-project in `.claude/cwe-settings.yml` (`searxng_url`, `firecrawl_url`). Firecrawl is optional — trafilatura serves as always-available fallback. Used by agents that need to look up external documentation, compare technologies, or research best practices.
 
+### delegator
+
+**File:** `skills/delegator/SKILL.md`
+
+Multi-agent request coordination. When a user request requires 2+ different agents (e.g., "build auth with tests and docs"), the delegator decomposes it into sub-tasks with dependency ordering and executes them via wave-based parallel dispatch. Common patterns: Feature Dev (architect → builder → quality + researcher), Bug Fix + Test (builder → quality), Full Pipeline (architect → builder → quality + security + researcher → devops).
+
 ---
 
 ## 12. Quality Gates
@@ -1212,7 +1218,7 @@ code-workspace-engine/
 │   ├── innovator.md            # /cwe:innovator
 │   └── guide.md                # /cwe:guide
 │
-├── skills/                     # 8 Skills
+├── skills/                     # 9 Skills
 │   ├── auto-delegation/SKILL.md
 │   ├── agent-detection/SKILL.md
 │   ├── quality-gates/SKILL.md
@@ -1220,7 +1226,8 @@ code-workspace-engine/
 │   ├── git-standards/SKILL.md
 │   ├── health-dashboard/SKILL.md
 │   ├── project-docs/SKILL.md
-│   └── web-research/SKILL.md
+│   ├── web-research/SKILL.md
+│   └── delegator/SKILL.md
 │
 ├── hooks/                      # Automation
 │   ├── hooks.json              # Hook configuration

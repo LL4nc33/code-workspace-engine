@@ -16,6 +16,7 @@
     "development",
     "orchestration",
     "natural-language",
-    "plugin-integration"
+    "plugin-integration",
+    "delegation"
   ]
 }
