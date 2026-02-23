@@ -7,6 +7,26 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.6.2] — 2026-02-23
+
+### Fixed
+- `yt-transcript.sh` CRLF line endings causing "hook error" on every prompt (converted to LF)
+- Intent-router: Added missing `debug` agent (was completely absent)
+- Intent-router: German verb conjugations now match (`implementiere`, `erkläre`, `debugge`, etc.)
+- Intent-router: Umlaut alternatives (`ä`/`ae`, `ü`/`ue`) for non-UTF8 input
+- Intent-router: Removed `code` false positive from builder (triggered on "erkläre den Code")
+- Keyword coverage expanded from 13/35 → 41/41 test cases passing
+
+### Added
+- `.gitattributes`: Enforces LF line endings for `*.sh` and `*.py` files
+- Intent-router keywords: `architektur`, `systemdesign`, `migration`, `dokument`, `analysier`, `vergleich`, `deploy` (without -ment), `schwachstell`, `brainstorm` (without -ing), and many more
+
+### Changed
+- SVG header redesigned in terminal/ASCII-art style (Catppuccin Mocha palette)
+- `docs/plans/` removed from repo and added to `.gitignore` (session-specific, not plugin code)
+
+---
+
 ## [0.6.1] — 2026-02-23
 
 ### Added

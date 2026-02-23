@@ -8,7 +8,7 @@ source "$(dirname "$0")/_lib.sh"
 # Consume stdin to prevent hook errors (must be synchronous, no &)
 cat > /dev/null 2>&1
 
-VERSION="Code Workspace Engine v0.6.0"
+VERSION="Code Workspace Engine v0.6.2"
 MAX_MEMORY_CHARS=8000
 MAX_MEMORY_LINES=200
 

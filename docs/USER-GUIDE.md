@@ -1,6 +1,6 @@
 # CWE User Guide
 
-> Complete documentation for the Code Workspace Engine plugin v0.6.0
+> Complete documentation for the Code Workspace Engine plugin v0.6.2
 
 ---
 

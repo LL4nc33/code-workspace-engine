@@ -10,7 +10,7 @@ Display comprehensive help for CWE and all installed plugins.
 ## Output
 
 ```markdown
-# CWE - Code Workspace Engine v0.6.0
+# CWE - Code Workspace Engine v0.6.2
 
 Natural language orchestration for spec-driven development.
 
