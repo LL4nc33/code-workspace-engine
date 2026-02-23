@@ -7,6 +7,22 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.5.2] - 2026-02-23
+
+### Changed
+- CLAUDE.md radically reduced from 98 to ~8 lines (behavioral corrections only)
+- All 10 command descriptions sharpened with "MUSS VERWENDET WERDEN" pattern
+
+### Added
+- `hooks/scripts/intent-router.py`: UserPromptSubmit hook for automatic agent routing
+- Keyword-based intent detection routes prompts to correct CWE agent via systemMessage
+- Multi-agent detection triggers delegator skill for compound requests
+
+### Removed
+- Routing tables, Decision Flow, Quick Reference from CLAUDE.md (moved to hook)
+
+---
+
 ## [0.5.1] — 2026-02-20
 
 ### Added

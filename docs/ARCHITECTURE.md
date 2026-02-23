@@ -92,6 +92,7 @@ Hooks are event-driven shell scripts registered in `hooks/hooks.json`.
 
 | Event | Trigger | Scripts |
 |-------|---------|---------|
+| `UserPromptSubmit` | User sends a message | `intent-router.py` — keyword-based agent routing (runs first in chain) |
 | `UserPromptSubmit` | User sends a message | `idea-observer.sh` — captures ideas to JSONL |
 | `SessionStart` | Session begins | (cleared via hook) |
 | `Stop` | Session ends | `session-stop.sh` — daily log entry, cleanup |
@@ -111,6 +112,14 @@ Script returns JSON on stdout:
   {"systemMessage": "..."} — injected into conversation
   {} or exit 0 — no action
 ```
+
+### Intent Router Hook
+
+`hooks/scripts/intent-router.py` runs on every `UserPromptSubmit` event, first in the hook chain. It performs keyword matching with regex (no LLM inference) against the user's prompt and returns a `systemMessage` with a routing instruction to the correct CWE agent.
+
+When two or more agents are matched (e.g., "build" + "test" + "document"), the hook detects a multi-agent request and triggers the delegator skill for decomposition and wave-based dispatch.
+
+**Fallback chain:** intent-router hook → agent description matching → auto-delegation skill. If the hook finds no keyword match, it returns an empty response and Claude Code falls through to the next routing layer.
 
 ## Skill System
 
