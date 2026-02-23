@@ -1,5 +1,5 @@
 ---
-description: Delegate to devops agent - CI/CD, Docker, infrastructure, releases
+description: MUSS VERWENDET WERDEN für CI/CD Pipelines, Docker/Kubernetes Konfiguration, Infrastructure as Code, Deployment-Automatisierung und Production Operations. Experte für DevOps mit vollem Infrastruktur-Zugriff.
 allowed-tools: ["Task", "AskUserQuestion"]
 ---
 

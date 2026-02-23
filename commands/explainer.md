@@ -1,5 +1,5 @@
 ---
-description: Delegate to explainer agent - explanations, code walkthroughs, learning
+description: MUSS VERWENDET WERDEN für Code-Erklärungen, Architektur-Walkthroughs und Konzept-Vermittlung. Experte für Wissensvermittlung. STRIKT READ-ONLY - macht KEINE Änderungen.
 allowed-tools: ["Task", "AskUserQuestion"]
 ---
 

@@ -1,5 +1,5 @@
 ---
-description: Ask questions about the project, discuss ideas (READ-ONLY)
+description: MUSS VERWENDET WERDEN für Fragen, Diskussionen und Ideen-Austausch OHNE Code-Änderungen. STRIKT READ-ONLY.
 allowed-tools: ["Task", "AskUserQuestion"]
 ---
 
