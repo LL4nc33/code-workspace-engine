@@ -78,7 +78,7 @@ def scrape_firecrawl(url, firecrawl_url):
             headers={"Content-Type": "application/json"},
             method="POST",
         )
-        with urllib.request.urlopen(req, timeout=2) as resp:
+        with urllib.request.urlopen(req, timeout=10) as resp:
             result = json.loads(resp.read().decode("utf-8"))
         if result.get("success"):
             data = result.get("data", {})
