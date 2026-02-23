@@ -69,6 +69,7 @@ Plugin skills take priority over agent routing when matched.
 | update CLAUDE.md | `claude-md-improver` | claude-md-management |
 | create plugin, hook, command | plugin-dev skills | plugin-dev |
 | develop feature | `/feature-dev` | feature-dev |
+| youtube.com, youtu.be URL | `yt-transcript` | cwe (auto via hook) |
 
 ## Multi-step Detection
 
