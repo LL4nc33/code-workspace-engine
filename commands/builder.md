@@ -1,5 +1,5 @@
 ---
-description: Delegate to builder agent - implementation, bug fixes, code changes
+description: MUSS VERWENDET WERDEN für Code-Implementierung, Bug-Fixes, Refactoring und Feature-Entwicklung. Experte für Code-Änderungen mit vollem Dateisystem-Zugriff.
 allowed-tools: ["Task", "AskUserQuestion"]
 ---
 

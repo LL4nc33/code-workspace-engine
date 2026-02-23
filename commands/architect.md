@@ -1,5 +1,5 @@
 ---
-description: Delegate to architect agent - system design, ADRs, API design, spec shaping
+description: MUSS VERWENDET WERDEN für Systemdesign, Architekturentscheidungen, ADRs, technische Planung und Migrationsstrategien. Experte für High-Level-Planung. READ-ONLY außer für Markdown-Dokumentation.
 allowed-tools: ["Task", "AskUserQuestion", "Write", "Read", "Glob"]
 ---
 

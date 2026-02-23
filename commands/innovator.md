@@ -1,5 +1,5 @@
 ---
-description: Develop ideas from the collected backlog, brainstorming, creative solutions
+description: MUSS VERWENDET WERDEN für Brainstorming, Ideen-Entwicklung, kreative Lösungsansätze und Idea-Backlog-Review. Experte für kreative Ideation.
 allowed-tools: ["Task", "AskUserQuestion", "Read", "Write", "Bash"]
 ---
 

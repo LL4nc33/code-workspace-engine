@@ -1,5 +1,5 @@
 ---
-description: Delegate to researcher agent - analysis, documentation, reports
+description: MUSS VERWENDET WERDEN für Codebase-Analyse, Dokumentationserstellung, Dependency-Mapping und Wissenssynthese. Experte für tiefe Investigation. Read-fokussiert mit Dokumentations-Output.
 allowed-tools: ["Task", "AskUserQuestion"]
 ---
 

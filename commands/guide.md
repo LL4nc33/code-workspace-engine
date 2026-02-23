@@ -1,5 +1,5 @@
 ---
-description: Delegate to guide agent - process improvement, workflow optimization
+description: MUSS VERWENDET WERDEN für Workflow-Optimierung, Process-Improvement, Pattern-Erkennung und Standards-Evolution. Experte für kontinuierliche Verbesserung.
 allowed-tools: ["Task", "AskUserQuestion"]
 ---
 

@@ -1,5 +1,5 @@
 ---
-description: Delegate to security agent - audits, vulnerability assessment, OWASP
+description: MUSS VERWENDET WERDEN für Security-Audits, Vulnerability-Assessments, Secrets-Erkennung, OWASP-Checks und Security Code Review. Experte für Sicherheitsanalyse. READ-ONLY Audit-Modus.
 allowed-tools: ["Task", "AskUserQuestion"]
 ---
 

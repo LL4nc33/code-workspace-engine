@@ -1,5 +1,5 @@
 ---
-description: Delegate to quality agent - testing, coverage, quality metrics
+description: MUSS VERWENDET WERDEN für Testing, Coverage-Analyse, Quality Gates und Code-Metriken. Test-Experte mit Zugriff auf jest, eslint, nyc.
 allowed-tools: ["Task", "AskUserQuestion"]
 ---
 
