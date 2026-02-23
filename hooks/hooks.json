@@ -10,6 +10,11 @@
           },
           {
             "type": "command",
+            "command": "python3 ${CLAUDE_PLUGIN_ROOT}/hooks/scripts/url-scraper.py",
+            "timeout": 20
+          },
+          {
+            "type": "command",
             "command": "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/idea-observer.sh",
             "timeout": 3
           },
