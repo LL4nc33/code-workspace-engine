@@ -1,126 +1,79 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 260" width="800" height="260">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 320" width="800" height="320">
   <defs>
-    <style>
-      @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&amp;display=swap');
-    </style>
+    <!-- Terminal background -->
+    <linearGradient id="termBg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1e1e2e"/>
+      <stop offset="100%" stop-color="#181825"/>
+    </linearGradient>
+    <!-- Scanline effect -->
+    <pattern id="scanlines" width="800" height="4" patternUnits="userSpaceOnUse">
+      <rect width="800" height="2" fill="transparent"/>
+      <rect y="2" width="800" height="2" fill="#000" opacity="0.06"/>
+    </pattern>
+    <!-- Subtle CRT glow -->
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="0.5" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+    <!-- Cursor blink placeholder -->
+    <filter id="bright">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
   </defs>
 
-  <!-- Background - off-white / cream -->
-  <rect width="800" height="260" rx="0" fill="#fffbeb"/>
+  <!-- Terminal window frame -->
+  <rect width="800" height="320" rx="8" fill="#11111b"/>
 
-  <!-- Thick black border - brutalist -->
-  <rect x="2" y="2" width="796" height="256" rx="0" fill="none" stroke="#1a1a1a" stroke-width="4"/>
+  <!-- Title bar -->
+  <rect width="800" height="32" rx="8" fill="#313244"/>
+  <rect y="24" width="800" height="8" fill="#313244"/>
 
-  <!-- ============================================ -->
-  <!-- Agent Constellation (left side)              -->
-  <!-- ============================================ -->
-  <g transform="translate(130, 130)">
-    <!-- Hub circle - bold stroke, offset shadow -->
-    <ellipse cx="4" cy="4" rx="24" ry="24" fill="#1a1a1a" opacity="0.15"/>
-    <circle cx="0" cy="0" r="24" fill="#a78bfa" stroke="#1a1a1a" stroke-width="3"/>
-    <text x="0" y="5" text-anchor="middle" font-family="'Space Mono', 'SF Mono', monospace" font-size="14" font-weight="700" fill="#1a1a1a">CWE</text>
+  <!-- Window buttons -->
+  <circle cx="20" cy="16" r="6" fill="#f38ba8"/>
+  <circle cx="40" cy="16" r="6" fill="#f9e2af"/>
+  <circle cx="60" cy="16" r="6" fill="#a6e3a1"/>
 
-    <!-- Connection lines - thick, no-nonsense -->
-    <g stroke="#1a1a1a" stroke-width="2" stroke-opacity="0.2">
-      <line x1="0" y1="0" x2="-62" y2="-52"/>
-      <line x1="0" y1="0" x2="-75" y2="8"/>
-      <line x1="0" y1="0" x2="-48" y2="62"/>
-      <line x1="0" y1="0" x2="40" y2="-68"/>
-      <line x1="0" y1="0" x2="68" y2="-10"/>
-      <line x1="0" y1="0" x2="52" y2="55"/>
-      <line x1="0" y1="0" x2="-20" y2="-72"/>
-      <line x1="0" y1="0" x2="-38" y2="68"/>
-      <line x1="0" y1="0" x2="40" y2="35"/>
-      <line x1="0" y1="0" x2="14" y2="72"/>
-    </g>
+  <!-- Title bar text -->
+  <text x="400" y="20" text-anchor="middle" font-family="'SF Mono', 'Fira Code', 'JetBrains Mono', 'Cascadia Code', 'Consolas', monospace" font-size="12" fill="#cdd6f4" opacity="0.6">cwe@workspace ~ v0.6.1</text>
 
-    <!-- Agent nodes - bold colored circles with black outlines -->
-    <g stroke="#1a1a1a" stroke-width="2">
-      <circle cx="-62" cy="-52" r="8" fill="#fbbf24"/>
-      <circle cx="-75" cy="8" r="7" fill="#34d399"/>
-      <circle cx="-48" cy="62" r="7" fill="#f87171"/>
-      <circle cx="40" cy="-68" r="8" fill="#60a5fa"/>
-      <circle cx="68" cy="-10" r="7" fill="#fbbf24"/>
-      <circle cx="52" cy="55" r="7" fill="#a78bfa"/>
-      <circle cx="-20" cy="-72" r="6" fill="#f87171"/>
-      <circle cx="-38" cy="68" r="6" fill="#60a5fa"/>
-      <circle cx="40" cy="35" r="6" fill="#34d399"/>
-      <circle cx="14" cy="72" r="7" fill="#fbbf24"/>
-    </g>
+  <!-- Terminal body -->
+  <rect x="0" y="32" width="800" height="288" fill="url(#termBg)"/>
+  <rect x="0" y="32" width="800" height="288" fill="url(#scanlines)"/>
 
-    <!-- Node labels (tiny) -->
-    <g font-family="'Space Mono', monospace" font-size="5.5" fill="#1a1a1a" font-weight="700" text-anchor="middle" opacity="0.6">
-      <text x="-62" y="-64">build</text>
-      <text x="-75" y="-6">ask</text>
-      <text x="-48" y="77">sec</text>
-      <text x="40" y="-80">arch</text>
-      <text x="68" y="-22">ops</text>
-      <text x="52" y="69">guide</text>
-      <text x="-20" y="-82">dbg</text>
-      <text x="-38" y="82">res</text>
-      <text x="40" y="48">qual</text>
-      <text x="14" y="86">inno</text>
-    </g>
+  <!-- Terminal content -->
+  <g font-family="'SF Mono', 'Fira Code', 'JetBrains Mono', 'Cascadia Code', 'Consolas', monospace" filter="url(#glow)">
+
+    <!-- ASCII Art Logo -->
+    <text x="32" y="68" font-size="13" fill="#cba6f7" xml:space="preserve">  ██████ ██     ██ ███████</text>
+    <text x="32" y="84" font-size="13" fill="#cba6f7" xml:space="preserve"> ██      ██     ██ ██     </text>
+    <text x="32" y="100" font-size="13" fill="#cba6f7" xml:space="preserve"> ██      ██  █  ██ █████  </text>
+    <text x="32" y="116" font-size="13" fill="#cba6f7" xml:space="preserve"> ██      ██ ███ ██ ██     </text>
+    <text x="32" y="132" font-size="13" fill="#cba6f7" xml:space="preserve">  ██████  ███ ███  ███████</text>
+
+    <!-- Full name next to ASCII art -->
+    <text x="290" y="84" font-size="22" font-weight="bold" fill="#cdd6f4">Code Workspace Engine</text>
+    <text x="290" y="108" font-size="12" fill="#a6adc8">Claude Code Plugin — Hybrid Delegation System</text>
+
+    <!-- Separator -->
+    <text x="32" y="154" font-size="11" fill="#585b70" xml:space="preserve">──────────────────────────────────────────────────────────────────────────────────────────</text>
+
+    <!-- Agent graph - terminal style -->
+    <text x="32" y="176" font-size="11.5" fill="#a6e3a1" xml:space="preserve"><![CDATA[$ cwe --agents]]></text>
+
+    <text x="32" y="196" font-size="11" fill="#89b4fa" xml:space="preserve">                        ┌─ architect    ┌─ security</text>
+    <text x="32" y="210" font-size="11" fill="#89b4fa" xml:space="preserve">  builder ─┐   ┌─ ask   │              ├─ quality</text>
+    <text x="32" y="224" font-size="11" fill="#89b4fa" xml:space="preserve">  devops  ─┼── CWE ─────┤              └─ researcher</text>
+    <text x="32" y="238" font-size="11" fill="#89b4fa" xml:space="preserve">  debug   ─┘   └─ guide └─ explainer</text>
+    <text x="32" y="252" font-size="11" fill="#89b4fa" xml:space="preserve">                └─ innovator</text>
+
+    <!-- Feature tags line -->
+    <text x="32" y="278" font-size="11.5" fill="#a6e3a1" xml:space="preserve"><![CDATA[$ cwe --info]]></text>
+
+    <text x="32" y="298" font-size="11" fill="#f9e2af" xml:space="preserve"><![CDATA[  []]></text><text x="52" y="298" font-size="11" fill="#f38ba8">10 agents</text><text x="129" y="298" font-size="11" fill="#f9e2af" xml:space="preserve"><![CDATA[] []]></text><text x="149" y="298" font-size="11" fill="#a6e3a1">auto-delegate</text><text x="252" y="298" font-size="11" fill="#f9e2af" xml:space="preserve"><![CDATA[] []]></text><text x="272" y="298" font-size="11" fill="#89b4fa">hooks</text><text x="316" y="298" font-size="11" fill="#f9e2af" xml:space="preserve"><![CDATA[] []]></text><text x="336" y="298" font-size="11" fill="#cba6f7">spec-driven</text><text x="425" y="298" font-size="11" fill="#f9e2af" xml:space="preserve"><![CDATA[] []]></text><text x="445" y="298" font-size="11" fill="#fab387">memory</text><text x="497" y="298" font-size="11" fill="#f9e2af">]</text>
+
+    <!-- Cursor -->
+    <text x="32" y="316" font-size="11.5" fill="#a6e3a1" xml:space="preserve"><![CDATA[$ ]]></text><rect x="48" y="306" width="7" height="14" fill="#a6e3a1" opacity="0.8"/>
+
   </g>
-
-  <!-- ============================================ -->
-  <!-- Text Content (right side)                    -->
-  <!-- ============================================ -->
-
-  <!-- Supertitle - monospace, uppercase, heavy -->
-  <g>
-    <rect x="262" y="38" width="190" height="26" fill="#a78bfa" stroke="#1a1a1a" stroke-width="2"/>
-    <text x="272" y="56" font-family="'Space Mono', 'SF Mono', monospace" font-size="11" font-weight="700" fill="#1a1a1a" letter-spacing="2">CLAUDE CODE PLUGIN</text>
-  </g>
-
-  <!-- Main title - big, black, brutalist -->
-  <text x="262" y="112" font-family="'Space Mono', 'SF Mono', monospace" font-size="34" font-weight="700" fill="#1a1a1a" letter-spacing="-1">Code Workspace</text>
-  <text x="262" y="148" font-family="'Space Mono', 'SF Mono', monospace" font-size="34" font-weight="700" fill="#1a1a1a" letter-spacing="-1">Engine</text>
-
-  <!-- Thick separator -->
-  <rect x="262" y="160" width="380" height="3" fill="#1a1a1a"/>
-
-  <!-- Tagline -->
-  <text x="262" y="186" font-family="'Space Mono', 'SF Mono', monospace" font-size="11" fill="#1a1a1a" opacity="0.6" letter-spacing="0.3">Hybrid delegation — agents, hooks &amp; skills as one.</text>
-
-  <!-- Feature pills - neobrutalist style with shadows -->
-  <g font-family="'Space Mono', 'SF Mono', monospace" font-size="9" font-weight="700">
-    <!-- Pill 1 -->
-    <rect x="265" y="203" width="78" height="24" rx="0" fill="#1a1a1a" opacity="0.12"/>
-    <rect x="262" y="200" width="78" height="24" rx="0" fill="#fbbf24" stroke="#1a1a1a" stroke-width="2"/>
-    <text x="276" y="216" fill="#1a1a1a">10 agents</text>
-
-    <!-- Pill 2 -->
-    <rect x="353" y="203" width="102" height="24" rx="0" fill="#1a1a1a" opacity="0.12"/>
-    <rect x="350" y="200" width="102" height="24" rx="0" fill="#a78bfa" stroke="#1a1a1a" stroke-width="2"/>
-    <text x="366" y="216" fill="#1a1a1a">auto-delegate</text>
-
-    <!-- Pill 3 -->
-    <rect x="465" y="203" width="90" height="24" rx="0" fill="#1a1a1a" opacity="0.12"/>
-    <rect x="462" y="200" width="90" height="24" rx="0" fill="#34d399" stroke="#1a1a1a" stroke-width="2"/>
-    <text x="476" y="216" fill="#1a1a1a">spec-driven</text>
-
-    <!-- Pill 4 -->
-    <rect x="565" y="203" width="58" height="24" rx="0" fill="#1a1a1a" opacity="0.12"/>
-    <rect x="562" y="200" width="58" height="24" rx="0" fill="#f87171" stroke="#1a1a1a" stroke-width="2"/>
-    <text x="574" y="216" fill="#1a1a1a">hooks</text>
-
-    <!-- Pill 5 -->
-    <rect x="636" y="203" width="72" height="24" rx="0" fill="#1a1a1a" opacity="0.12"/>
-    <rect x="633" y="200" width="72" height="24" rx="0" fill="#60a5fa" stroke="#1a1a1a" stroke-width="2"/>
-    <text x="647" y="216" fill="#1a1a1a">memory</text>
-  </g>
-
-  <!-- Version badge (top right) - neobrutalist -->
-  <g transform="translate(697, 18)">
-    <rect x="3" y="3" width="58" height="24" rx="0" fill="#1a1a1a" opacity="0.15"/>
-    <rect width="58" height="24" rx="0" fill="#fffbeb" stroke="#1a1a1a" stroke-width="2"/>
-    <text x="10" y="16" font-family="'Space Mono', 'SF Mono', monospace" font-size="10" font-weight="700" fill="#1a1a1a">v0.6.1</text>
-  </g>
-
-  <!-- Corner decoration - brutalist squares -->
-  <rect x="8" y="8" width="8" height="8" fill="#1a1a1a" opacity="0.15"/>
-  <rect x="784" y="8" width="8" height="8" fill="#1a1a1a" opacity="0.15"/>
-  <rect x="8" y="244" width="8" height="8" fill="#1a1a1a" opacity="0.15"/>
-  <rect x="784" y="244" width="8" height="8" fill="#1a1a1a" opacity="0.15"/>
 </svg>
