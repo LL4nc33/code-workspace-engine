@@ -10,10 +10,13 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [0.6.1] — 2026-02-23
 
 ### Added
+- `hooks/scripts/url-scraper.py`: Auto-scrapes non-YouTube URLs in user prompts (Firecrawl → trafilatura → curl fallback)
 - Intent-router: Utility command routing for `yt-transcript`, `screenshot`, `web-research`
+- Intent-router: Generic URLs suppressed via `hook_handled` flag (no false routing to builder/researcher)
 - `/cwe:init` Step 1f: SearXNG/Firecrawl configuration with connectivity test
 
 ### Changed
+- Hook chain order: intent-router → **url-scraper** → idea-observer → yt-transcript
 - `commands/yt-transcript.md`: Deduplicated — now calls existing hook script instead of inline Python
 - `commands/web-research.md`: All scraping outputs now JSON-formatted for machine consumption
 - `commands/screenshot.md`: Added cleanup step (removes temp PNG after analysis)

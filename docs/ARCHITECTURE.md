@@ -93,6 +93,7 @@ Hooks are event-driven shell scripts registered in `hooks/hooks.json`.
 | Event | Trigger | Scripts |
 |-------|---------|---------|
 | `UserPromptSubmit` | User sends a message | `intent-router.py` — keyword-based agent routing (runs first in chain) |
+| `UserPromptSubmit` | User sends a message | `url-scraper.py` — auto-scrapes non-YouTube URLs (Firecrawl → trafilatura → curl) |
 | `UserPromptSubmit` | User sends a message | `idea-observer.sh` — captures ideas to JSONL |
 | `SessionStart` | Session begins | (cleared via hook) |
 | `Stop` | Session ends | `session-stop.sh` — daily log entry, cleanup |
