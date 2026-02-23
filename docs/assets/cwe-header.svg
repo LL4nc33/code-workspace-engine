@@ -123,7 +123,7 @@
   <!-- Version badge (top right) -->
   <g transform="translate(700, 20)">
     <rect width="52" height="20" rx="10" fill="#6366f1" fill-opacity="0.15" stroke="#6366f1" stroke-opacity="0.3" stroke-width="0.5"/>
-    <text x="10" y="14" font-family="'SF Mono', 'Fira Code', monospace" font-size="10" fill="#a78bfa" opacity="0.8">v0.5.1</text>
+    <text x="10" y="14" font-family="'SF Mono', 'Fira Code', monospace" font-size="10" fill="#a78bfa" opacity="0.8">v0.6.0</text>
   </g>
 
   <!-- Subtle corner accents -->

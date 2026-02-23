@@ -7,19 +7,23 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
-## [0.5.2] - 2026-02-23
-
-### Changed
-- CLAUDE.md radically reduced from 98 to ~8 lines (behavioral corrections only)
-- All 10 command descriptions sharpened with "MUSS VERWENDET WERDEN" pattern
+## [0.6.0] — 2026-02-23 (Hybrid Delegation)
 
 ### Added
 - `hooks/scripts/intent-router.py`: UserPromptSubmit hook for automatic agent routing
 - Keyword-based intent detection routes prompts to correct CWE agent via systemMessage
-- Multi-agent detection triggers delegator skill for compound requests
+- Multi-agent detection (2+ agents matched) triggers delegator skill for compound requests
+- `commands/yt-transcript.md`: YouTube transcript extraction command (no API key required)
+- `hooks/scripts/yt-transcript.sh`: UserPromptSubmit hook auto-detects YouTube URLs
+
+### Changed
+- **CLAUDE.md radically reduced** from 98 to ~8 lines — behavioral corrections only, routing moved to hook
+- All 10 command descriptions sharpened with "MUSS VERWENDET WERDEN für..." pattern (German imperative)
+- Agent routing now hook-driven (systemMessage) instead of prose-based (CLAUDE.md tables)
+- Fallback chain: intent-router hook → agent descriptions → auto-delegation skill
 
 ### Removed
-- Routing tables, Decision Flow, Quick Reference from CLAUDE.md (moved to hook)
+- Routing tables, Decision Flow, Quick Reference, Idea Capture docs from CLAUDE.md (moved to hook + skills)
 
 ---
 

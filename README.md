@@ -4,7 +4,7 @@
   <br><br>
 
   <a href="#quick-start"><img src="https://img.shields.io/badge/Quick_Start-3_Steps-6366f1?style=flat-square" alt="Quick Start"></a>
-  <img src="https://img.shields.io/badge/version-0.5.1-8b5cf6?style=flat-square" alt="Version">
+  <img src="https://img.shields.io/badge/version-0.6.0-8b5cf6?style=flat-square" alt="Version">
   <img src="https://img.shields.io/badge/agents-10-6366f1?style=flat-square" alt="Agents">
   <img src="https://img.shields.io/badge/claude_code-plugin-8b5cf6?style=flat-square" alt="Claude Code Plugin">
   <img src="https://img.shields.io/badge/license-MIT-6366f1?style=flat-square" alt="License">
@@ -370,7 +370,8 @@ See [CHANGELOG.md](CHANGELOG.md) for full history. See [ROADMAP.md](ROADMAP.md) 
 
 |   Version  |                                  Highlights                                |
 |------------|----------------------------------------------------------------------------|
-| **0.5.1**  | Hook hardening (_lib.sh), ARCHITECTURE.md, statusline template, doc fixes  | (current)
+| **0.6.0**  | Hybrid delegation: intent-router hook, minimal CLAUDE.md, sharp descriptions | (current)
+| **0.5.1**  | Hook hardening (_lib.sh), ARCHITECTURE.md, statusline template, doc fixes  |
 | **0.5.0**  | Statusline with live cost/context tracking, currency config, hook fixes    |
 | **0.4.4**  | Removed cwe-memory MCP, added screenshot + web-research, consistency fixes |
 | **0.4.3**  | Documentation: USER-GUIDE, README rewrite, SVG assets                      |
