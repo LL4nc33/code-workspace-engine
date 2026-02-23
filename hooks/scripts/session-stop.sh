@@ -29,4 +29,5 @@ if [ -d "${ROOT}/memory" ]; then
   find "${ROOT}/memory" -maxdepth 1 -name "????-??-??.md" -type f -mtime +30 -delete 2>/dev/null
 fi
 
-json_msg "Session complete. Daily log updated. Run /cwe:start next time to continue."
+# Silent — no systemMessage to avoid confusing "Session complete" after every turn
+exit 0
