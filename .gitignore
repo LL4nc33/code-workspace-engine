@@ -7,6 +7,7 @@
 .claude/cwe-settings.yml
 .claude/agent-memory/
 .claude/agent-memory-local/
+docs/plans/
 *.local.md
 *.local.json
 *.local.yml
