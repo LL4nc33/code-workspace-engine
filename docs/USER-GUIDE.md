@@ -284,6 +284,7 @@ Unclear? ──────────────────→ Ask (max 2 qu
 | Intent | Agent | Keywords |
 |--------|-------|----------|
 | Write/fix code | **builder** | implement, fix, build, create, code, feature, bug, refactor |
+| Debug/investigate | **debug** | debug, investigate, diagnose, root cause, stack trace |
 | Questions/discussion | **ask** | question, discuss, think about |
 | Explain code | **explainer** | explain, how, what, why, understand |
 | Testing/quality | **quality** | test, write tests, coverage, quality, validate, metrics, gate |
@@ -310,6 +311,26 @@ Unclear? ──────────────────→ Ask (max 2 qu
 ### "manual" Override
 
 Say **"manual"** or **"no delegation"** to disable Auto-Delegation. CWE will then process your request directly without delegating to an agent.
+
+### Two-Layer Routing Model
+
+CWE uses two complementary routing layers for auto-delegation:
+
+**Layer 1: Intent Router Hook** (keyword-based, fast, pre-LLM)
+The `intent-router.py` hook runs on every `UserPromptSubmit` event before the LLM processes the message. It matches keywords against a predefined pattern table and injects a `systemMessage` routing hint. This is instant and deterministic -- no token cost.
+
+**Layer 2: Auto-Delegation Skill** (LLM-based, context-aware, fallback)
+If the intent router does not inject a routing hint, the auto-delegation skill analyzes the full prompt with LLM reasoning. This handles ambiguous requests, multi-step detection, and plugin skill matching.
+
+```
+User prompt
+    ↓
+Layer 1: intent-router.py (keyword match?)
+    ├── yes → systemMessage hint injected → LLM follows hint
+    └── no  → Layer 2: auto-delegation skill (LLM analyzes intent)
+```
+
+Layer 1 handles the common case fast. Layer 2 handles everything else with full context awareness.
 
 ### Real-World Examples
 
@@ -891,7 +912,7 @@ Hooks are shell scripts and prompts that automatically react to events. They run
 | `SessionStart` | Session begins | Context Injection |
 | `Stop` | Session ends | Write Daily Log |
 | `PreCompact` | Context is being compacted | Save memory |
-| `UserPromptSubmit` | User writes something | Idea Observer |
+| `UserPromptSubmit` | User writes something | Idea Observer, Intent Router, URL Scraper, YT Transcript |
 | `SubagentStop` | Agent finishes | Agent Logging |
 | `PreToolUse (Bash)` | Before Bash command | Safety Gate, Commit Format, Branch Naming |
 
@@ -937,6 +958,24 @@ Scans every user message for idea keywords:
 - English: idea, what if, could we, maybe, alternative, improvement
 
 Match → JSONL entry in `~/.claude/cwe/ideas/<project-slug>.jsonl`
+
+### UserPromptSubmit: Intent Router
+
+**Script:** `hooks/scripts/intent-router.py`
+
+Keyword-based agent routing that runs before the LLM sees the prompt. Matches user input against predefined keyword patterns and injects a `systemMessage` hint for the appropriate agent. This is Layer 1 of the Two-Layer Routing Model (see [Section 4](#4-understanding-auto-delegation)).
+
+### UserPromptSubmit: URL Scraper
+
+**Script:** `hooks/scripts/url-scraper.py`
+
+Automatically detects non-YouTube URLs in user messages and scrapes their content using Firecrawl (with trafilatura fallback). The scraped content is injected as `systemMessage` so Claude can reference it directly.
+
+### UserPromptSubmit: YT Transcript
+
+**Script:** `hooks/scripts/yt-transcript.sh`
+
+Detects YouTube URLs (`youtube.com`, `youtu.be`) in user messages and extracts the video transcript. The transcript is injected as `systemMessage` for immediate use.
 
 ### SubagentStop: Agent Logging
 
@@ -994,6 +1033,9 @@ Session Start
 User works
     │
     ├── idea-observer.sh → Ideas captured
+    ├── intent-router.py → Agent routing
+    ├── url-scraper.py → URL content scraped
+    ├── yt-transcript.sh → YouTube transcript fetched
     ├── safety-gate.sh → Commits checked
     ├── commit-format.sh → Format validated
     ├── branch-naming.sh → Branch validated
@@ -1232,10 +1274,14 @@ code-workspace-engine/
 ├── hooks/                      # Automation
 │   ├── hooks.json              # Hook configuration
 │   └── scripts/
+│       ├── _lib.sh             # Shared helper functions
 │       ├── session-start.sh    # Context Injection
 │       ├── session-stop.sh     # Daily Log + Cleanup
 │       ├── idea-observer.sh    # Idea Capture
 │       ├── idea-flush.sh       # Idea Export
+│       ├── intent-router.py    # Keyword-based Agent Routing
+│       ├── url-scraper.py      # Auto URL Scraping
+│       ├── yt-transcript.sh    # YouTube Transcript Extraction
 │       ├── subagent-stop.sh    # Agent Logging
 │       ├── safety-gate.sh      # Pre-Commit Scanning
 │       ├── commit-format.sh    # Conventional Commits
@@ -1264,6 +1310,7 @@ code-workspace-engine/
 │   │   └── cwe-header.svg
 │   └── plans/                  # Design documents
 │
+├── .gitattributes                # Git LFS / line ending config
 ├── CLAUDE.md                   # Plugin configuration
 ├── README.md                   # GitHub README
 ├── CHANGELOG.md                # Version History

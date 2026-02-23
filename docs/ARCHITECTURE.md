@@ -35,10 +35,24 @@ code-workspace-engine/
 │   ├── safety-gate/         # Secret scanning pre-commit
 │   ├── quality-gates/       # Coverage/complexity checks
 │   ├── health-dashboard/    # Project health overview
-│   └── project-docs/        # Documentation maintenance
+│   ├── project-docs/        # Documentation maintenance
+│   ├── web-research/        # Web search + scraping coordination
+│   └── delegator/           # Multi-agent decomposition + dispatch
 ├── hooks/                   # Event-driven automation
 │   ├── hooks.json           # Hook event registrations
-│   └── scripts/             # Shell scripts for hooks
+│   └── scripts/             # Shell/Python scripts for hooks
+│       ├── _lib.sh          # Shared shell utilities
+│       ├── intent-router.py # Keyword-based agent routing
+│       ├── url-scraper.py   # Auto-scrape URLs (Firecrawl/trafilatura/curl)
+│       ├── idea-observer.sh # Capture ideas to JSONL
+│       ├── yt-transcript.sh # YouTube transcript + metadata
+│       ├── safety-gate.sh   # Secret scanning pre-commit
+│       ├── commit-format.sh # Conventional Commits enforcement
+│       ├── branch-naming.sh # Branch naming validation
+│       ├── session-start.sh # Memory injection, version display
+│       ├── session-stop.sh  # Daily log entry, cleanup
+│       ├── subagent-stop.sh # Agent execution logging
+│       └── idea-flush.sh    # Flush idea backlog
 ├── .claude/rules/           # Auto-loaded coding standards
 │   ├── global-standards.md
 │   ├── api-standards.md
@@ -49,6 +63,7 @@ code-workspace-engine/
 │   ├── memory/              # Memory file templates
 │   ├── specs/               # Spec templates
 │   └── statusline.py        # Statusline script
+├── .gitattributes           # Git LFS and line-ending config
 └── docs/                    # Plugin documentation
 ```
 
@@ -95,7 +110,8 @@ Hooks are event-driven shell scripts registered in `hooks/hooks.json`.
 | `UserPromptSubmit` | User sends a message | `intent-router.py` — keyword-based agent routing (runs first in chain) |
 | `UserPromptSubmit` | User sends a message | `url-scraper.py` — auto-scrapes non-YouTube URLs (Firecrawl → trafilatura → curl) |
 | `UserPromptSubmit` | User sends a message | `idea-observer.sh` — captures ideas to JSONL |
-| `SessionStart` | Session begins | (cleared via hook) |
+| `UserPromptSubmit` | User sends a message | `yt-transcript.sh` — fetches YouTube transcript + metadata |
+| `SessionStart` | Session begins | `session-start.sh` — Memory injection, version display |
 | `Stop` | Session ends | `session-stop.sh` — daily log entry, cleanup |
 | `SubagentStop` | Agent completes | `subagent-stop.sh` — logs agent execution |
 | `PreToolUse` | Before tool execution | `safety-gate` (prompt-based) — scans for secrets |
@@ -121,6 +137,22 @@ Script returns JSON on stdout:
 When two or more agents are matched (e.g., "build" + "test" + "document"), the hook detects a multi-agent request and triggers the delegator skill for decomposition and wave-based dispatch.
 
 **Fallback chain:** intent-router hook → agent description matching → auto-delegation skill. If the hook finds no keyword match, it returns an empty response and Claude Code falls through to the next routing layer.
+
+### URL Auto-Scraper
+
+`hooks/scripts/url-scraper.py` runs on `UserPromptSubmit` when the user message contains a non-YouTube URL. It extracts page content using a three-tier fallback chain:
+
+1. **Firecrawl** (Playwright rendering, ~3-5s timeout) — best for JS-heavy pages
+2. **trafilatura** — fast article extraction, no JS
+3. **curl + html.parser** — minimal fallback
+
+Output is written to `/tmp/url-scrape-<hash>.json` and injected as a `systemMessage`. YouTube URLs are skipped (deferred to `yt-transcript.sh`).
+
+### YouTube Transcript Hook
+
+`hooks/scripts/yt-transcript.sh` runs on `UserPromptSubmit` when the user message contains a YouTube URL (`youtube.com` or `youtu.be`). It auto-detects the video ID, fetches the transcript and metadata (title, channel, duration).
+
+Output is written to `/tmp/yt-transcript-<id>.json` and injected as a `systemMessage`.
 
 ## Skill System
 

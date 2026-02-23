@@ -131,6 +131,8 @@ User request
     ↓
 Explicit /command? → Execute command directly
     ↓ no
+Intent-router hook? → Route to matched agent (keyword-based, runs before LLM)
+    ↓ no match
 Plugin skill matches? → Invoke skill (priority over agents)
     ↓ no
 CWE agent matches? → Delegate to agent
@@ -140,20 +142,32 @@ Multi-step task? → Delegate to subagents (via delegator skill)
 Unclear? → Ask (max 2 questions)
 ```
 
+### Hook Chain
+
+Hooks run automatically on every user prompt, in order:
+
+| Hook | Timeout | Purpose |
+|------|---------|---------|
+| `intent-router.py` | 3s | Keyword-based agent routing (before LLM) |
+| `url-scraper.py` | 30s | Auto-scrapes non-YouTube URLs (Firecrawl → trafilatura → curl fallback) |
+| `idea-observer.sh` | 3s | Captures ideas mentioned in conversation |
+| `yt-transcript.sh` | 45s | Auto-fetches YouTube video transcripts |
+
 ### Intent → Agent Mapping
 
-|                                 Keywords                                     |     Agent      |
-|------------------------------------------------------------------------------|----------------|
-| implement, build, create, fix, code, feature, bug, refactor                  | **builder**    |
-| question, discuss, think about                                               | **ask**        |
-| explain, how, what, why, understand                                          | **explainer**  |
-| test, write tests, coverage, quality, validate, assert, metrics, flaky, gate | **quality**    |
-| security, audit, vulnerability, scan, gdpr, owasp, cve                       | **security**   |
-| deploy, docker, ci, cd, release, kubernetes, k8s, terraform                  | **devops**     |
-| design, architecture, adr, api, schema                                       | **architect**  |
-| analyze, document, research, compare                                         | **researcher** |
-| brainstorm, idea, ideas, what if, alternative, explore                       | **innovator**  |
-| workflow, process, pattern, improve, optimize, optimization                  | **guide**      |
+|                                 Keywords                                              |     Agent      |
+|---------------------------------------------------------------------------------------|----------------|
+| implement, implementiere, build, create, fix, code, feature, bug, refactor            | **builder**    |
+| debug, crash, fehlersuche, troubleshoot, root-cause                                   | **debug**      |
+| question, frage, discuss, think about                                                 | **ask**        |
+| explain, erkläre, how, what, why, understand                                          | **explainer**  |
+| test, write tests, coverage, quality, validate, assert, metrics, flaky, gate          | **quality**    |
+| security, audit, vulnerability, scan, gdpr, owasp, cve                                | **security**   |
+| deploy, docker, ci, cd, release, kubernetes, k8s, terraform                           | **devops**     |
+| design, architecture, adr, api, schema                                                | **architect**  |
+| analyze, analysiere, document, dokumentiere, research, compare                        | **researcher** |
+| brainstorm, idea, ideas, what if, alternative, explore                                | **innovator**  |
+| workflow, process, pattern, improve, optimize, optimization                           | **guide**      |
 
 Say **"manual"** to disable auto-delegation.
 
@@ -371,6 +385,7 @@ See [CHANGELOG.md](CHANGELOG.md) for full history. See [ROADMAP.md](ROADMAP.md) 
 |   Version  |                                  Highlights                                |
 |------------|----------------------------------------------------------------------------|
 | **0.6.2**  | CRLF fix, debug agent, expanded keywords, terminal SVG | (current)
+| **0.6.1**  | URL Auto-Scraper: Firecrawl → trafilatura → curl fallback, JSON output |
 | **0.6.0**  | Hybrid delegation: intent-router hook, minimal CLAUDE.md, sharp descriptions |
 | **0.5.1**  | Hook hardening (_lib.sh), ARCHITECTURE.md, statusline template, doc fixes  |
 | **0.5.0**  | Statusline with live cost/context tracking, currency config, hook fixes    |
