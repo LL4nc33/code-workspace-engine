@@ -11,7 +11,7 @@
           {
             "type": "command",
             "command": "python3 ${CLAUDE_PLUGIN_ROOT}/hooks/scripts/url-scraper.py",
-            "timeout": 20
+            "timeout": 30
           },
           {
             "type": "command",

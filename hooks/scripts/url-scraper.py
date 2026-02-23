@@ -78,7 +78,7 @@ def scrape_firecrawl(url, firecrawl_url):
             headers={"Content-Type": "application/json"},
             method="POST",
         )
-        with urllib.request.urlopen(req, timeout=15) as resp:
+        with urllib.request.urlopen(req, timeout=2) as resp:
             result = json.loads(resp.read().decode("utf-8"))
         if result.get("success"):
             data = result.get("data", {})
@@ -138,7 +138,7 @@ def scrape_curl(url):
         req = urllib.request.Request(url, headers={
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
         })
-        with urllib.request.urlopen(req, timeout=10) as resp:
+        with urllib.request.urlopen(req, timeout=5) as resp:
             html_bytes = resp.read()
             html_text = html_bytes.decode("utf-8", errors="replace")
 
