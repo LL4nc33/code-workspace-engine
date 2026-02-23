@@ -66,6 +66,29 @@ AGENTS = [
     },
 ]
 
+# Utility command patterns — checked BEFORE agents (higher priority)
+# These route to /cwe: commands via Skill tool, not Task subagents
+UTILITIES = [
+    {
+        "command": "yt-transcript",
+        "patterns": [
+            r"https?://(www\.)?(youtube\.com|youtu\.be)/",
+            r"\b(youtube|video.?transcript|transkript)\b",
+        ],
+    },
+    {
+        "command": "screenshot",
+        "patterns": [r"\b(screenshot|clipboard|zwischenablage|bildschirmfoto)\b"],
+    },
+    {
+        "command": "web-research",
+        "patterns": [
+            r"\b(web.?search|web.?research|google|suche?.im.?(web|internet|netz))\b",
+            r"\b(scrape|crawl|webseite.?lesen)\b",
+        ],
+    },
+]
+
 
 def extract_prompt(stdin_data):
     """Extract user prompt from hook stdin JSON."""
@@ -104,10 +127,30 @@ def match_agents(prompt):
     return matched
 
 
+def match_utility(prompt):
+    """Check if prompt matches a utility command."""
+    prompt_lower = prompt.lower()
+    for entry in UTILITIES:
+        for pattern in entry["patterns"]:
+            if re.search(pattern, prompt_lower):
+                return entry["command"]
+    return None
+
+
 def route(prompt):
-    """Determine the best agent for this prompt."""
+    """Determine the best agent or utility for this prompt."""
     if should_skip(prompt):
         return None
+
+    # Utility commands take priority (youtube URLs, screenshot, web search)
+    utility = match_utility(prompt)
+    if utility:
+        return {
+            "agent": utility,
+            "utility": True,
+            "matched": [utility],
+            "reason": f"Utility command matched: {utility}",
+        }
 
     matched = match_agents(prompt)
 
@@ -145,7 +188,14 @@ def main():
         print(json.dumps({}))
         return
 
-    if result["skill"]:
+    if result.get("utility"):
+        cmd = result["agent"]
+        msg = (
+            f"CWE routing: This request matches utility command '{cmd}' ({result['reason']}). "
+            f"Use the Skill tool with skill='cwe:{cmd}' to handle this. "
+            f"Do not handle it manually."
+        )
+    elif result.get("skill"):
         msg = (
             f"CWE routing: Multi-agent request detected ({result['reason']}). "
             f"Use the delegator skill (Skill tool: cwe:delegator) to decompose and dispatch."

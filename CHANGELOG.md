@@ -7,6 +7,20 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.6.1] — 2026-02-23
+
+### Added
+- Intent-router: Utility command routing for `yt-transcript`, `screenshot`, `web-research`
+- `/cwe:init` Step 1f: SearXNG/Firecrawl configuration with connectivity test
+
+### Changed
+- `commands/yt-transcript.md`: Deduplicated — now calls existing hook script instead of inline Python
+- `commands/web-research.md`: All scraping outputs now JSON-formatted for machine consumption
+- `commands/screenshot.md`: Added cleanup step (removes temp PNG after analysis)
+- `commands/yt-transcript.md`, `screenshot.md`, `web-research.md`: Descriptions updated to "MUSS VERWENDET WERDEN" pattern
+
+---
+
 ## [0.6.0] — 2026-02-23 (Hybrid Delegation Release)
 
 ### Changed

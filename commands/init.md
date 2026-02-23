@@ -185,6 +185,38 @@ claude config set --global status_line 'python3 ~/.claude/statusline.py'
 
 If it fails or the user declines, skip — the statusline is optional but recommended.
 
+## Step 1f: Configure Web Research (optional)
+
+CWE's `/cwe:web-research` command uses local self-hosted services for web search and scraping.
+
+Ask the user with AskUserQuestion:
+
+```
+Question: "Hast du SearXNG und/oder Firecrawl lokal laufen?"
+Header: "Web Research"
+Options:
+  1. "Ja, beides" - SearXNG + Firecrawl sind erreichbar
+  2. "Nur SearXNG" - Nur Metasearch, Scraping via trafilatura
+  3. "Nein, überspringen" - Web Research wird nicht konfiguriert (Recommended)
+```
+
+### If "Ja, beides" or "Nur SearXNG":
+
+Ask for URLs (defaults: SearXNG `http://localhost:8080`, Firecrawl `http://localhost:3002`).
+
+Write or update `.claude/cwe-settings.yml`:
+
+```yaml
+searxng_url: http://localhost:8080
+firecrawl_url: http://localhost:3002
+```
+
+### Quick connectivity test:
+
+```bash
+curl -s --max-time 3 "${SEARXNG_URL:-http://localhost:8080}/search?q=test&format=json" | python3 -c "import sys,json; d=json.load(sys.stdin); print(f'SearXNG OK — {len(d.get(\"results\",[]))} results')" 2>/dev/null || echo "SearXNG nicht erreichbar"
+```
+
 ---
 
 ## Step 2: Check existing workflow setup

@@ -1,5 +1,5 @@
 ---
-description: Screenshot aus Zwischenablage einfuegen und analysieren (Windows/macOS/Linux)
+description: MUSS VERWENDET WERDEN wenn User einen Screenshot analysieren will oder Bild aus Zwischenablage braucht. Multi-OS (WSL2/macOS/Linux).
 allowed-tools: ["Bash", "Read"]
 ---
 
@@ -50,3 +50,9 @@ fi
 3. **Wenn `NO_IMAGE`**: Sage dem User dass kein Bild in der Zwischenablage ist — er soll zuerst einen Screenshot machen.
 
 4. **Wenn `MISSING_TOOL:...`**: Sage dem User welches Tool fehlt und wie er es installiert.
+
+5. **Cleanup**: Nach der Analyse die temporäre Datei löschen:
+
+```bash
+rm -f "$(pwd)/clipboard-screenshot.png"
+```
