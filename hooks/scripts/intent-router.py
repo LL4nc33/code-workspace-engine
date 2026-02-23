@@ -77,6 +77,13 @@ UTILITIES = [
         ],
     },
     {
+        "command": "url-scraper",
+        "patterns": [
+            r"https?://(?!.*(youtube\.com|youtu\.be)/)\S+",  # any non-YouTube URL
+        ],
+        "hook_handled": True,  # url-scraper hook already scrapes this
+    },
+    {
         "command": "screenshot",
         "patterns": [r"\b(screenshot|clipboard|zwischenablage|bildschirmfoto)\b"],
     },
@@ -128,12 +135,12 @@ def match_agents(prompt):
 
 
 def match_utility(prompt):
-    """Check if prompt matches a utility command."""
+    """Check if prompt matches a utility command. Returns entry dict or None."""
     prompt_lower = prompt.lower()
     for entry in UTILITIES:
         for pattern in entry["patterns"]:
             if re.search(pattern, prompt_lower):
-                return entry["command"]
+                return entry
     return None
 
 
@@ -145,11 +152,13 @@ def route(prompt):
     # Utility commands take priority (youtube URLs, screenshot, web search)
     utility = match_utility(prompt)
     if utility:
+        if utility.get("hook_handled"):
+            return None  # Another hook handles this, don't route
         return {
-            "agent": utility,
+            "agent": utility["command"],
             "utility": True,
-            "matched": [utility],
-            "reason": f"Utility command matched: {utility}",
+            "matched": [utility["command"]],
+            "reason": f"Utility command matched: {utility['command']}",
         }
 
     matched = match_agents(prompt)
