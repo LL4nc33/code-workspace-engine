@@ -7,23 +7,43 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
-## [0.6.0] — 2026-02-23 (Hybrid Delegation)
+## [0.6.0] — 2026-02-23 (Hybrid Delegation Release)
+
+### Changed
+- Version bump 0.5.4 → 0.6.0 across all files (plugin.json, CLAUDE.md, README, help.md, session-start.sh, USER-GUIDE, header SVG)
+- Agent routing now hook-driven (systemMessage) instead of prose-based (CLAUDE.md tables)
+- Fallback chain: intent-router hook → agent descriptions → auto-delegation skill
+- `docs/ARCHITECTURE.md`: Added Intent Router Hook section with fallback chain documentation
+
+---
+
+## [0.5.4] — 2026-02-23
+
+### Changed
+- **CLAUDE.md radically reduced** from 98 to ~8 lines — behavioral corrections only, routing moved to hook
+- All 10 command descriptions sharpened with "MUSS VERWENDET WERDEN für..." pattern (German imperative)
+
+### Removed
+- Routing tables, Decision Flow, Quick Reference, Idea Capture docs from CLAUDE.md (moved to hook + skills)
+
+---
+
+## [0.5.3] — 2026-02-23
 
 ### Added
 - `hooks/scripts/intent-router.py`: UserPromptSubmit hook for automatic agent routing
 - Keyword-based intent detection routes prompts to correct CWE agent via systemMessage
 - Multi-agent detection (2+ agents matched) triggers delegator skill for compound requests
+- Registered intent-router as first hook in UserPromptSubmit chain (before idea-observer)
+
+---
+
+## [0.5.2] — 2026-02-23
+
+### Added
 - `commands/yt-transcript.md`: YouTube transcript extraction command (no API key required)
 - `hooks/scripts/yt-transcript.sh`: UserPromptSubmit hook auto-detects YouTube URLs
-
-### Changed
-- **CLAUDE.md radically reduced** from 98 to ~8 lines — behavioral corrections only, routing moved to hook
-- All 10 command descriptions sharpened with "MUSS VERWENDET WERDEN für..." pattern (German imperative)
-- Agent routing now hook-driven (systemMessage) instead of prose-based (CLAUDE.md tables)
-- Fallback chain: intent-router hook → agent descriptions → auto-delegation skill
-
-### Removed
-- Routing tables, Decision Flow, Quick Reference, Idea Capture docs from CLAUDE.md (moved to hook + skills)
+- Pure Python 3 stdlib implementation — no API keys, no dependencies
 
 ---
 
