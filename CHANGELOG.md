@@ -16,6 +16,9 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Intent-router: Umlaut alternatives (`ä`/`ae`, `ü`/`ue`) for non-UTF8 input
 - Intent-router: Removed `code` false positive from builder (triggered on "erkläre den Code")
 - Keyword coverage expanded from 13/35 → 41/41 test cases passing
+- `session-stop.sh`: Removed misleading "Session complete" message (fires every turn, not just session end)
+- `idea-flush.sh`: Only notifies when unreviewed idea count changes (no more repeated messages every turn)
+- `docs/plans/` removed from repo (session-specific, added to `.gitignore`)
 
 ### Added
 - `.gitattributes`: Enforces LF line endings for `*.sh` and `*.py` files
