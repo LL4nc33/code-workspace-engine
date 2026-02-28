@@ -21,6 +21,7 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - `docs/plans/` removed from repo (session-specific, added to `.gitignore`)
 
 ### Added
+- `/cwe:gitea` command: Privater Git-Mirror auf Gitea — push, list, create, delete, clone, status (config via `~/.claude/cwe.local.md`)
 - `.gitattributes`: Enforces LF line endings for `*.sh` and `*.py` files
 - Intent-router keywords: `architektur`, `systemdesign`, `migration`, `dokument`, `analysier`, `vergleich`, `deploy` (without -ment), `schwachstell`, `brainstorm` (without -ing), and many more
 

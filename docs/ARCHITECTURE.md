@@ -27,7 +27,8 @@ code-workspace-engine/
 │   ├── help.md              # Documentation
 │   ├── plugins.md           # Dependency management
 │   ├── screenshot.md        # Screenshot capture
-│   └── web-research.md      # Web search + scraping
+│   ├── web-research.md      # Web search + scraping
+│   └── gitea.md             # Gitea Git-Mirror management
 ├── skills/                  # Proactive skills (auto-activated)
 │   ├── auto-delegation/     # Routes requests to agents
 │   ├── agent-detection/     # Assigns agents to tasks

@@ -1242,7 +1242,7 @@ code-workspace-engine/
 │   ├── researcher.md           # Analyst (READ-ONLY + docs/)
 │   └── security.md             # Security Auditor (RESTRICTED)
 │
-├── commands/                   # 16 Slash Commands
+├── commands/                   # 17 Slash Commands
 │   ├── help.md                 # /cwe:help
 │   ├── init.md                 # /cwe:init (Project Setup)
 │   ├── start.md                # /cwe:start (Guided Workflow)
@@ -1258,7 +1258,8 @@ code-workspace-engine/
 │   ├── explainer.md            # /cwe:explainer
 │   ├── quality.md              # /cwe:quality
 │   ├── innovator.md            # /cwe:innovator
-│   └── guide.md                # /cwe:guide
+│   ├── guide.md                # /cwe:guide
+│   └── gitea.md                # /cwe:gitea (Git-Mirror Management)
 │
 ├── skills/                     # 9 Skills
 │   ├── auto-delegation/SKILL.md
