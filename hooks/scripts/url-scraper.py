@@ -2,13 +2,14 @@
 """CWE URL Scraper — UserPromptSubmit hook.
 
 Detects non-YouTube URLs in user prompts, scrapes content via
-Firecrawl → trafilatura → curl fallback, saves JSON to /tmp.
+Firecrawl → trafilatura → curl fallback, saves JSON to the system temp dir.
 """
 
 import hashlib
 import json
 import re
 import sys
+import tempfile
 import urllib.request
 import urllib.error
 from datetime import datetime, timezone
@@ -224,8 +225,8 @@ def main():
         "scraped_at": datetime.now(timezone.utc).isoformat(),
     }
 
-    # Save to /tmp
-    temp_file = f"/tmp/url-scrape-{url_hash(url)}.json"
+    # Save to the system temp dir (/tmp on Linux/WSL, %TEMP% on Windows)
+    temp_file = str(Path(tempfile.gettempdir()) / f"url-scrape-{url_hash(url)}.json")
     with open(temp_file, "w", encoding="utf-8") as f:
         json.dump(output, f, ensure_ascii=False, indent=2)
 

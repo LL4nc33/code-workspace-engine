@@ -5,12 +5,12 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 ${CLAUDE_PLUGIN_ROOT}/hooks/scripts/intent-router.py",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/_py.sh intent-router.py",
             "timeout": 3
           },
           {
             "type": "command",
-            "command": "python3 ${CLAUDE_PLUGIN_ROOT}/hooks/scripts/url-scraper.py",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/_py.sh url-scraper.py",
             "timeout": 30
           },
           {
@@ -25,7 +25,7 @@
           },
           {
             "type": "command",
-            "command": "python3 ${CLAUDE_PLUGIN_ROOT}/hooks/scripts/handoff-sync.py",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/_py.sh handoff-sync.py",
             "timeout": 15
           }
         ]
@@ -41,7 +41,7 @@
           },
           {
             "type": "command",
-            "command": "python3 ${CLAUDE_PLUGIN_ROOT}/hooks/scripts/mt-session-init.py",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/_py.sh mt-session-init.py",
             "timeout": 10
           }
         ]
