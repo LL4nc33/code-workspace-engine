@@ -204,16 +204,16 @@ curl -s --max-time 3 "${SEARXNG_URL:-http://localhost:4000}/search?q=test&format
 
 ## Step 1g: Configure Transcript Service (optional)
 
-CWE's `/cwe:transcript` command supports Instagram/TikTok/Podcast URLs via a user-provided [TScribe](https://github.com/transcribe-tools/tscribe)-compatible faster-whisper API. YouTube always works via tubetranscript fallback (no config needed).
+CWE's `/cwe:transcript` command supports Instagram/TikTok/Podcast URLs via a user-provided self-hosted faster-whisper API. YouTube always works via tubetranscript fallback (no config needed).
 
 Ask the user with AskUserQuestion:
 
 ```
-Question: "Hast du einen TScribe-kompatiblen Whisper-Server fuer Instagram/TikTok/Podcast Transkripte?"
+Question: "Hast du einen faster-whisper-Server fuer Instagram/TikTok/Podcast Transkripte?"
 Header: "Transcript"
 Options:
-  1. "Ja, TScribe-URL eintragen" - User gibt eigene URL an
-  2. "Nein, nur YouTube" - tubetranscript Fallback, skip TScribe
+  1. "Ja, Whisper-Server-URL eintragen" - User gibt eigene URL an
+  2. "Nein, nur YouTube" - tubetranscript Fallback, skip Whisper server
 ```
 
 ### If "Ja":

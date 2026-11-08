@@ -124,7 +124,7 @@ Never used CWE before? This is the end-to-end story of bringing a project online
 **Expected time**
 
 - **~5 minutes** if you skip every optional service (plugin install + folder creation only)
-- **15–30 minutes** if you configure the full stack (MCP servers, SearXNG/Firecrawl, TScribe, Stirling PDF, media API keys, Remotion, Gitea, BookStack, Multi-Terminal)
+- **15–30 minutes** if you configure the full stack (MCP servers, SearXNG/Firecrawl, Whisper server, Stirling PDF, media API keys, Remotion, Gitea, BookStack, Multi-Terminal)
 
 You can always re-run `/cwe:init` later to configure any service you skipped — it is idempotent and only prompts for missing pieces.
 
@@ -183,7 +183,7 @@ Installs `~/.claude/statusline.py` if missing (never overwrites a customized one
 SearXNG (default `http://localhost:4000`) and Firecrawl (`http://localhost:3002`) for `/cwe:web-research`. URLs saved to `.claude/cwe-settings.yml`. Skip = command stays inert.
 
 **Step 1g — Transcript service (optional)**
-TScribe-compatible Whisper URL for Instagram/TikTok/Podcast transcripts via `/cwe:transcript`. YouTube always works without this. Key: `tscribe_url`.
+faster-whisper-compatible Whisper URL for Instagram/TikTok/Podcast transcripts via `/cwe:transcript`. YouTube always works without this. Key: `tscribe_url`.
 
 **Step 1h — Stirling PDF (optional)**
 URL for the [Stirling PDF](https://github.com/Stirling-Tools/Stirling-PDF) container that backs `/cwe:pdf` (default `http://localhost:8080`). Option to print the Docker run one-liner. Key: `stirling_pdf_url`.
@@ -987,7 +987,7 @@ This ensures you always have the current project context without manually openin
 
 ### Stop: Memory Flush + Daily Log
 
-Three hooks run sequentially at session end:
+Hooks registered for the same event run in parallel, not sequentially. At session end:
 
 **1. Prompt Hook:** Instructs Claude to update MEMORY.md and the Daily Log (documentation checklist).
 
@@ -1031,7 +1031,7 @@ Automatically detects non-YouTube URLs in user messages and scrapes their conten
 
 **Script:** `hooks/scripts/transcript.sh`
 
-Detects YouTube URLs (`youtube.com`, `youtu.be`) in user messages and extracts the video transcript via tubetranscript. The transcript is injected as `systemMessage` for immediate use. For non-YouTube URLs (Instagram, TikTok, Podcasts), use `/cwe:transcript` which routes through a user-configured TScribe server.
+Detects YouTube URLs (`youtube.com`, `youtu.be`) in user messages and extracts the video transcript via tubetranscript. The transcript is injected as `systemMessage` for immediate use. For non-YouTube URLs (Instagram, TikTok, Podcasts), use `/cwe:transcript` which routes through a user-configured Whisper server.
 
 ### SubagentStop: Agent Logging
 
@@ -1416,7 +1416,7 @@ CWE integrates with several configurable external services. All endpoints are se
 | **SearXNG** | Meta-search engine (self-hosted) | `searxng_url` | `/cwe:web-research`, `web-research` skill |
 | **Firecrawl** | Web scraping with JS rendering | `firecrawl_url` | `/cwe:web-research`, `url-scraper.py` hook |
 | **Stirling PDF** | PDF-to-image rendering | `stirling_pdf_url` | `/cwe:pdf` |
-| **TScribe** | Video/audio transcription (faster-whisper, self-hosted) | `tscribe_url` | `/cwe:transcript` (non-YouTube URLs) |
+| **Whisper server** | Video/audio transcription (faster-whisper, self-hosted) | `tscribe_url` | `/cwe:transcript` (non-YouTube URLs) |
 | **OpenRouter** | LLM gateway incl. Gemini (used for image generation) | API key in `scripts/media-keys.sh` | `image` skill |
 | **MagicHour** | Image/video generation APIs | API key in `scripts/media-keys.sh` | `video`, `faceswap`, `headswap`, `upscale` skills |
 | **Gitea** | Private git mirror | `gitea_url`, SSH key | `/cwe:gitea` |
@@ -1426,7 +1426,7 @@ CWE integrates with several configurable external services. All endpoints are se
 ### Fallback behavior
 
 - **Firecrawl** is optional — `trafilatura` runs as always-available local fallback in `url-scraper.py`.
-- **TScribe** is optional for YouTube — `tubetranscript` serves YouTube transcripts directly without TScribe.
+- **Whisper server** is optional for YouTube — `tubetranscript` serves YouTube transcripts directly without Whisper server.
 - All other services are used only when the corresponding command is invoked.
 
 ### Configuration file
@@ -1478,7 +1478,7 @@ Grouped by category. Descriptions pulled from each command's frontmatter.
 
 | Command | Description |
 |---------|-------------|
-| `/cwe:transcript` | Video/audio transcripts for URLs (YouTube, Instagram, TikTok, podcasts) via TScribe (self-hosted faster-whisper) or tubetranscript fallback |
+| `/cwe:transcript` | Video/audio transcripts for URLs (YouTube, Instagram, TikTok, podcasts) via self-hosted Whisper server (faster-whisper) or tubetranscript fallback |
 | `/cwe:pdf` | Read/analyze PDFs — converts pages to images via Stirling PDF API and reads them visually |
 
 **Utilities**
@@ -1534,7 +1534,7 @@ code-workspace-engine/
 │   ├── researcher.md           # /cwe:researcher
 │   ├── security.md             # /cwe:security
 │   │  # Content Tools
-│   ├── transcript.md           # /cwe:transcript — TScribe + tubetranscript
+│   ├── transcript.md           # /cwe:transcript — Whisper server + tubetranscript
 │   ├── pdf.md                  # /cwe:pdf — Stirling PDF rendering
 │   │  # Utilities
 │   ├── screenshot.md           # /cwe:screenshot — Multi-OS clipboard capture
@@ -1577,7 +1577,7 @@ code-workspace-engine/
 │       ├── idea-flush.sh       # Idea Export
 │       ├── intent-router.py    # Keyword-based Agent Routing
 │       ├── url-scraper.py      # Auto URL Scraping
-│       ├── transcript.sh       # Transcript Extraction (YouTube + optional TScribe)
+│       ├── transcript.sh       # Transcript Extraction (YouTube + optional Whisper server)
 │       ├── subagent-stop.sh    # Agent Logging
 │       ├── safety-gate.sh      # Pre-Commit Scanning
 │       ├── commit-format.sh    # Conventional Commits
