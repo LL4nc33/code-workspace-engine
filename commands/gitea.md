@@ -25,13 +25,19 @@ Config-Format (in `$HOME/.claude/cwe.local.md`):
 gitea:
   url: https://<your-gitea-host>
   user: <your-user>
-  password: <your-password>
+  token: <access-token>        # bevorzugt — in Gitea unter Settings → Applications
+  # password: <your-password>  # Fallback; ein Token ist sicherer
 ```
 
-Setze die Variablen:
+Setze die Variablen und exportiere sie in die Umgebung (NICHT in die Remote-URL schreiben):
 - `GITEA_URL` — Server-URL (ohne trailing slash)
 - `GITEA_USER` — User
-- `GITEA_PASS` — Passwort
+- `GITEA_TOKEN` — Access-Token (bevorzugt), sonst `GITEA_PASS`
+
+```bash
+GITEA_CRED="${GITEA_TOKEN:-$GITEA_PASS}"     # Token bevorzugt, Passwort als Fallback
+export GITEA_URL GITEA_USER GITEA_TOKEN GITEA_PASS GITEA_CRED
+```
 
 ## Subcommands
 
@@ -47,11 +53,11 @@ Pushed das aktuelle Git-Repo auf Gitea.
    - Sonst aus dem Verzeichnisnamen (`basename $(git rev-parse --show-toplevel)`)
 3. Pruefe ob Repo auf Gitea existiert:
    ```bash
-   curl -s -u "$GITEA_USER:$GITEA_PASS" "$GITEA_URL/api/v1/repos/$GITEA_USER/<repo-name>"
+   curl -s -u "$GITEA_USER:$GITEA_CRED" "$GITEA_URL/api/v1/repos/$GITEA_USER/<repo-name>"
    ```
 4. Falls Repo NICHT existiert → erstelle es:
    ```bash
-   curl -s -u "$GITEA_USER:$GITEA_PASS" -X POST "$GITEA_URL/api/v1/user/repos" \
+   curl -s -u "$GITEA_USER:$GITEA_CRED" -X POST "$GITEA_URL/api/v1/user/repos" \
      -H "Content-Type: application/json" \
      -d '{"name": "<repo-name>", "private": true, "description": "Mirror from local"}'
    ```
@@ -59,29 +65,28 @@ Pushed das aktuelle Git-Repo auf Gitea.
    ```bash
    git remote get-url gitea 2>/dev/null
    ```
-   Falls nicht → hinzufuegen:
+   Die Remote-URL enthaelt **keine** Credentials:
    ```bash
-   git remote add gitea "https://$GITEA_USER:$GITEA_PASS@<host>/<user>/<repo>.git"
+   git remote add gitea "$GITEA_URL/$GITEA_USER/<repo>.git"      # neu
+   git remote set-url gitea "$GITEA_URL/$GITEA_USER/<repo>.git"  # aktualisieren
    ```
-   Falls URL nicht stimmt → aktualisieren:
+6. Push — Credentials kommen ueber einen ephemeren Credential-Helper aus der
+   Umgebung, nicht aus der URL (landen so nicht in `.git/config` oder `git remote -v`):
    ```bash
-   git remote set-url gitea "https://$GITEA_USER:$GITEA_PASS@<host>/<user>/<repo>.git"
-   ```
-6. Push:
-   ```bash
-   git push gitea --all
-   git push gitea --tags
+   GIT_CRED='!f() { echo "username=${GITEA_USER}"; echo "password=${GITEA_CRED}"; }; f'
+   git -c credential.helper="$GIT_CRED" push gitea --all
+   git -c credential.helper="$GIT_CRED" push gitea --tags
    ```
 7. Zeige Erfolg: Repo-URL und Anzahl gepushter Branches/Tags
 
-**WICHTIG:** Die Remote-URL enthaelt das Passwort im Klartext. Das ist fuer ein lokales Homelab-Setup akzeptabel. Warne den User NICHT darueber — er hat sich bewusst fuer Username/Passwort entschieden.
+**Sicherheit:** Credentials werden ueber einen ephemeren Git-Credential-Helper aus der Umgebung gelesen und landen **nicht** in der Remote-URL, in `.git/config` oder in `git remote -v`. Verwende bevorzugt einen Access-Token statt des Passworts.
 
 ### `list`
 
 Listet alle Repos des Users auf Gitea auf.
 
 ```bash
-curl -s -u "$GITEA_USER:$GITEA_PASS" "$GITEA_URL/api/v1/user/repos?limit=50"
+curl -s -u "$GITEA_USER:$GITEA_CRED" "$GITEA_URL/api/v1/user/repos?limit=50"
 ```
 
 Zeige als Tabelle:
@@ -93,7 +98,7 @@ Zeige als Tabelle:
 Erstellt ein leeres Repo auf Gitea.
 
 ```bash
-curl -s -u "$GITEA_USER:$GITEA_PASS" -X POST "$GITEA_URL/api/v1/user/repos" \
+curl -s -u "$GITEA_USER:$GITEA_CRED" -X POST "$GITEA_URL/api/v1/user/repos" \
   -H "Content-Type: application/json" \
   -d '{"name": "<name>", "private": true}'
 ```
@@ -107,7 +112,7 @@ Frage mit AskUserQuestion:
 Loescht ein Repo auf Gitea. **IMMER** vorher mit AskUserQuestion bestaetigen lassen!
 
 ```bash
-curl -s -u "$GITEA_USER:$GITEA_PASS" -X DELETE "$GITEA_URL/api/v1/repos/$GITEA_USER/<name>"
+curl -s -u "$GITEA_USER:$GITEA_CRED" -X DELETE "$GITEA_URL/api/v1/repos/$GITEA_USER/<name>"
 ```
 
 ### `clone <name>`
@@ -115,7 +120,8 @@ curl -s -u "$GITEA_USER:$GITEA_PASS" -X DELETE "$GITEA_URL/api/v1/repos/$GITEA_U
 Klont ein Repo von Gitea.
 
 ```bash
-git clone "https://$GITEA_USER:$GITEA_PASS@<host>/$GITEA_USER/<name>.git"
+GIT_CRED='!f() { echo "username=${GITEA_USER}"; echo "password=${GITEA_CRED}"; }; f'
+git -c credential.helper="$GIT_CRED" clone "$GITEA_URL/$GITEA_USER/<name>.git"
 ```
 
 ### `ssh-push` (für große Repos / LFS)
