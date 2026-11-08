@@ -1,6 +1,6 @@
 # CWE Architecture
 
-> Version: v0.8.2 · Last reviewed: 2026-04-21
+> Version: v0.8.3 · Last reviewed: 2026-11-08
 
 ## Overview
 

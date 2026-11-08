@@ -69,6 +69,11 @@ Targeted hardening against Claude Code 2.1.318. The git hooks never actually ran
   (bash + python + cygpath) could exceed 3 s, so their output was discarded.
 - `commands/handoff.md` commits as `chore(handoff): …` (the old `handoff(…)` type was
   rejected by the now-working commit-format hook).
+- `commands/init.md` onboarding commands corrected: plugin install uses the
+  marketplace-qualified name (`<name>@claude-plugins-official`, with a
+  `claude plugin marketplace add` fallback), and the statusline is set via a
+  `settings.json` `statusLine` block — the old `claude plugin install <name>` and
+  `claude config set … status_line` forms were invalid.
 - Docs: corrected the claim that same-event hooks run sequentially — they run in parallel.
 
 ### Changed
@@ -77,6 +82,9 @@ Targeted hardening against Claude Code 2.1.318. The git hooks never actually ran
   `tscribe_url` config key is unchanged, so existing configs keep working.
 - Private research command names removed from CHANGELOG/ROADMAP prose; they remain only
   in `.gitignore` (required to keep those files local-only).
+- Docs synced to v0.8.3 (README badge + version-history row, USER-GUIDE, ARCHITECTURE);
+  documented the opt-in flags `url_autoscrape` / `transcript_autofetch` in the
+  settings reference.
 
 ### Testing
 - Added `tests/hooks/test_git_hooks.sh` — drives real PreToolUse payloads through a

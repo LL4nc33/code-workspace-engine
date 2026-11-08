@@ -1,7 +1,7 @@
-# CWE v0.8.2 User Guide
+# CWE v0.8.3 User Guide
 
-> Complete documentation for the Code Workspace Engine plugin v0.8.2.
-> Last updated: 2026-04-21 (v0.8.2)
+> Complete documentation for the Code Workspace Engine plugin v0.8.3.
+> Last updated: 2026-11-08 (v0.8.3)
 
 ---
 
@@ -1428,6 +1428,7 @@ CWE integrates with several configurable external services. All endpoints are se
 - **Firecrawl** is optional — `trafilatura` runs as always-available local fallback in `url-scraper.py`.
 - **Whisper server** is optional for YouTube — `tubetranscript` serves YouTube transcripts directly without Whisper server.
 - All other services are used only when the corresponding command is invoked.
+- **Prompt auto-fetch is opt-in:** the `url-scraper.py` and `transcript.sh` hooks only act on URLs in your prompts when `url_autoscrape` / `transcript_autofetch` are `true`. Both are off by default — `/cwe:web-research` and `/cwe:transcript` always work on demand regardless.
 
 ### Configuration file
 
@@ -1440,6 +1441,10 @@ stirling_pdf_url: http://localhost:8080
 tscribe_url: http://localhost:5000
 gitea_url: https://gitea.example.org
 bookstack_url: https://docs.example.org
+
+# Opt-in behavior (off by default; the commands still work on demand):
+url_autoscrape: false        # auto-scrape non-YouTube URLs found in your prompts (SSRF-guarded)
+transcript_autofetch: false  # auto-fetch transcripts for media URLs found in your prompts
 ```
 
 ---
