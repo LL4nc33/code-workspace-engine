@@ -47,10 +47,15 @@ Use AskUserQuestion to ask the user:
 
 ### Install missing plugins
 
-For each plugin to install, run:
+For each plugin to install, run (the official marketplace `claude-plugins-official` is auto-added on first interactive start):
 ```bash
-claude plugin install <plugin-name>
+claude plugin install <plugin-name>@claude-plugins-official
 ```
+If the official marketplace isn't present yet (e.g. a non-interactive setup), add it first:
+```bash
+claude plugin marketplace add anthropics/claude-plugins-official
+```
+Inside a session you can instead use the interactive installer: `/plugin install <plugin-name>@claude-plugins-official` (or `/plugin` alone to browse).
 
 Show progress for each installation.
 
@@ -160,13 +165,19 @@ chmod +x "$HOME/.claude/statusline.py"
 
 ### Configure Claude Code settings
 
-Add the statusline to the user's Claude Code `settings.json` (safe to run even if already configured):
+Merge a `statusLine` block into the user's global settings at `~/.claude/settings.json` (merge — do NOT overwrite the file):
 
-```bash
-claude config set --global status_line 'python3 ~/.claude/statusline.py'
+```json
+{
+  "statusLine": {
+    "type": "command",
+    "command": "python3 ~/.claude/statusline.py",
+    "padding": 2
+  }
+}
 ```
 
-If it fails or the user declines, skip — the statusline is optional but recommended.
+On native Windows (no `python3`), use `python` in the command instead. There is no `claude config set` key for the statusline; `/statusline` is the interactive alternative. If the user declines, skip — the statusline is optional but recommended.
 
 ## Step 1f: Configure Web Research (optional)
 
