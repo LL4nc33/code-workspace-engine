@@ -86,7 +86,6 @@ Design + plan docs in `docs/plans/` (local, not tracked).
 - Qdrant memory stable + backed up
 - Documentation complete (API, ARCHITECTURE, USER-GUIDE refreshed)
 - CI tests for hooks + scripts
-- Plugin-marketplace-ready
 
 ---
 
@@ -105,7 +104,6 @@ Recent Claude Code releases added features that may replace CWE components:
 Each will be evaluated individually; CWE adopts only what adds value beyond native behavior.
 
 ### Community / Ecosystem
-- Plugin marketplace publishing (requires 1.0.0)
 - Community template profiles (api, pwa, fullstack)
 - Monorepo support (per-package workflow/)
 
