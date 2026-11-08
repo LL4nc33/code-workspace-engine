@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # SessionStart Hook: Status check + Memory injection for CWE
 # Reads project memory (MEMORY.md + daily logs) for session continuity
-# Outputs JSON: {"systemMessage": "..."}
+# Outputs additionalContext so the memory reaches Claude's context (not just the user)
 
 source "$(dirname "$0")/_lib.sh"
 
@@ -130,5 +130,5 @@ else
   FULL_MESSAGE="${HEADER}"
 fi
 
-# --- Output via safe JSON helper ---
-json_msg "$FULL_MESSAGE"
+# --- Output via additionalContext so the memory actually reaches Claude ---
+json_ctx "SessionStart" "$FULL_MESSAGE"

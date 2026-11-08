@@ -7,6 +7,98 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.8.3] — 2026-11-06 (Hook Correctness & Security — CC 2.1.3xx)
+
+Targeted hardening against Claude Code 2.1.318. The git hooks never actually ran
+(wrong stdin field), most hook output never reached Claude (`systemMessage` vs
+`additionalContext`), and several hooks/commands carried injection or SSRF risk.
+
+### Security
+- **Git hooks now function.** `safety-gate.sh` and `commit-format.sh` read
+  `tool_input.command` instead of the always-empty `command` — the secret scan and
+  commit-format check had silently exited 0 and blocked nothing.
+- `safety-gate.sh` patterns fixed: `sk-ant-…` keys match (`sk-[A-Za-z0-9_-]{20,}`);
+  private keys match via `grep -nEI -e` (leading `-` was read as an option); real
+  quote class instead of the no-op `\x27`.
+- `safety-gate.sh` scans the content actually shared — staged blob on commit, HEAD
+  blob on push, working tree on add; push scans `@{u}..HEAD`; the `git add` path is
+  rename/space-safe (`--porcelain -z -uall`).
+- `safety-gate.sh` also scans `git commit -a/-am/--all`: those stage modified tracked
+  files *during* the commit (after the hook), so the gate now additionally reads their
+  working-tree content — previously a secret could slip through `git commit -am`.
+- `safety-gate.sh` is now **fail-closed**: unexpected errors exit non-zero and, with
+  `onFailure: "block"` in `hooks.json`, block the commit instead of passing silently.
+- `url-scraper.py` is **opt-in** (`url_autoscrape`) and refuses private / loopback /
+  link-local / cloud-metadata addresses (SSRF guard).
+- `transcript.sh` is **opt-in** (`transcript_autofetch`), no longer spoofs
+  tubetranscript.com `Origin`/`Referer`, and discloses the third-party call.
+- Injection closed: `web-research` passes URLs via `sys.argv`, `bookstack` builds JSON
+  via `json.dumps`, media skills + `screenshot` quote their arguments.
+- `gitea.md` no longer writes the password into the remote URL (ephemeral git
+  credential helper from the environment, access token preferred); removed the
+  "do NOT warn the user" instruction.
+- Predictable `/tmp` paths replaced with `mktemp`/tempdir in `transcript.sh`,
+  `handoff-sync.py`, `web-research`, and `pdf` (no more fixed `rm -rf /tmp/cwe-pdf`).
+- Media skills marked `disable-model-invocation: true` so the model cannot trigger
+  paid APIs (MagicHour, OpenRouter) on its own.
+
+### Fixed
+- Hook output reaches Claude: routing, memory injection, url-scraper, transcript,
+  handoff-sync and mt-session-init emit `hookSpecificOutput.additionalContext` instead
+  of `systemMessage` (user-only) or the invalid `result` field.
+- `intent-router.py` no longer routes to a non-existent `debug` agent; debugging
+  keywords route to `builder`.
+- `branch-naming.sh` rewritten in Python: validates `git branch` and
+  `git worktree add -b` too, accepts quoted names and `tN-role` branches, no GNU-sed-only
+  syntax.
+- `commit-format.sh` / `safety-gate.sh` / `branch-naming.sh` emit block reasons on
+  stderr (exit 2 surfaces stderr, not stdout).
+- `session-stop.sh` labels PreCompact as "Context Compacted" instead of writing
+  "Session End" on every compaction.
+- `idea-observer.sh` matches the actual prompt, not the raw hook JSON envelope.
+- `handoff-sync.py` compares branch names exactly (`t1-dev` no longer excludes
+  `t1-dev2`); dropped dead `count_entries`.
+- `_lib.sh` builds hook JSON via `python json.dumps` (control chars no longer yield
+  invalid JSON); added a `json_ctx` helper for additionalContext.
+- `hooks.json` scopes the PreToolUse git hooks with `if` rules and quotes
+  `${CLAUDE_PLUGIN_ROOT}` (silences the `claude plugin validate` warning). Explicit
+  exact-match handlers (`Bash(git commit)`, `Bash(git push)`) are added alongside the
+  `*` forms so an argument-less `git push`/`git commit` is still scanned.
+- `hooks.json`: raised the `intent-router.py` and `idea-observer.sh` UserPromptSubmit
+  timeouts from 3 s to 10 s — on Windows cold start the parallel hook spawns
+  (bash + python + cygpath) could exceed 3 s, so their output was discarded.
+- `commands/handoff.md` commits as `chore(handoff): …` (the old `handoff(…)` type was
+  rejected by the now-working commit-format hook).
+- `commands/init.md` onboarding commands corrected: plugin install uses the
+  marketplace-qualified name (`<name>@claude-plugins-official`, with a
+  `claude plugin marketplace add` fallback), and the statusline is set via a
+  `settings.json` `statusLine` block — the old `claude plugin install <name>` and
+  `claude config set … status_line` forms were invalid.
+- Docs: corrected the claim that same-event hooks run sequentially — they run in parallel.
+
+### Changed
+- The self-hosted transcription backend is referred to generically (self-hosted
+  Whisper / faster-whisper) across README, docs, commands and `init`; the
+  `tscribe_url` config key is unchanged, so existing configs keep working.
+- Private research command names removed from CHANGELOG/ROADMAP prose; they remain only
+  in `.gitignore` (required to keep those files local-only).
+- Docs synced to v0.8.3 (README badge + version-history row, USER-GUIDE, ARCHITECTURE);
+  documented the opt-in flags `url_autoscrape` / `transcript_autofetch` in the
+  settings reference.
+
+### Testing
+- Added `tests/hooks/test_git_hooks.sh` — drives real PreToolUse payloads through a
+  throwaway repo; asserts the secret scan, commit-format and branch-naming hooks block
+  and pass correctly (17 cases, all green), covering commit / push / `git add -A` /
+  `git commit -am` modes. Note: the harness invokes the hook scripts directly, so the
+  `hooks.json` `if` scoping layer is not exercised by it.
+
+### Deferred (later phases)
+- UserPromptSubmit timeout/async handling and the keyword-router redesign.
+- Full README / USER-GUIDE / ARCHITECTURE / ROADMAP count & structure sync.
+
+---
+
 ## [0.8.2] — 2026-04-21 (Hardening — 10-Agent Review Pass)
 
 Full-codebase review by 10 parallel sub-agents (hooks, media scripts, utility scripts, agents, skills, commands, rules, templates, docs, plugin+privacy) produced 11 blockers and ~40 should-fix items. All blockers and most should-fix items resolved in a single release.
@@ -19,7 +111,7 @@ This release was smoke-tested on WSL2 (Ubuntu on Windows 11). The following code
 - `scripts/screenshot.py` `save_x11()` — xclip path (needs Linux X11 session)
 - MagicHour API integration end-to-end (local-path-detection verified; live API calls require valid key + hosted asset URLs)
 - OpenRouter API integration end-to-end (requires valid key)
-- TScribe transcript integration (requires user-hosted faster-whisper server)
+- Whisper server transcript integration (requires user-hosted faster-whisper server)
 - Stirling PDF integration (requires user-hosted Stirling server)
 - Gitea push/pull flows (requires Gitea instance)
 - BookStack uploads (requires BookStack instance)
@@ -67,7 +159,7 @@ All other paths (hook chain, intent-router, url-scraper, WSL2 screenshot, media 
 - `/cwe:screenshot`: Flipped from Bash-inline to `scripts/screenshot.py` — detects WSL2/macOS/Wayland/X11, reads clipboard, returns JSON (59 → 35 lines Markdown, deterministic logic in Python)
 
 ### Changed
-- `/cwe:init` expanded with 5 new optional setup steps: Transcript (TScribe URL), Stirling PDF, Media Keys (OpenRouter + MagicHour), Remotion project dir, Gitea/BookStack
+- `/cwe:init` expanded with 5 new optional setup steps: Transcript (Whisper server URL), Stirling PDF, Media Keys (OpenRouter + MagicHour), Remotion project dir, Gitea/BookStack
 - `/cwe:init` now detects existing `~/.claude/statusline.py` and does not overwrite it
 - `templates/statusline.py`: Compact one-line format (ctx | usage | time)
 - Hook scripts (`commit-format.sh`, `transcript.sh`) auto-detect `python3` or `python` via `$(command -v python3 || command -v python)` — fixes environments where only one binary exists
@@ -76,7 +168,7 @@ All other paths (hook chain, intent-router, url-scraper, WSL2 screenshot, media 
 - CHANGELOG, ARCHITECTURE, USER-GUIDE: All yt-transcript references renamed to transcript
 
 ### Security
-- Private research commands (doj-scrape, doj-search, newsroom) added to `.gitignore` — they stay local only
+- Private research commands added to `.gitignore` — they stay local only
 
 ---
 
@@ -93,12 +185,12 @@ All other paths (hook chain, intent-router, url-scraper, WSL2 screenshot, media 
 - API keys live in `scripts/media-keys.sh` (gitignored); `/cwe:init` configures them
 
 ### Added — Content Tools
-- `/cwe:transcript` (renamed from `/cwe:yt-transcript`): Audio/Video transcription for YouTube + any URL via user-configured TScribe (faster-whisper) server. tubetranscript remains as YouTube fallback when TScribe is unreachable.
+- `/cwe:transcript` (renamed from `/cwe:yt-transcript`): Audio/Video transcription for YouTube + any URL via user-configured self-hosted faster-whisper server. tubetranscript remains as YouTube fallback when Whisper server is unreachable.
 - `intent-router.py`: Now also routes Instagram/TikTok URLs to `/cwe:transcript`; added routing for `pdf`, `image`, `video`, `upscale`, `faceswap`, `headswap` commands
 
 ### Changed
 - Renamed `hooks/scripts/yt-transcript.sh` → `hooks/scripts/transcript.sh`
-- Removed all hardcoded private infrastructure — all external services (Stirling PDF, TScribe, SearXNG, Firecrawl, Remotion) now read from `.claude/cwe-settings.yml` with graceful fallbacks
+- Removed all hardcoded private infrastructure — all external services (Stirling PDF, Whisper server, SearXNG, Firecrawl, Remotion) now read from `.claude/cwe-settings.yml` with graceful fallbacks
 
 ---
 

@@ -1,6 +1,6 @@
 # CWE Architecture
 
-> Version: v0.8.2 · Last reviewed: 2026-04-21
+> Version: v0.8.3 · Last reviewed: 2026-11-08
 
 ## Overview
 
@@ -55,7 +55,7 @@ code-workspace-engine/
 │       ├── intent-router.py # Keyword-based agent routing
 │       ├── url-scraper.py   # Auto-scrape URLs (Firecrawl/trafilatura/curl)
 │       ├── idea-observer.sh # Capture ideas to JSONL
-│       ├── transcript.sh    # Transcribe (YouTube + via TScribe for IG/TikTok/Podcast)
+│       ├── transcript.sh    # Transcribe (YouTube + via Whisper server for IG/TikTok/Podcast)
 │       ├── safety-gate.sh   # Secret scanning pre-commit
 │       ├── commit-format.sh # Conventional Commits enforcement
 │       ├── branch-naming.sh # Branch naming validation
@@ -173,7 +173,7 @@ Output is written to `/tmp/url-scrape-<hash>.json` and injected as a `systemMess
 
 `hooks/scripts/transcript.sh` runs on `UserPromptSubmit` when the user message contains a YouTube URL (`youtube.com` or `youtu.be`). It auto-detects the video ID, fetches the transcript and metadata (title, channel, duration) via tubetranscript.
 
-The `/cwe:transcript` command additionally supports Instagram/TikTok/Podcast URLs via a user-configured TScribe (faster-whisper) server (`tscribe_url` in `cwe-settings.yml`).
+The `/cwe:transcript` command additionally supports Instagram/TikTok/Podcast URLs via a user-configured self-hosted faster-whisper server (`tscribe_url` in `cwe-settings.yml`).
 
 Output is written to `/tmp/transcript-<id>.json` and injected as a `systemMessage`.
 

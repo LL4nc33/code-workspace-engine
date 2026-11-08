@@ -7,6 +7,18 @@ source "$(dirname "$0")/_lib.sh"
 PY=$(command -v python3 || command -v python || true)
 [ -z "$PY" ] && exit 0
 
+# Auto-fetch is OPT-IN: it contacts the third-party yt-to-text.com API.
+# Enable with `transcript_autofetch: true` in .claude/cwe-settings.yml (project
+# or ~/.claude). Default: off — use the /cwe:transcript command (Whisper server) instead.
+autofetch_on() {
+  local f
+  for f in ".claude/cwe-settings.yml" "$HOME/.claude/cwe-settings.yml"; do
+    [ -f "$f" ] && grep -iqE 'transcript_autofetch:[[:space:]]*(true|yes|on|1)\b' "$f" && return 0
+  done
+  return 1
+}
+autofetch_on || exit 0
+
 # Read user prompt from stdin
 PROMPT=$(cat)
 
@@ -60,11 +72,11 @@ elapsed = 0
 while elapsed < 30:
     try:
         data = json.dumps({"video_id": vid}).encode("utf-8")
+        # Third-party transcript API. No spoofed Origin/Referer — we do not
+        # impersonate another site to reach it.
         req = urllib.request.Request("https://yt-to-text.com/api/v1/Subtitles", data=data, headers={
             "Content-Type": "application/json",
-            "Origin": "https://www.tubetranscript.com",
-            "Referer": "https://www.tubetranscript.com/",
-            "User-Agent": "Mozilla/5.0",
+            "User-Agent": "code-workspace-engine/transcript-hook",
         }, method="POST")
         with urllib.request.urlopen(req, timeout=15) as resp:
             result = json.loads(resp.read().decode("utf-8"))
@@ -103,7 +115,7 @@ print(json.dumps({
 ' "$VIDEO_ID" 2>/dev/null)
 
 if [ -z "$RESULT" ]; then
-  json_msg "[transcript] Fehler beim Laden des Transkripts fuer Video $VIDEO_ID"
+  json_ctx "UserPromptSubmit" "[transcript] Fehler beim Laden des Transkripts fuer Video $VIDEO_ID"
   exit 0
 fi
 
@@ -114,13 +126,13 @@ CHANNEL=$(echo "$RESULT" | "$PY" -c "import sys,json; d=json.load(sys.stdin); pr
 HAS_TRANSCRIPT=$(echo "$RESULT" | "$PY" -c "import sys,json; d=json.load(sys.stdin); print('yes' if d.get('transcript') else 'no')" 2>/dev/null)
 
 if [ "$HAS_TRANSCRIPT" = "yes" ]; then
-  # Save transcript to temp file for Claude to read if needed
-  TEMP_FILE="/tmp/transcript-${VIDEO_ID}.json"
+  # Save transcript to a temp file for Claude to read if needed
+  TEMP_FILE=$(mktemp "${TMPDIR:-/tmp}/transcript-${VIDEO_ID}-XXXXXX.json" 2>/dev/null || echo "${TMPDIR:-/tmp}/transcript-${VIDEO_ID}.json")
   echo "$RESULT" > "$TEMP_FILE"
-  json_msg "[transcript] Auto-fetched: \"${TITLE}\" (${CHANNEL}, ${DURATION}). Transcript saved to ${TEMP_FILE}. Read it with the Read tool to get the full transcript content."
+  json_ctx "UserPromptSubmit" "[transcript] Auto-fetched via third-party yt-to-text.com: \"${TITLE}\" (${CHANNEL}, ${DURATION}). Transcript saved to ${TEMP_FILE}. Read it with the Read tool to get the full transcript content."
 else
   ERROR=$(echo "$RESULT" | "$PY" -c "import sys,json; d=json.load(sys.stdin); print(d.get('transcript_error','unknown'))" 2>/dev/null)
-  json_msg "[transcript] Video: \"${TITLE}\" (${CHANNEL}, ${DURATION}). Transcript error: ${ERROR}"
+  json_ctx "UserPromptSubmit" "[transcript] Video: \"${TITLE}\" (${CHANNEL}, ${DURATION}). Transcript error: ${ERROR}"
 fi
 
 exit 0

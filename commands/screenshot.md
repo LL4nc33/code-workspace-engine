@@ -12,8 +12,13 @@ Liest einen Screenshot aus der Zwischenablage und analysiert ihn. Multi-OS Suppo
 
 ## Ausfuehrung
 
+Run the capture script with the plugin path quoted. If the user passed
+`--output <path>`, pass it as a **separate, quoted** argument — never interpolate
+the raw argument string unquoted into the shell:
+
 ```bash
-python3 ${CLAUDE_PLUGIN_ROOT}/scripts/screenshot.py $ARGUMENTS
+python3 "${CLAUDE_PLUGIN_ROOT}/scripts/screenshot.py"                      # clipboard → temp file
+python3 "${CLAUDE_PLUGIN_ROOT}/scripts/screenshot.py" --output "out.png"   # explicit output path
 ```
 
 Parse das JSON-Ergebnis:

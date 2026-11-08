@@ -24,7 +24,7 @@ For historical detail see `CHANGELOG.md`.
 ### v0.8.0 — Media + Content Tools (2026-04-21)
 - 6 Media Generation skills (image/video/faceswap/headswap/upscale/motion)
 - Shared `_media_lib.py` for OpenRouter + MagicHour APIs
-- `/cwe:transcript` (renamed, supports any URL via TScribe)
+- `/cwe:transcript` (renamed, supports any URL via Whisper server)
 - Intent-router extended for media/content commands
 
 ### v0.7.1 — Multi-OS Portability (2026-04-20)
@@ -86,7 +86,6 @@ Design + plan docs in `docs/plans/` (local, not tracked).
 - Qdrant memory stable + backed up
 - Documentation complete (API, ARCHITECTURE, USER-GUIDE refreshed)
 - CI tests for hooks + scripts
-- Plugin-marketplace-ready
 
 ---
 
@@ -95,17 +94,16 @@ Design + plan docs in `docs/plans/` (local, not tracked).
 ### Claude Code native features
 Recent Claude Code releases added features that may replace CWE components:
 
-- **Output Styles** (`/output-styles.md`): Could simplify `/cwe:researcher`, `/cwe:newsroom`
+- **Output Styles** (`/output-styles.md`): Could simplify `/cwe:researcher`
 - **Checkpointing**: File + conversation rollback — could reduce Serena memory reliance
 - **Routines**: Anthropic-hosted cron — could replace `/cwe:autopilot` for long-running tasks
-- **Channels**: Webhook/Telegram/Discord → session push — could power `/cwe:newsroom` event flow
+- **Channels**: Webhook/Telegram/Discord → session push — could power event-driven research flows
 - **Sandboxing**: Isolated bash — candidate for security/devops agent commands
 - **Auto Mode**: Could replace `--dangerously-skip-permissions` alias
 
 Each will be evaluated individually; CWE adopts only what adds value beyond native behavior.
 
 ### Community / Ecosystem
-- Plugin marketplace publishing (requires 1.0.0)
 - Community template profiles (api, pwa, fullstack)
 - Monorepo support (per-package workflow/)
 

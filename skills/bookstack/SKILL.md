@@ -77,10 +77,13 @@ Typische Stile in Homelab-Wikis:
 Pages immer direkt mit `book_id` erstellen, **ohne** `chapter_id` — außer der User fragt explizit nach Kapiteln:
 
 ```bash
+# Build the JSON body with json.dumps (values via env) — never interpolate
+# $TITLE/$CONTENT straight into the JSON string.
+PAYLOAD=$(BOOK_ID="$BOOK_ID" TITLE="$TITLE" CONTENT="$CONTENT" python3 -c 'import os,json; print(json.dumps({"book_id": int(os.environ["BOOK_ID"]), "name": os.environ["TITLE"], "markdown": os.environ["CONTENT"]}))')
 curl -s -X POST "$BS_URL/api/pages" \
   -H "Authorization: Token $BS_TOKEN" \
   -H "Content-Type: application/json" \
-  -d "{\"book_id\": $BOOK_ID, \"name\": \"$TITLE\", \"markdown\": \"$CONTENT\"}"
+  --data-binary "$PAYLOAD"
 ```
 
 **WICHTIG:** `chapter_id: 0` zum Entfernen eines Kapitels funktioniert NICHT — die Page verliert dabei auch ihre `book_id` und wird unsichtbar. Pages immer neu erstellen statt verschieben.
@@ -90,10 +93,11 @@ curl -s -X POST "$BS_URL/api/pages" \
 ### Pages erstellen
 
 ```bash
+PAYLOAD=$(BOOK_ID="$BOOK_ID" CHAPTER_ID="$CHAPTER_ID" TITLE="$TITLE" CONTENT="$CONTENT" python3 -c 'import os,json; print(json.dumps({"book_id": int(os.environ["BOOK_ID"]), "chapter_id": int(os.environ["CHAPTER_ID"]), "name": os.environ["TITLE"], "markdown": os.environ["CONTENT"]}))')
 curl -s -X POST "$BS_URL/api/pages" \
   -H "Authorization: Token $BS_TOKEN" \
   -H "Content-Type: application/json" \
-  -d "{\"book_id\": $BOOK_ID, \"chapter_id\": $CHAPTER_ID, \"name\": \"$TITLE\", \"markdown\": \"$CONTENT\"}"
+  --data-binary "$PAYLOAD"
 ```
 
 `chapter_id` ist optional — weglassen für Pages direkt im Buch. Bevorzugtes Format: `markdown` (alternativ: `html`).
@@ -101,20 +105,22 @@ curl -s -X POST "$BS_URL/api/pages" \
 ### Pages aktualisieren
 
 ```bash
+PAYLOAD=$(TITLE="$TITLE" CONTENT="$CONTENT" python3 -c 'import os,json; print(json.dumps({"name": os.environ["TITLE"], "markdown": os.environ["CONTENT"]}))')
 curl -s -X PUT "$BS_URL/api/pages/$PAGE_ID" \
   -H "Authorization: Token $BS_TOKEN" \
   -H "Content-Type: application/json" \
-  -d "{\"name\": \"$TITLE\", \"markdown\": \"$CONTENT\"}"
+  --data-binary "$PAYLOAD"
 ```
 
 ### Page-Existenz pruefen (Idempotenz)
 
 ```bash
-curl -s "$BS_URL/api/search?query=$(python3 -c "import urllib.parse; print(urllib.parse.quote('$TITLE'))")&type=page" \
-  -H "Authorization: Token $BS_TOKEN" | python3 -c "
-import sys, json
+Q=$(TITLE="$TITLE" python3 -c 'import os,urllib.parse; print(urllib.parse.quote(os.environ["TITLE"]))')
+curl -s "$BS_URL/api/search?query=$Q&type=page" \
+  -H "Authorization: Token $BS_TOKEN" | TITLE="$TITLE" python3 -c "
+import sys, os, json
 data = json.load(sys.stdin)
-hits = [r for r in data.get('data', []) if r['name'] == '$TITLE']
+hits = [r for r in data.get('data', []) if r['name'] == os.environ['TITLE']]
 print(hits[0]['id'] if hits else 'NOT_FOUND')
 "
 ```
@@ -133,19 +139,21 @@ for b in json.load(sys.stdin).get('data', []):
 ### Books erstellen
 
 ```bash
+PAYLOAD=$(NAME="$NAME" DESC="$DESC" python3 -c 'import os,json; print(json.dumps({"name": os.environ["NAME"], "description": os.environ["DESC"]}))')
 curl -s -X POST "$BS_URL/api/books" \
   -H "Authorization: Token $BS_TOKEN" \
   -H "Content-Type: application/json" \
-  -d "{\"name\": \"$NAME\", \"description\": \"$DESC\"}"
+  --data-binary "$PAYLOAD"
 ```
 
 ### Chapters erstellen
 
 ```bash
+PAYLOAD=$(BOOK_ID="$BOOK_ID" NAME="$NAME" DESC="$DESC" python3 -c 'import os,json; print(json.dumps({"book_id": int(os.environ["BOOK_ID"]), "name": os.environ["NAME"], "description": os.environ["DESC"]}))')
 curl -s -X POST "$BS_URL/api/chapters" \
   -H "Authorization: Token $BS_TOKEN" \
   -H "Content-Type: application/json" \
-  -d "{\"book_id\": $BOOK_ID, \"name\": \"$NAME\", \"description\": \"$DESC\"}"
+  --data-binary "$PAYLOAD"
 ```
 
 ### Suchen

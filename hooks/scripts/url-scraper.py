@@ -2,18 +2,22 @@
 """CWE URL Scraper — UserPromptSubmit hook.
 
 Detects non-YouTube URLs in user prompts, scrapes content via
-Firecrawl → trafilatura → curl fallback, saves JSON to /tmp.
+Firecrawl → trafilatura → curl fallback, saves JSON to the system temp dir.
 """
 
 import hashlib
+import ipaddress
 import json
 import re
+import socket
 import sys
+import tempfile
 import urllib.request
 import urllib.error
 from datetime import datetime, timezone
 from html.parser import HTMLParser
 from pathlib import Path
+from urllib.parse import urlparse
 
 
 # YouTube patterns to exclude (handled by transcript.sh)
@@ -43,6 +47,42 @@ def find_url(prompt):
         if not YT_PATTERN.match(url):
             return url
     return None
+
+
+def autoscrape_enabled():
+    """Auto-scraping is OPT-IN. Enable with `url_autoscrape: true` in
+    .claude/cwe-settings.yml (project or ~/.claude). Default: disabled, so the
+    hook never silently ships prompt URLs to a scraper without consent."""
+    for path in (Path(".claude/cwe-settings.yml"),
+                 Path.home() / ".claude" / "cwe-settings.yml"):
+        try:
+            if path.exists():
+                if re.search(r"url_autoscrape:\s*(true|yes|on|1)\b",
+                             path.read_text(), re.IGNORECASE):
+                    return True
+        except Exception:
+            pass
+    return False
+
+
+def is_public_url(url):
+    """SSRF guard: allow only http(s) hosts that resolve to public addresses.
+    Rejects loopback, private, link-local (incl. 169.254.169.254 cloud
+    metadata), reserved, multicast and unspecified targets."""
+    try:
+        parsed = urlparse(url)
+        if parsed.scheme not in ("http", "https") or not parsed.hostname:
+            return False
+        port = parsed.port or (443 if parsed.scheme == "https" else 80)
+        for info in socket.getaddrinfo(parsed.hostname, port,
+                                       proto=socket.IPPROTO_TCP):
+            ip = ipaddress.ip_address(info[4][0])
+            if (ip.is_private or ip.is_loopback or ip.is_link_local
+                    or ip.is_reserved or ip.is_multicast or ip.is_unspecified):
+                return False
+        return True
+    except Exception:
+        return False
 
 
 def get_firecrawl_url():
@@ -203,8 +243,18 @@ def main():
         print(json.dumps({}))
         return
 
+    # Opt-in only (see autoscrape_enabled): no setting → do nothing.
+    if not autoscrape_enabled():
+        print(json.dumps({}))
+        return
+
     url = find_url(prompt)
     if not url:
+        print(json.dumps({}))
+        return
+
+    # SSRF guard: never fetch internal / metadata addresses.
+    if not is_public_url(url):
         print(json.dumps({}))
         return
 
@@ -224,8 +274,8 @@ def main():
         "scraped_at": datetime.now(timezone.utc).isoformat(),
     }
 
-    # Save to /tmp
-    temp_file = f"/tmp/url-scrape-{url_hash(url)}.json"
+    # Save to the system temp dir (/tmp on Linux/WSL, %TEMP% on Windows)
+    temp_file = str(Path(tempfile.gettempdir()) / f"url-scrape-{url_hash(url)}.json")
     with open(temp_file, "w", encoding="utf-8") as f:
         json.dump(output, f, ensure_ascii=False, indent=2)
 
@@ -238,7 +288,13 @@ def main():
         f"Content saved to {temp_file}. Read it with the Read tool to see the full content."
     )
 
-    print(json.dumps({"systemMessage": msg}))
+    # additionalContext so Claude actually learns the content was fetched.
+    print(json.dumps({
+        "hookSpecificOutput": {
+            "hookEventName": "UserPromptSubmit",
+            "additionalContext": msg,
+        }
+    }))
 
 
 if __name__ == "__main__":

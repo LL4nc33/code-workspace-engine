@@ -1,17 +1,17 @@
 ---
-description: MUSS VERWENDET WERDEN wenn User eine URL teilt (YouTube, Instagram, TikTok, Podcast, etc.) oder ein Video/Audio-Transkript braucht. Transkribiert via TScribe (self-hosted faster-whisper) oder Fallback tubetranscript.
+description: MUSS VERWENDET WERDEN wenn User eine URL teilt (YouTube, Instagram, TikTok, Podcast, etc.) oder ein Video/Audio-Transkript braucht. Transkribiert via self-hosted Whisper server (faster-whisper) oder Fallback tubetranscript.
 allowed-tools: ["Bash", "Read"]
 ---
 
 # Transcribe
 
-Transkribiert Audio/Video von jeder URL: YouTube, Instagram Reels, TikTok, Podcasts, direkte Media-Links. Nutzt eine [TScribe](https://github.com/transcribe-tools/tscribe)-kompatible API (self-hosted faster-whisper) als Primary, tubetranscript als YouTube-Fallback.
+Transkribiert Audio/Video von jeder URL: YouTube, Instagram Reels, TikTok, Podcasts, direkte Media-Links. Nutzt eine self-hosted faster-whisper-API als Primary, tubetranscript als YouTube-Fallback.
 
 **Usage:** `/cwe:transcript <url>`
 
 ## Konfiguration
 
-Lies die TScribe-URL aus `.claude/cwe-settings.yml` (Schlüssel: `tscribe_url`). Wenn nicht gesetzt, nur YouTube-Fallback verfügbar.
+Lies die Whisper-Server-URL aus `.claude/cwe-settings.yml` (Schlüssel: `tscribe_url`). Wenn nicht gesetzt, nur YouTube-Fallback verfügbar.
 
 Use a Python parser instead of `grep | sed` — YAML values may be quoted, contain `:` or `#`, or have trailing whitespace/comments. The snippet below is safe against all of those and silently falls back to empty when the file/key is missing.
 
@@ -29,8 +29,8 @@ with open(p) as f:
 " 2>/dev/null)
 ```
 
-Wenn kein TScribe-Server konfiguriert ist und die URL keine YouTube-URL ist, informiere den User und verweise auf Setup-Optionen:
-- Self-hosted TScribe via Docker
+Wenn kein Whisper-Server konfiguriert ist und die URL keine YouTube-URL ist, informiere den User und verweise auf Setup-Optionen:
+- Self-hosted Whisper server via Docker
 - Whisper lokal via `whisper-cli`
 - Andere faster-whisper-API-Services
 
@@ -38,12 +38,12 @@ Wenn kein TScribe-Server konfiguriert ist und die URL keine YouTube-URL ist, inf
 
 ### 1. URL erkennen und Methode waehlen
 
-- **YouTube** (`youtube.com`, `youtu.be`, `youtube.com/shorts/`): TScribe primary (falls konfiguriert), tubetranscript Fallback
-- **Instagram** (`instagram.com/reel/`, `instagram.com/p/`): TScribe (erfordert Konfiguration)
-- **TikTok** (`tiktok.com`): TScribe (erfordert Konfiguration)
-- **Alles andere** (Podcasts, direkte MP3/MP4 URLs): TScribe (erfordert Konfiguration)
+- **YouTube** (`youtube.com`, `youtu.be`, `youtube.com/shorts/`): Whisper server primary (falls konfiguriert), tubetranscript Fallback
+- **Instagram** (`instagram.com/reel/`, `instagram.com/p/`): Whisper server (erfordert Konfiguration)
+- **TikTok** (`tiktok.com`): Whisper server (erfordert Konfiguration)
+- **Alles andere** (Podcasts, direkte MP3/MP4 URLs): Whisper server (erfordert Konfiguration)
 
-### 2. TScribe API (Primary, wenn konfiguriert)
+### 2. Whisper server API (Primary, wenn konfiguriert)
 
 ```bash
 # Job erstellen
@@ -90,9 +90,9 @@ print(d.get('result_text', 'FEHLER: ' + str(d.get('error', 'unbekannt'))))
 - Titel, Sprache, Dauer
 - Transkript-Zusammenfassung (bei langen Videos die wichtigsten Punkte)
 
-### 4. Fallback: tubetranscript (nur YouTube, kein TScribe nötig)
+### 4. Fallback: tubetranscript (nur YouTube, kein Whisper server nötig)
 
-Falls TScribe nicht konfiguriert/erreichbar ist UND es eine YouTube-URL ist, nutze das Hook-Script:
+Falls Whisper server nicht konfiguriert/erreichbar ist UND es eine YouTube-URL ist, nutze das Hook-Script:
 
 ```bash
 echo "{\"message\":\"URL_HERE\"}" | bash ${CLAUDE_PLUGIN_ROOT}/hooks/scripts/transcript.sh
@@ -100,8 +100,8 @@ echo "{\"message\":\"URL_HERE\"}" | bash ${CLAUDE_PLUGIN_ROOT}/hooks/scripts/tra
 
 ## Tipps
 
-- TScribe nutzt faster-whisper auf GPU — transkribiert auch Videos OHNE Untertitel
+- Whisper server nutzt faster-whisper auf GPU — transkribiert auch Videos OHNE Untertitel
 - Funktioniert mit allem was yt-dlp laden kann (YouTube, IG, TikTok, Vimeo, Twitter/X, etc.)
 - Instagram/TikTok brauchen manchmal 10-20 Sekunden laenger (Download + Transkription)
 - Bei langen Videos (>30 Min) kann es bis zu 2-3 Minuten dauern
-- TScribe erkennt die Sprache automatisch
+- Whisper server erkennt die Sprache automatisch

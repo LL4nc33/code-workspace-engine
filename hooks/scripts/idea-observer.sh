@@ -7,11 +7,24 @@ source "$(dirname "$0")/_lib.sh"
 
 IDEA_PATTERNS="idee|was wäre wenn|könnte man|vielleicht|alternativ|verbesserung|idea|what if|could we|maybe|alternative|improvement"
 
-# Read stdin (user prompt)
-PROMPT=$(cat)
+PY=$(_cwe_py)
 
-# Check for idea patterns (case insensitive)
-if ! echo "$PROMPT" | grep -iqE "$IDEA_PATTERNS"; then
+# Read the hook payload and extract the ACTUAL prompt text (not the raw JSON).
+STDIN_DATA=$(cat)
+if [ -n "$PY" ]; then
+  PROMPT=$(printf '%s' "$STDIN_DATA" | "$PY" -c 'import sys, json
+try:
+    d = json.load(sys.stdin); print(d.get("prompt", d.get("message", "")))
+except Exception:
+    pass' 2>/dev/null || true)
+else
+  PROMPT="$STDIN_DATA"
+fi
+
+[ -z "$PROMPT" ] && exit 0
+
+# Check for idea patterns (case insensitive) in the prompt itself.
+if ! printf '%s' "$PROMPT" | grep -iqE "$IDEA_PATTERNS"; then
   exit 0
 fi
 
@@ -35,23 +48,23 @@ if [ -f "$OLD_TOON" ] && [ ! -f "$OLD_TOON.bak" ]; then
   mv "$OLD_TOON" "$OLD_TOON.bak"
 fi
 
-# Extract matched keywords
-MATCHED_KEYWORDS=$(echo "$PROMPT" | grep -ioE "$IDEA_PATTERNS" | tr '[:upper:]' '[:lower:]' | sort -u | paste -sd',' -) || true
+# Extract matched keywords (comma-joined)
+MATCHED_KEYWORDS=$(printf '%s' "$PROMPT" | grep -ioE "$IDEA_PATTERNS" | tr '[:upper:]' '[:lower:]' | sort -u | paste -sd',' -) || true
 
-# Truncate and escape prompt for JSON
-CLEAN_PROMPT=$(json_escape "${PROMPT:0:300}")
-
-# Build keywords JSON array
-if [ -n "$MATCHED_KEYWORDS" ]; then
-  KEYWORDS_JSON=$(echo "$MATCHED_KEYWORDS" | sed 's/,/","/g' | sed 's/^/"/;s/$/"/')
+# Build + append the JSONL record via python json.dumps (robust escaping).
+OUT="$IDEAS_DIR/${PROJECT_SLUG}.jsonl"
+if [ -n "$PY" ]; then
+  printf '%s' "$PROMPT" | "$PY" -c 'import sys, json, datetime
+prompt = sys.stdin.read()[:300]
+kw = [k for k in sys.argv[2].split(",") if k]
+rec = {"ts": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+       "prompt": prompt, "project": sys.argv[1], "keywords": kw, "status": "raw"}
+print(json.dumps(rec, ensure_ascii=False))' "$PROJECT_SLUG" "$MATCHED_KEYWORDS" >> "$OUT"
 else
-  KEYWORDS_JSON=""
+  CLEAN_PROMPT=$(json_escape "${PROMPT:0:300}")
+  TIMESTAMP=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+  printf '{"ts":"%s","prompt":"%s","project":"%s","keywords":[],"status":"raw"}\n' \
+    "$TIMESTAMP" "$CLEAN_PROMPT" "$PROJECT_SLUG" >> "$OUT"
 fi
-
-# Write JSONL entry
-TIMESTAMP=$(date -u +%Y-%m-%dT%H:%M:%SZ)
-printf '{"ts":"%s","prompt":"%s","project":"%s","keywords":[%s],"status":"raw"}\n' \
-  "$TIMESTAMP" "$CLEAN_PROMPT" "$PROJECT_SLUG" "$KEYWORDS_JSON" \
-  >> "$IDEAS_DIR/${PROJECT_SLUG}.jsonl"
 
 exit 0

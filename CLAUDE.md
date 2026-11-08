@@ -1,6 +1,6 @@
-# CWE v0.8.2
+# CWE v0.8.3
 
-Orchestration plugin. Delegation via hooks — follow systemMessage routing hints.
+Orchestration plugin. Delegation via hooks — follow the injected routing hints (hook `additionalContext`).
 
 ## Mistakes to avoid
 - Don't handle tasks yourself when a CWE agent exists for it
@@ -24,5 +24,5 @@ Scripts in `scripts/` for image, video, and motion generation. API keys in `scri
 
 | Command | Purpose | Backend |
 |---------|---------|---------|
-| `/cwe:transcript` | Video/audio transcripts (YouTube, Instagram, TikTok, podcasts) | TScribe (self-hosted) or tubetranscript fallback |
+| `/cwe:transcript` | Video/audio transcripts (YouTube, Instagram, TikTok, podcasts) | self-hosted Whisper server or tubetranscript fallback |
 | `/cwe:pdf` | Read/analyze PDFs by rendering pages to images | Stirling PDF API |

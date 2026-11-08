@@ -24,20 +24,6 @@ AGENTS = [
     },
     # Priority 1: Domain-specific agents (narrow scope)
     {
-        "agent": "debug",
-        "patterns": [
-            r"\bdebug",
-            r"\bfehlersuche\b",
-            r"\btroubleshoot",
-            r"\broot.?cause\b",
-            r"\bstacktrace\b",
-            r"\bcrash",
-            r"\bwarum.*(fehlt|geht.nicht|crasht|bricht|funktioniert.nicht|fehlschl(ä|ae|a)|failed|fails)",
-            r"\b(finde|find).*(fehler|error|bug)",
-            r"\buntersuch",
-        ],
-    },
-    {
         "agent": "security",
         "patterns": [
             r"\bsecurity\b",
@@ -153,7 +139,9 @@ AGENTS = [
             r"\bmeinung|opinion",
         ],
     },
-    # Priority 2: Builder (broadest scope — last to avoid false positives)
+    # Priority 2: Builder (broadest scope — last to avoid false positives).
+    # Debugging keywords route here too: there is no separate 'debug' agent,
+    # the builder handles bug fixes and troubleshooting.
     {
         "agent": "builder",
         "patterns": [
@@ -169,6 +157,16 @@ AGENTS = [
             r"\bbaue?\b",
             r"\breparier",
             r"\bprogrammier",
+            # debugging / troubleshooting (formerly a non-existent 'debug' agent)
+            r"\bdebug",
+            r"\bfehlersuche\b",
+            r"\btroubleshoot",
+            r"\broot.?cause\b",
+            r"\bstacktrace\b",
+            r"\bcrash",
+            r"\bwarum.*(fehlt|geht.nicht|crasht|bricht|funktioniert.nicht|fehlschl(ä|ae|a)|failed|fails)",
+            r"\b(finde|find).*(fehler|error|bug)",
+            r"\buntersuch",
         ],
     },
 ]
@@ -366,7 +364,14 @@ def main():
             f"Do not handle it in the main conversation."
         )
 
-    print(json.dumps({"systemMessage": msg}))
+    # Routing guidance must reach Claude's context, so emit additionalContext.
+    # systemMessage would only be shown to the user, who is not the one routing.
+    print(json.dumps({
+        "hookSpecificOutput": {
+            "hookEventName": "UserPromptSubmit",
+            "additionalContext": msg,
+        }
+    }))
 
 
 if __name__ == "__main__":

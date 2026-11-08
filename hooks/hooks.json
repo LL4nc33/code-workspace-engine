@@ -5,27 +5,27 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 ${CLAUDE_PLUGIN_ROOT}/hooks/scripts/intent-router.py",
-            "timeout": 3
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/_py.sh\" intent-router.py",
+            "timeout": 10
           },
           {
             "type": "command",
-            "command": "python3 ${CLAUDE_PLUGIN_ROOT}/hooks/scripts/url-scraper.py",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/_py.sh\" url-scraper.py",
             "timeout": 30
           },
           {
             "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/idea-observer.sh",
-            "timeout": 3
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/idea-observer.sh\"",
+            "timeout": 10
           },
           {
             "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/transcript.sh",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/transcript.sh\"",
             "timeout": 45
           },
           {
             "type": "command",
-            "command": "python3 ${CLAUDE_PLUGIN_ROOT}/hooks/scripts/handoff-sync.py",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/_py.sh\" handoff-sync.py",
             "timeout": 15
           }
         ]
@@ -36,12 +36,12 @@
         "hooks": [
           {
             "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/session-start.sh",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/session-start.sh\"",
             "timeout": 10
           },
           {
             "type": "command",
-            "command": "python3 ${CLAUDE_PLUGIN_ROOT}/hooks/scripts/mt-session-init.py",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/_py.sh\" mt-session-init.py",
             "timeout": 10
           }
         ]
@@ -52,7 +52,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/idea-flush.sh",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/idea-flush.sh\"",
             "timeout": 5
           }
         ]
@@ -63,7 +63,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/session-stop.sh",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/session-stop.sh\"",
             "timeout": 5
           }
         ]
@@ -74,7 +74,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/subagent-start.sh",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/subagent-start.sh\"",
             "timeout": 5
           }
         ]
@@ -85,7 +85,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/subagent-stop.sh",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/subagent-stop.sh\"",
             "timeout": 5
           }
         ]
@@ -96,7 +96,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/session-stop.sh",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/session-stop.sh\"",
             "timeout": 5
           }
         ]
@@ -108,17 +108,73 @@
         "hooks": [
           {
             "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/safety-gate.sh",
-            "timeout": 30
+            "if": "Bash(git commit *)",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/safety-gate.sh\"",
+            "timeout": 30,
+            "onFailure": "block"
           },
           {
             "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/commit-format.sh",
+            "if": "Bash(git push *)",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/safety-gate.sh\"",
+            "timeout": 30,
+            "onFailure": "block"
+          },
+          {
+            "type": "command",
+            "if": "Bash(git add *)",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/safety-gate.sh\"",
+            "timeout": 30,
+            "onFailure": "block"
+          },
+          {
+            "type": "command",
+            "if": "Bash(git commit)",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/safety-gate.sh\"",
+            "timeout": 30,
+            "onFailure": "block"
+          },
+          {
+            "type": "command",
+            "if": "Bash(git push)",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/safety-gate.sh\"",
+            "timeout": 30,
+            "onFailure": "block"
+          },
+          {
+            "type": "command",
+            "if": "Bash(git commit *)",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/commit-format.sh\"",
             "timeout": 10
           },
           {
             "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/scripts/branch-naming.sh",
+            "if": "Bash(git commit)",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/commit-format.sh\"",
+            "timeout": 10
+          },
+          {
+            "type": "command",
+            "if": "Bash(git checkout *)",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/branch-naming.sh\"",
+            "timeout": 10
+          },
+          {
+            "type": "command",
+            "if": "Bash(git switch *)",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/branch-naming.sh\"",
+            "timeout": 10
+          },
+          {
+            "type": "command",
+            "if": "Bash(git branch *)",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/branch-naming.sh\"",
+            "timeout": 10
+          },
+          {
+            "type": "command",
+            "if": "Bash(git worktree *)",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/branch-naming.sh\"",
             "timeout": 10
           }
         ]

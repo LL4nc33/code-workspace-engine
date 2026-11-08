@@ -4,7 +4,7 @@
   <br><br>
 
   <a href="#quick-start"><img src="https://img.shields.io/badge/Quick_Start-3_Steps-6366f1?style=flat-square" alt="Quick Start"></a>
-  <img src="https://img.shields.io/badge/version-0.8.2-8b5cf6?style=flat-square" alt="Version">
+  <img src="https://img.shields.io/badge/version-0.8.3-8b5cf6?style=flat-square" alt="Version">
   <img src="https://img.shields.io/badge/agents-10-6366f1?style=flat-square" alt="Agents">
   <img src="https://img.shields.io/badge/skills-17-8b5cf6?style=flat-square" alt="Skills">
   <img src="https://img.shields.io/badge/commands-25-6366f1?style=flat-square" alt="Commands">
@@ -161,7 +161,9 @@ Unclear? → Ask (max 2 questions)
 
 ### Hook Chain
 
-Hooks run automatically on every user prompt, in order:
+Hooks run automatically on every user prompt. Hooks registered for the same
+event run in **parallel** (not sequentially), so they must not depend on one
+another's output:
 
 | Hook | Timeout | Purpose |
 |------|---------|---------|
@@ -399,11 +401,12 @@ your-project/
 
 See [CHANGELOG.md](CHANGELOG.md) for full history. See [ROADMAP.md](ROADMAP.md) for planned features.
 
-> **Testing note (v0.8.2):** Primary test platform is WSL2 (Ubuntu on Windows 11). macOS, Linux Wayland/X11, and several external services (MagicHour, OpenRouter, TScribe, Stirling PDF, Gitea, BookStack) are supported in code but were not end-to-end tested in this release. See [CHANGELOG.md § Testing Coverage Caveat](CHANGELOG.md#testing-coverage-caveat) for the full list. Please open an issue if something doesn't work on your platform.
+> **Testing note (v0.8.3):** Primary test platform is WSL2 (Ubuntu on Windows 11). macOS, Linux Wayland/X11, and several external services (MagicHour, OpenRouter, Whisper server, Stirling PDF, Gitea, BookStack) are supported in code but were not end-to-end tested in this release. See [CHANGELOG.md § Testing Coverage Caveat](CHANGELOG.md#testing-coverage-caveat) for the full list. Please open an issue if something doesn't work on your platform.
 
 |   Version  |                                  Highlights                                |
 |------------|----------------------------------------------------------------------------|
-| **0.8.2**  | Hardening pass: 10-agent review → 11 blockers fixed (hooks, media, screenshot, commands, templates, docs), ~40 should-fixes, port/key collisions resolved | (current)
+| **0.8.3**  | Hook correctness & security (CC 2.1.3xx): git hooks actually run (secret scan + commit-format), SSRF/injection fixes, opt-in auto-fetch, 17-case hook test suite | (current)
+| **0.8.2**  | Hardening pass: 10-agent review → 11 blockers fixed (hooks, media, screenshot, commands, templates, docs), ~40 should-fixes, port/key collisions resolved |
 | **0.8.1**  | PDF + screenshot Python-flip, /cwe:init service setup, doc refresh |
 | **0.8.0**  | Media Tools (image/video/faceswap/headswap/upscale/motion) + Content Tools (transcript/pdf) |
 | **0.7.1**  | Multi-OS portability (macOS grep, python3/python), hook stability |

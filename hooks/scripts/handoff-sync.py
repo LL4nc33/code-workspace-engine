@@ -41,8 +41,9 @@ if not os.path.isdir(handoff_dir):
     sys.exit(0)
 
 # Fetch latest from all remotes (quiet, best effort) — throttled to 60s
+import tempfile
 import time
-fetch_marker = os.path.join("/tmp", f"cwe-handoff-fetch-{branch}.ts")
+fetch_marker = os.path.join(tempfile.gettempdir(), f"cwe-handoff-fetch-{branch.replace('/', '-')}.ts")
 now = time.time()
 try:
     last_fetch = os.path.getmtime(fetch_marker)
@@ -66,10 +67,15 @@ try:
         ["git", "branch", "-r"],
         capture_output=True, text=True, timeout=5
     )
-    remote_branches = [
-        b.strip() for b in result.stdout.strip().split("\n")
-        if re.search(r"origin/t\d+-", b) and f"origin/{branch}" not in b
-    ]
+    remote_branches = []
+    for raw in result.stdout.strip().split("\n"):
+        b = raw.strip()
+        if "->" in b or "/" not in b:
+            continue  # skip symbolic refs like "origin/HEAD -> origin/main"
+        short = b.split("/", 1)[1]  # branch name without the remote prefix
+        # Exact match so t1-dev does not accidentally exclude t1-dev2.
+        if re.match(r"t\d+-", short) and short != branch:
+            remote_branches.append(b)
 except Exception:
     remote_branches = []
 
@@ -85,10 +91,6 @@ ENTRY_PATTERN = re.compile(
 def parse_entries(content):
     """Extract entry headers as unique identifiers."""
     return set(ENTRY_PATTERN.findall(content))
-
-def count_entries(content):
-    """Count handoff entries in content."""
-    return len(ENTRY_PATTERN.findall(content))
 
 # For each handoff file, check if other branches have more entries
 synced = 0
@@ -149,7 +151,12 @@ for handoff_file in os.listdir(handoff_dir):
 if synced > 0:
     # NOTE: do NOT auto-stage. Staging/committing is the user's decision
     # (via /cwe:handoff or manual git). We only write the local file.
-    print(json.dumps({"systemMessage": f"[handoff-sync] Synced {synced} new handoff entries from other terminals."}))
+    print(json.dumps({
+        "hookSpecificOutput": {
+            "hookEventName": "UserPromptSubmit",
+            "additionalContext": f"[handoff-sync] Synced {synced} new handoff entries from other terminals.",
+        }
+    }))
 else:
     # Silent exit — no message when nothing to sync
     sys.exit(0)
