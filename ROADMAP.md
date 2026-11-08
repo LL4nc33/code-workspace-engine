@@ -1,12 +1,18 @@
 # CWE Roadmap
 
-Current: **v0.8.2** — Hardening pass (11 blockers + ~40 should-fixes resolved via 10-agent review).
+Current: **v0.8.3** — Hook correctness & security (CC 2.1.3xx): git hooks actually run, SSRF/injection fixes, opt-in auto-fetch, 17-case hook test suite.
 
 For historical detail see `CHANGELOG.md`.
 
 ---
 
 ## Done
+
+### v0.8.3 — Hook Correctness & Security (2026-11-08)
+- Git PreToolUse hooks actually run: safety-gate + commit-format read `tool_input.command` (were always-empty); scan covers commit/push/add/`-am`; fail-closed
+- Security: url-scraper opt-in + SSRF guard; injection closed in web-research/bookstack/screenshot; gitea no longer embeds the password; paid media skills not model-invocable
+- Correctness: hook output reaches Claude via `additionalContext`; branch-naming rewritten in Python; intent-router no longer routes to a non-existent agent
+- Tests: `tests/hooks/test_git_hooks.sh` (17 cases); `/cwe:init` plugin-install + statusline commands corrected; docs synced to v0.8.3
 
 ### v0.8.2 — Hardening Pass (2026-04-21)
 - 10 parallel review agents across hooks/media/utility-scripts/agents/skills/commands/rules/templates/docs/privacy → 11 blockers + ~40 should-fixes
