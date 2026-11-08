@@ -58,7 +58,7 @@ Use the current date/time for the timestamp.
 
 ```bash
 git add shared/handoff/
-git commit -m "handoff(t{source}→t{target}): {title}"
+git commit -m "chore(handoff): t{source}→t{target} {title}"
 git push
 ```
 
