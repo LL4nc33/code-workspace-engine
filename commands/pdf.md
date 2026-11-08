@@ -51,21 +51,25 @@ echo "Seiten: $PAGE_COUNT"
 
 3. **PDF zu Bildern konvertieren** via Stirling API:
 
+Erstelle **einmal** ein Arbeitsverzeichnis mit `mktemp -d` (kein fester, vorhersagbarer
+Pfad) und verwende dessen echten Pfad in allen folgenden Schritten — jeder Bash-Aufruf
+ist eine frische Shell, merke dir den ausgegebenen `$WORKDIR`-Pfad:
+
 ```bash
-mkdir -p /tmp/cwe-pdf
+WORKDIR=$(mktemp -d "${TMPDIR:-/tmp}/cwe-pdf-XXXXXX"); echo "$WORKDIR"
 curl -s -X POST "$STIRLING_URL/api/v1/convert/pdf/img" \
   -F 'fileInput=@DATEIPFAD' \
   -F 'imageFormat=jpeg' \
   -F 'singleOrMultiple=multiple' \
   -F 'dpi=200' \
-  -o /tmp/cwe-pdf/pages.zip
+  -o "$WORKDIR/pages.zip"
 ```
 
 4. **ZIP entpacken**:
 
 ```bash
-cd /tmp/cwe-pdf && python3 -c "import zipfile; zipfile.ZipFile('pages.zip').extractall('pages/')"
-ls /tmp/cwe-pdf/pages/ | sort
+cd "$WORKDIR" && python3 -c "import zipfile; zipfile.ZipFile('pages.zip').extractall('pages/')"
+ls "$WORKDIR/pages/" | sort
 ```
 
 5. **Seiten lesen** — Lies jede Bild-Datei mit dem Read-Tool. Bei vielen Seiten (>20) nur den angegebenen Seitenbereich lesen. Fasse den Inhalt zusammen und beziehe dich auf den Kontext der Konversation.
@@ -77,7 +81,7 @@ ls /tmp/cwe-pdf/pages/ | sort
 6. **Cleanup**: Nach der Analyse temporaere Dateien entfernen:
 
 ```bash
-rm -rf /tmp/cwe-pdf
+rm -rf "$WORKDIR"
 ```
 
 ## Tipps

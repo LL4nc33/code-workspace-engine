@@ -122,25 +122,27 @@ print(text[:5000] if text else 'ERROR: No content')
 ## Workflow: Search + Scrape + Analyze
 
 ```bash
-# 1. Search
+# 1. Search (URLs into a temp file, no fixed /tmp path)
+URLS=$(mktemp "${TMPDIR:-/tmp}/cwe-urls-XXXXXX")
 curl -s "${SEARXNG_URL}/search?q=claude+code+plugins&format=json&language=en" | python3 -c "
 import sys, json
 results = json.load(sys.stdin).get('results', [])[:5]
 for r in results:
     print(r['url'])
-" > /tmp/urls.txt
+" > "$URLS"
 
-# 2. Scrape top results
-while read url; do
-  echo '=== '$url' ==='
-  python3 -c \"
-import trafilatura
-d = trafilatura.fetch_url('$url')
+# 2. Scrape top results (URL via argv — never interpolate it into the source)
+while read -r url; do
+  echo "=== $url ==="
+  python3 -c "
+import sys, trafilatura
+d = trafilatura.fetch_url(sys.argv[1])
 if d:
     t = trafilatura.extract(d, include_tables=True)
     if t: print(t[:3000])
-\"
-done < /tmp/urls.txt
+" "$url"
+done < "$URLS"
+rm -f "$URLS"
 ```
 
 ## Firecrawl API Reference (when available)

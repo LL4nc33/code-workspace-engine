@@ -133,23 +133,26 @@ Falls SearXNG und Firecrawl nicht erreichbar, `WebFetch` oder `WebSearch` Tool d
 ## Workflow: Search + Scrape + Analyze
 
 ```bash
-# 1. Suche → JSON
+# 1. Suche → JSON (URLs in eine Temp-Datei, kein fester /tmp-Pfad)
+URLS=$(mktemp "${TMPDIR:-/tmp}/cwe-urls-XXXXXX")
 curl -s "${SEARXNG_URL}/search?q=claude+code+plugins&format=json&language=en" | python3 -c "
 import sys, json
 results = json.load(sys.stdin).get('results', [])[:5]
 for r in results:
     print(r['url'])
-" > /tmp/urls.txt
+" > "$URLS"
 
-# 2. Scrape top results → JSON pro URL
-while read url; do
+# 2. Scrape top results → JSON pro URL (URL via argv, nicht in den Quelltext interpolieren)
+while read -r url; do
   python3 -c "
-import json, trafilatura
-d = trafilatura.fetch_url('$url')
+import sys, json, trafilatura
+url = sys.argv[1]
+d = trafilatura.fetch_url(url)
 text = trafilatura.extract(d, include_tables=True) if d else None
-print(json.dumps({'url': '$url', 'success': bool(text), 'content': (text or '')[:3000]}, ensure_ascii=False))
-"
-done < /tmp/urls.txt
+print(json.dumps({'url': url, 'success': bool(text), 'content': (text or '')[:3000]}, ensure_ascii=False))
+" "$url"
+done < "$URLS"
+rm -f "$URLS"
 ```
 
 ## Output
