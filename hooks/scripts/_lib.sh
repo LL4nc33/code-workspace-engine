@@ -3,27 +3,43 @@
 # Source this at the top of any hook that outputs JSON:
 #   source "$(dirname "$0")/_lib.sh"
 
-# --- Safe JSON string escape ---
-# Escapes a string for safe embedding in JSON double-quotes.
-# Handles: backslashes, quotes, tabs, carriage returns, newlines, control chars.
-# Usage: ESCAPED=$(json_escape "raw string")
+# --- Resolve a Python interpreter once ---
+_cwe_py() { command -v python3 || command -v python || command -v py || true; }
+
+# --- Legacy JSON string escape (fallback only) ---
+# json_dumps below is preferred. This hand-escape misses control chars other
+# than TAB/CR/LF and is kept only for the no-Python fallback path.
 json_escape() {
   local s="$1"
-  s="${s//\\/\\\\}"        # backslashes first (order matters!)
-  s="${s//\"/\\\"}"        # double quotes
-  s="${s//$'\t'/\\t}"      # tabs
-  s="${s//$'\r'/}"         # strip carriage returns
-  s="${s//$'\n'/\\n}"      # newlines to literal \n
+  s="${s//\\/\\\\}"; s="${s//\"/\\\"}"; s="${s//$'\t'/\\t}"
+  s="${s//$'\r'/}";  s="${s//$'\n'/\\n}"
   printf '%s' "$s"
 }
 
-# --- Emit JSON systemMessage ---
-# Safely outputs {"systemMessage": "..."} with proper escaping.
-# Usage: json_msg "Your message here with $variables"
+# --- Emit JSON {"systemMessage": "<text>"} — shown to the USER only ---
+# Built with python json.dumps so any control character stays valid JSON.
+# Usage: json_msg "message with $variables"
 json_msg() {
-  local escaped
-  escaped=$(json_escape "$1")
-  printf '{"systemMessage": "%s"}\n' "$escaped"
+  local py; py="$(_cwe_py)"
+  if [ -n "$py" ]; then
+    printf '%s' "$1" | "$py" -c 'import sys,json; print(json.dumps({"systemMessage": sys.stdin.read()}))'
+  else
+    printf '{"systemMessage": "%s"}\n' "$(json_escape "$1")"
+  fi
+}
+
+# --- Emit JSON additionalContext — injected into CLAUDE's context window ---
+# Use this (not json_msg) whenever Claude needs the information, since
+# systemMessage is only displayed to the user. Delivered via hookSpecificOutput
+# for the given hook event (e.g. SessionStart, UserPromptSubmit).
+# Usage: json_ctx <HookEventName> "text"
+json_ctx() {
+  local event="$1" py; py="$(_cwe_py)"
+  if [ -n "$py" ]; then
+    printf '%s' "$2" | "$py" -c 'import sys,json; print(json.dumps({"hookSpecificOutput":{"hookEventName":sys.argv[1],"additionalContext":sys.stdin.read()}}))' "$event"
+  else
+    printf '{"hookSpecificOutput":{"hookEventName":"%s","additionalContext":"%s"}}\n' "$event" "$(json_escape "$2")"
+  fi
 }
 
 # --- Safe grep -c wrapper ---

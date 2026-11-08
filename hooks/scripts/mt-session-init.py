@@ -107,4 +107,11 @@ if prompt_file:
 
 context_msg = " | ".join(parts)
 
-print(json.dumps({"result": context_msg}))
+# SessionStart context must reach Claude via additionalContext; there is no
+# "result" output field (the old key was silently ignored).
+print(json.dumps({
+    "hookSpecificOutput": {
+        "hookEventName": "SessionStart",
+        "additionalContext": context_msg,
+    }
+}))
