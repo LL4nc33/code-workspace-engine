@@ -11,12 +11,12 @@ PY=$(command -v python3 || command -v python || true)
 TOOL_INPUT=$(cat)
 
 # Use python for robust JSON parsing (handles escaped quotes, newlines, heredocs)
-COMMAND=$(echo "$TOOL_INPUT" | "$PY" -c "
+COMMAND=$(printf '%s' "$TOOL_INPUT" | "$PY" -c "
 import sys, json
 try:
     data = json.load(sys.stdin)
-    print(data.get('command', ''))
-except:
+    print(data.get('tool_input', {}).get('command', ''))
+except Exception:
     pass
 " 2>/dev/null || true)
 
@@ -88,23 +88,26 @@ FIRST_LINE=$(echo "$MSG" | head -1)
 PATTERN='^(feat|fix|chore|docs|style|refactor|test|perf|ci|build|revert)(\([a-z0-9_,/-]+\))?!?:\s.+'
 
 if ! echo "$FIRST_LINE" | grep -qE "$PATTERN"; then
-  echo ""
-  echo "=== CWE Git Standards: Invalid Commit Message ==="
-  echo ""
-  echo "  Your message: \"$FIRST_LINE\""
-  echo ""
-  echo "  Expected format: <type>(<scope>): <subject>"
-  echo ""
-  echo "  Valid types: feat, fix, chore, docs, style, refactor, test, perf, ci, build, revert"
-  echo ""
-  echo "  Examples:"
-  echo "    feat(auth): add JWT token refresh"
-  echo "    fix: prevent crash on empty input"
-  echo "    docs: update API documentation"
-  echo "    chore: update dependencies"
-  echo ""
-  echo "  Use --no-verify to bypass (for emergencies)."
-  echo ""
+  # exit 2 reports its reason via stderr; stdout is not shown to Claude on a block.
+  {
+    echo ""
+    echo "=== CWE Git Standards: Invalid Commit Message ==="
+    echo ""
+    echo "  Your message: \"$FIRST_LINE\""
+    echo ""
+    echo "  Expected format: <type>(<scope>): <subject>"
+    echo ""
+    echo "  Valid types: feat, fix, chore, docs, style, refactor, test, perf, ci, build, revert"
+    echo ""
+    echo "  Examples:"
+    echo "    feat(auth): add JWT token refresh"
+    echo "    fix: prevent crash on empty input"
+    echo "    docs: update API documentation"
+    echo "    chore: update dependencies"
+    echo ""
+    echo "  (Claude Code PreToolUse hook — 'git --no-verify' does NOT bypass it.)"
+    echo ""
+  } >&2
   exit 2
 fi
 
